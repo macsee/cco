@@ -1,0 +1,444 @@
+@font-face { 
+	font-family: 'MyWebFont';
+	src: url('webfonts/miso-light.otf');
+	url('webfonts/miso-light.ttf') format('truetype'),
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+    font-family: 'EntypoRegular';
+    src: url('webfonts/entypo-webfont.eot');
+    src: url('webfonts/entypo-webfont.eot?#iefix') format('embedded-opentype'),
+         url('webfonts/entypo-webfont.woff') format('woff'),
+         url('webfonts/entypo-webfont.ttf') format('truetype'),
+         url('webfonts/entypo-webfont.svg#EntypoRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face { font-family: 'Segoe'; src: url('webfonts/SEGOEUI.ttf'); }
+@font-face{font-family:'Oswald';src:url('webfonts/oswald-regular.woff') format('woff');font-weight:normal;font-style:normal}
+@font-face{font-family:'Oswald';src:url('webfonts/oswald-light.eot');src:url('webfonts/oswald-light.eot?#iefix') format('embedded-opentype'),url('webfonts/oswald-light.woff') format('woff'),url('webfonts/oswald-light.ttf') format('truetype')} 
+@font-face{font-family:'Oswald Regular';src:url('webfonts/oswald-regular.woff') format('woff');font-weight:normal;font-style:normal}
+@font-face{font-family:'Oswald Regular';src:url('webfonts/oswald-regular.eot');src:url('webfonts/oswald-regular.eot?#iefix') format('embedded-opentype'),url('webfonts/oswald-regular.woff') format('woff'),url('webfonts/oswald-regular.ttf') format('truetype')}
+
+body {
+	font-family: 'Segoe';
+	//font-family: Helvetica, Arial, Sans-Serif;
+	//width: 1800px;
+}
+
+#main_header {
+	width: 100%;
+}
+
+#header {
+	float: left;
+	width: 100%;
+	color: #fff;
+	text-shadow: 0 1px 0 #EEE;
+	margin-top: 30px;
+}
+
+#notas_dia {  background-color: #454545; height: 25px;color: white;font-family: oswald;font-size: 16px;  margin-left: 5px;float: left;  width: 284px;  padding-left: 10px;}
+
+#fecha_dia {float:left; width: 400px; margin-left: 130px; float: left; font-size: 25px;text-align: center;margin-top: 5px;color: white;font-family: oswald;}
+#fecha_mes_ano {float:left; width: 700px; margin-left: 10px; float: left; font-size: 15px}
+
+
+#menu a:visited {color: black} 
+
+.hora {
+	float: left;
+	//height: 50px;
+	margin-left: 10px;
+}
+
+.hora a {
+	color: #333;
+	//font-weight: bold;
+	text-shadow: 0 1px 0 #EEE;
+	//font-family: Helvetica, Arial, Sans-Serif;
+	font-size: 18px;
+}
+
+
+.hora_ocupada {
+	float: left;	
+	margin-top: 2px;
+	margin-left: 10px;
+	width: 10%;
+}
+
+.horario a {
+	color: #316F97;
+	text-shadow: 0 1px 0 #EEE;
+	font-size: 16px;
+	width: 100%;
+	text-decoration: none;
+}
+
+.hora_cita a {
+	float: left;
+	color: #D83C3C;
+	text-shadow: 0 1px 0 #EEE;
+	font-size: 16px;
+	width: 100%;
+	margin-top: 3px;
+}
+
+.fila_vacia {
+	background-color: #E4E2E2;
+	height: 25px;
+	border: 1px solid #E5E5E5;
+	margin-bottom: 5px;
+	//border-bottom: 1px solid #CCC;
+	//border-top: 1px solid #CCC;
+	padding-top: 1px;
+}
+
+
+.fila_vacia:active {
+	background-color: white;
+}
+
+
+.fila_ocupada2 {
+	//background: url('images/background_stripes.gif');//#9C9C9C;//#d4e7ff;
+	background-color: #FFCDCD;
+	height: 47px;
+	margin-bottom: 5px;
+	border: 1px solid #E5E5E5;
+	//border-bottom: 1px solid #CCC;
+	//border-top: 1px solid #CCC;
+}
+
+.fila_ocupada {
+	//background: url('images/background_stripes.gif');//#9C9C9C;//#d4e7ff;
+	background-color: #F7F7F7;
+	height: 47px;
+	margin-bottom: 5px;
+	border: 1px solid #E5E5E5;
+	//border-bottom: 1px solid #CCC;
+	//border-top: 1px solid #CCC;
+}
+
+.fila_ocupada:hover {
+	background-color: white;
+}
+
+.fila_ocupada:active {
+	background-color: white;
+}
+
+.nombre_apellido{
+	font-family: 'Segoe';
+	font-size: 14px;
+	float: left;
+	width: 25%;
+	//padding-left: 10px;
+	margin-top: 3px;
+	font-weight: bold;
+}
+
+.nombre_apellido_vista{
+	font-family: 'Segoe';
+	font-size: 80px;
+	float: left;
+	width: 80%;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding-left: 10px;
+}
+
+table {
+	font-size: 40px;
+}
+
+.tabla_datos{
+	margin-top: 20px;
+	margin-left: 35px;
+	float: left;
+}
+
+.tabla_datos tr {
+	height: 60px;
+}
+
+.error_user {
+	color: red;
+}
+
+a{ font-size: 16px;}	
+
+#horarios {float: left; width: 100%;}
+#resultado_busqueda {float: left; width : 100%;}
+
+.datos {font-weight: normal; font-size: 14px; margin-top: 12px; margin-left: 10px; float: left;}
+.datos_vista {font-weight: normal; font-size: 40px; margin-top: 20px; padding-top: 30px; margin-left: 10px; float: left; border-top: 1px solid #CCC; }
+.campos{font-weight: bold; float: left; width: 140px; height: 35px;}
+.valores{float: left; width: 600px; height: 35px;}
+
+.valor_ficha{float: left; width: 12%; //height: 60px;padding-top: 8px;margin-left: 1%;}
+.valor_ficha a{text-decoration: none; font-size: 14px; font-weight: bold; color: #316F97;//#9C9C9C; }
+.tipo {height: 35px;}
+
+.campos_vista{font-weight: bold; float: left; width: 40%; height: 90px;}
+.valores_vista{float: left;height: 90px; width: 60%}
+.valores_vista a{text-decoration: none; font-size: 40px; font-weight: bold; color: #97bfd9; }
+.tipo_vista {height: 180px;}
+
+.count {float: left; width: 30px; height: 30px; padding-top: 0px; background: #D83C3C; text-align: center;border-radius: 50px; font-size: 20px; margin-right: 2%; margin-top: 10px;color: white;}
+.fila_superior{width: 100%; float: left;}
+.botones {font-size: 40px; float: left; width: 100%; height: 100px; margin-top: 5px; padding-top: 20px; background-color: #97BFD9}
+
+#dia_anterior {float: left; margin-left: 20px;  margin-top: 14px}
+#hoy {float: left; margin-left: 20px;  margin-top: 14px}
+#dia_siguiente {float: left; margin-left: 20px;  margin-top: 14px}
+#principal {float: left; margin-left: 20px; margin-right: 20px; margin-top: 14px}
+#agregar_notas {float: left; margin-left: 20px; margin-right: 20px; margin-top: 20px}
+#calendario {float: left; margin-top: 14px}
+#menu {width: 76%; height: 45px; //background-image: url(images/fondo3.png); //background-repeat: repeat-x; background: #8FAFCD; //#97BFD9;//#2D2D2D; //#00224C;margin-bottom: 2px;float: left;}
+
+.icono {float: left; margin-left: 40px; margin-right: 30px}
+.celda:hover {background-color: white}
+.calendar {font-family: Oswald; font-size: 16px;}
+td {width: 40px}
+table.calendar {margin: auto}
+.calendar .days td {   text-align: center;}
+.calendar .highlight {font-size: 20px; font-weight: bold;}
+.calendar a {text-decoration: none; color: black;}
+.calendar a:visited {color: black;}
+.cabecera {height: 25px; font-size: 17px;background-color: #454545;font-family: Oswald;color: white;}
+th {font-weight: normal;}
+.semana {height: 50px;}
+.dia_semana {text-align: center}
+
+.celda {width: 40px; height: 30px; padding-top: 10px;background-color: #E5E5E5;border: 1px solid white;}
+.llena {
+	background-color: #bf2c28;
+	background: -webkit-gradient(linear, left top, left bottom, from(#bf2c28), to(#ba1612));
+	background: -webkit-linear-gradient(top, #bf2c28, #ba1612);
+	background: -moz-linear-gradient(top, #bf2c28, #ba1612);
+}
+.llena:hover {opacity:.85;}
+.llena:active {
+	box-shadow: 0 0 10px 5px #6b0b0b inset; 
+	-webkit-box-shadow:0 0 10px 5px #6b0b0b inset ;
+	-moz-box-shadow: 0 0 10px 5px #6b0b0b inset;
+}
+
+.vacia {
+	background-color: #68b12f;
+	background: -webkit-gradient(linear, left top, left bottom, from(#68b12f), to(#50911e));
+	background: -webkit-linear-gradient(top, #68b12f, #50911e);
+	background: -moz-linear-gradient(top, #68b12f, #50911e);
+}
+.vacia:hover {opacity:.85;}
+.vacia:active {
+	box-shadow: 0 0 10px 5px #356b0b inset; 
+	-webkit-box-shadow:0 0 10px 5px #356b0b inset ;
+	-moz-box-shadow: 0 0 10px 5px #356b0b inset;
+}
+
+
+.media {
+	background: -webkit-gradient(linear, left top, left bottom, from(#e39a0a), to(#cb810d));
+	background: -webkit-linear-gradient(top, #e39a0a, #cb810d);
+	background: -moz-linear-gradient(top, #e39a0a, #cb810d);
+}
+.media:hover {opacity:.85;}
+.media:active {
+	box-shadow: 0 0 10px 5px #835308 inset; 
+	-webkit-box-shadow:0 0 10px 5px #835308 inset ;
+	-moz-box-shadow: 0 0 10px 5px #835308 inset;
+}
+
+.titulo_turno { 
+	height: 200px;
+	color: white;
+	font-weight: normal;
+	font-family: 'Segoe';
+	background: #97BFD9;
+	padding-left: 30px;
+}
+	
+.dia_turno { 
+	float: left;
+	font-size: 80px;
+	width: 100%;
+}	
+
+.mes_ano_turno { 
+	float: left;
+	font-size: 50px;
+	width: 65%;
+	padding-top: 20px;
+}
+
+.hora_turno { 
+	float: left;
+	font-size: 80px;
+}
+
+.estado {float:left;margin-top: 10px;margin-left: 3%;}
+	
+#barra_estado { font-size: 70px; background-color: #a5bed8; color: white; font-family: 'League_Gothic'; margin-bottom: 10px; padding-left: 30px; float: left}
+#busqueda {margin-bottom: 5px; height: 42px; padding-top: 3px; float: left; //background-image: url(images/fondo3.png); //background-repeat: repeat-x; background-color: #8FAFCD; //#97BFD9;width: 294px;margin-left: 5px;}
+
+
+.cf:before, .cf:after{
+    content:"";
+    display:table;
+}
+ 
+.cf:after{
+    clear:both;
+}
+ 
+.cf{
+    zoom:1;
+}    
+
+/* Form wrapper styling */
+.form-wrapper {
+	float: left;
+    //width: 450px;
+    padding: 15px;
+    background: #444;
+    background: rgba(0,0,0,.2);
+    border-radius: 10px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(241,241,241,.4);
+}
+ 
+/* Form text input */
+ 
+.form_busqueda input {
+    width: 180px;
+    height: 6px;
+    padding: 10px 5px;
+    float: left;    
+    font: 15px 'Segoe';
+    border: 0;
+    background: #eee;
+    border-radius: 3px 3px 3px 3px; 
+    margin-top: 7px;     
+    margin-right: 10px;
+    margin-left: 10px;
+}
+ 
+.form_busqueda input:focus {
+    outline: 0;
+    background: #fff;
+    box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
+}
+ 
+.form_busqueda input::-webkit-input-placeholder {
+   color: #999;
+   font-weight: normal;
+   font-style: italic;
+}
+ 
+.form_busqueda input:-moz-placeholder {
+    color: #999;
+    font-weight: normal;
+    font-style: italic;
+}
+ 
+.form_busqueda input:-ms-input-placeholder {
+    color: #999;
+    font-weight: normal;
+    font-style: italic;
+}    
+ 
+/* Form submit button */
+.form_busqueda button {
+    overflow: visible;
+    position: relative;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    height: 26px;
+    width: 60px;
+    font-family: oswald;
+    font-size: 10pt;
+    //font: bold 14px/50px 'Segoe';
+    color: #fff;
+    text-transform: uppercase;
+    background: #D83C3C;
+    border-radius: 3px 3px 3px 3px;      
+    text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
+    margin-top: 7px;
+}   
+   
+.form_busqueda button:hover{     
+    background: #e54040;
+}   
+   
+.form_busqueda button:active, 
+.form_busqueda button:focus{   
+    background: #c42f2f;
+    outline: 0;   
+}
+ 
+.form-wrapper button:before { /* left arrow */
+    content: '';
+    position: absolute;
+    border-width: 8px 8px 8px 0;
+    border-style: solid solid solid none;
+    border-color: transparent #d83c3c transparent;
+    top: 12px;
+    left: -6px;
+}
+ 
+.form-wrapper button:hover:before{
+    border-right-color: #e54040;
+}
+ 
+.form-wrapper button:focus:before,
+.form-wrapper button:active:before{
+        border-right-color: #c42f2f;
+}      
+ 
+.form-wrapper button::-moz-focus-inner { /* remove extra button spacing for Mozilla Firefox */
+    border: 0;
+    padding: 0;
+}   
+
+.medico {float: left;margin-top: 3px;width: 12%;font-size: 14px;margin-left: 2%;}
+.tipo_turno {float: left;margin-top: 4px;width: 30%;font-size: 14px;margin-left: 1%;}
+.detalles {height: 165px;background-color: #F7F7F7;//background: url('images/background_stripes.gif');margin-top: -4px;margin-bottom:5px;border-bottom: 1px solid #E5E5E5;border-left: 1px solid #E5E5E5;border-right: 1px solid #E5E5E5;padding-top: 5px;padding-left: 10px;}
+.uno {float:left; margin-left: 10px;width: 10%;}
+.dos {float:left; width: 27%;}
+.tres {float:left; width: 13%;}
+.cuatro {float:left; width: 31%;}
+.cinco {float:left; width: 13%;}
+#titulo_superior {width: 100%; float: left; background-color: #454545; margin-bottom: 5px; color: white; height: 25px; font-family: Oswald; font-size: 16px;}
+#titulo_superior2 {width: 100%; background-color: #454545;  color: white; height: 25px; font-family: Oswald; font-size: 18px; margin-bottom: 2px}
+#detalle_tel1, #detalle_tel2 {height: 25px;font-size: 14px;}
+#detalle_tel2 {height: 35px;}
+#detalle_nota {height: 55px;font-size: 14px;}
+#botones {width: 125px; float: right}
+#botones a {margin-left: 10px}
+.boton {margin-right: 10px;}
+#turnos_dia {float: left; width: 76%;}
+#notas {float: left;width: 272px;margin-left: 5px;background-color: #F7F7F7; //background: url('images/background_stripes.gif');margin-top: 5px;min-height: 195px;padding-right: 20px; border: 1px solid #E5E5E5;}
+#notas a {color: #000000; font-size: 15px;}
+#notas li {color: #3D3D3D; margin-bottom: 30px;}
+#add_notas {float: right; margin-right: 10px;}
+#add_notas a {color: white; font-family: segoe; font-size: 12px}
+#calendario_turno {float: left; margin-left: 5px;width: 294px;margin-top: 5px;}
+iframe {width: 100%;height: 366px;border: none;}
+
+.button_example {font-family: Oswald; 
+			background-color: #97BFD9;
+			text-decoration: none;
+			border-radius: 4px;
+			font-size: 20px;
+			color: white;
+			text-shadow: 0 2px 0 #b3b3b3;}
+
+/************************************************ Pacientes ********************************************************/
+

@@ -1,0 +1,651 @@
+/* === Remove input autofocus webkit === */
+
+@font-face { font-family: 'Segoe'; src: url('webfonts/SEGOEUI.ttf'); }
+@font-face{font-family:'Oswald';src:url('webfonts/oswald-regular.woff') format('woff');font-weight:normal;font-style:normal}
+@font-face{font-family:'Oswald';src:url('webfonts/oswald-light.eot');src:url('webfonts/oswald-light.eot?#iefix') format('embedded-opentype'),url('webfonts/oswald-light.woff') format('woff'),url('webfonts/oswald-light.ttf') format('truetype')} 
+@font-face{font-family:'Oswald Regular';src:url('webfonts/oswald-regular.woff') format('woff');font-weight:normal;font-style:normal}
+@font-face{font-family:'Oswald Regular';src:url('webfonts/oswald-regular.eot');src:url('webfonts/oswald-regular.eot?#iefix') format('embedded-opentype'),url('webfonts/oswald-regular.woff') format('woff'),url('webfonts/oswald-regular.ttf') format('truetype')}
+
+
+*:focus {outline: none;}
+
+.fila {
+	float: left;
+	height: 45px;}
+
+#tabla {
+	float: left;
+	width: 70%;
+	height: 160px;
+	margin-top: 10px;
+	font-family: Oswald
+}
+
+.celda {
+	float: left;
+	width: 100px;
+	font-size: 14px;
+
+}
+
+.celda_2 {
+	float: left;
+	width: 120px;
+	font-size: 14px;
+}
+
+#ul0{
+	float: left;
+	//width: 100%;
+	//margin-left: 35px;
+}
+
+#ul1 {
+	float: left;
+	width: 50%;
+	//margin-left: 20px
+}
+
+#ul2{
+	margin-left: 10px;
+	float: left;
+	width: 49.2%;
+}
+
+#ul3{
+	border: 1px solid #eee;
+	background-color: #F7F7F7;
+	//background: url('images/background_stripes.gif');
+	float: left;
+	height: 177px;
+}
+
+#ul4{
+	//margin-left: 35px;
+	float: left;
+	width: 50%;
+	//margin-top: -17px;
+}
+
+#ul5 {
+	width: 50%;
+	margin-left: 20px;
+	float: left;
+}
+
+#ul6 {
+	float: left;
+	margin-top: 30px;
+	width: 70%;
+	margin-left: 70px;
+}
+
+#botones {
+	width: 40%;
+	float: left;
+	margin-top: 95px;
+}
+#tipo_turno {
+	width: 150px;
+	float: left;
+	padding-left: 15px;
+	margin-bottom: 30px;
+	margin-top: 10px;
+	font-family: Oswald;
+	font-size: 15px;
+}
+
+#nuevo {
+	margin-bottom: 10px;
+	float: left;
+}
+
+.titulo 
+{ 	
+	width: 100%;
+	height: 30px;
+	color: white;
+	font-weight: normal;
+	font-family: Oswald;
+	//font-size: 20px;
+	background: #454545; //#97BFD9;
+	//padding-left: 30px;
+	//margin-left: 35px;
+	margin-bottom: 5px;
+	
+}
+
+#nuevo_turno {float: left; font-size: 18px; margin-left: 10px; margin-top: 2px}
+
+#fecha1 {
+	float: right;
+	font-size: 22px;
+	//width: 40%;
+	margin-top: 1px;
+	margin-right: 10px;
+	color: #EC6389;
+}
+
+#fecha2 {
+	float: right;
+	font-size: 25px;
+	margin-right: 10px;
+	//margin-top: 2px;
+	//width: 100%;
+	color: #EC6389;
+}
+
+#barra {
+	height: 30px;
+	color: white;
+	font-family: Oswald;
+	background-color: #454545;
+	padding-left: 10px;
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-top: 5px;
+	margin-bottom: 5px;	
+	width: 96%;
+}
+/*
+input[type=checkbox] {
+
+	position: absolute;
+	left: -999em;
+}
+
+input[type=checkbox] + label {
+	padding-left: 60px;
+	display: block;
+	height: 48px;
+	width: 48px;
+	background: url(images/unchecked.png) top left no-repeat;
+}
+
+
+input[type=checkbox]:checked + label {
+	background-image: url(images/checked.png);
+}
+*/
+/* === Form Typography === */
+//body {font: 14px/21px "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", sans-serif;}
+body {
+	font-family: 'Segoe';
+	//width: 1500px;
+}
+.contact_form h2, .contact_form label {font-family: Segoe;}
+.form_hint, .required_notification {font-size: 14px; width: 100%; }
+
+/* === List Styles === */
+.contact_form ul {
+    width:100%;
+    list-style-type:none;
+	list-style-position:outside;
+	margin-bottom:10px;
+	padding:0px;
+	margin-top: 0px;
+}
+.contact_form li{
+	padding: 12px; 
+	margin-bottom: 10px;
+	border: 1px solid #EEE;
+	background-color: #F7F7F7;
+	position:relative;
+	//background: url('images/background_stripes.gif');
+
+} 
+/*.contact_form li:first-child, .contact_form li:last-child {
+	border-bottom:1px solid #777;
+}
+*/
+/* === Form Header === */
+.contact_form h2 {
+	margin:0;
+	display: inline;
+}
+.required_notification {
+	color:#d45252; 
+	margin-top: 10px;
+	//margin-right: 10px;
+	display:inline;
+	float:right;
+	font-family: Segoe;
+}
+
+/* === Form Elements === */
+.contact_form label {
+	width: 150px;
+	margin-top: 3px;
+	display:inline-block;
+	float:left;
+	padding:3px;
+	font-family: Oswald;
+	font-size: 15px;	
+}
+.contact_form input {
+	height: 15px; 
+	//width:220px; 
+	font-size: 15px;
+	padding:5px 8px;
+	font-family: 'Segoe';
+}
+
+.contact_form select {
+	height:28px;
+	width: 150px; 
+	font-size: 14px;
+	font-family: Segoe;
+	padding:5px 8px;
+	margin-bottom: 4px;
+}
+.contact_form textarea {padding:8px; width: 300px; font-size: 14px;}
+.contact_form button {margin-left:120px;}
+
+	/* form element visual styles */
+	.contact_form input, .contact_form textarea { 
+		border:1px solid #aaa;
+		box-shadow: 0px 0px 3px #ccc, 0 10px 15px #eee inset;
+		border-radius:2px;
+		padding-right:30px;
+/*		-moz-transition: padding .25s; 
+		-webkit-transition: padding .25s; 
+		-o-transition: padding .25s;
+		transition: padding .25s; */
+	}
+	.contact_form input:focus, .contact_form textarea:focus {
+		background: #fff; 
+		border:1px solid #555; 
+		box-shadow: 0 0 3px #aaa; 
+/*		padding-right:70px; */
+	}
+
+/* === HTML5 validation styles === */	
+.contact_form input:required, .contact_form textarea:required {
+	background: #fff //url(images/red_asterisk.png) no-repeat 98% center;
+}
+.contact_form input:required:valid, .contact_form textarea:required:valid {
+	background: #fff url(images/valid.png) no-repeat 98% center;
+	box-shadow: 0 0 5px #5cd053;
+	border-color: #28921f;
+}
+.contact_form input:focus:invalid, .contact_form textarea:focus:invalid {
+	background: #fff url(images/invalid.png) no-repeat 98% center;
+	box-shadow: 0 0 5px #d45252;
+	border-color: #b03535
+}
+
+/* === Form hints === */
+.form_hint {
+	background: #d45252;
+	border-radius: 3px 3px 3px 3px;
+	color: white;
+	margin-left:8px;
+	padding: 1px 6px;
+	z-index: 999; /* hints stay above all other elements */
+	position: absolute; /* allows proper formatting if hint is two lines */
+	display: none;
+}
+.form_hint::before {
+	content: "\25C0";
+	color:#d45252;
+	position: absolute;
+	top:1px;
+	left:-6px;
+}
+.contact_form input:focus + .form_hint {display: inline;}
+.contact_form input:required:valid + .form_hint {background: #28921f;}
+.contact_form input:required:valid + .form_hint::before {color:#28921f;}
+	
+/* === Button Style === */
+button.submit {
+
+	background-color: #68b12f;
+	background: -webkit-gradient(linear, left top, left bottom, from(#68b12f), to(#50911e));
+	background: -webkit-linear-gradient(top, #68b12f, #50911e);
+	background: -moz-linear-gradient(top, #68b12f, #50911e);
+	background: -ms-linear-gradient(top, #68b12f, #50911e);
+	background: -o-linear-gradient(top, #68b12f, #50911e);
+	background: linear-gradient(top, #68b12f, #50911e);
+	border: 1px solid #509111;
+	border-bottom: 1px solid #5b992b;
+	border-radius: 1px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	box-shadow: inset 0 1px 0 0 #9fd574;
+	-webkit-box-shadow: 0 1px 0 0 #9fd574 inset ;
+	-moz-box-shadow: 0 1px 0 0 #9fd574 inset;
+	-ms-box-shadow: 0 1px 0 0 #9fd574 inset;
+	-o-box-shadow: 0 1px 0 0 #9fd574 inset;
+	color: white;
+	//font-weight: bold;
+	font-size: 15px;
+	font-family: 'Segoe';
+	padding: 8px 20px;
+	text-align: center;
+	text-shadow: 0 -1px 0 #396715;
+}
+button.submit:hover {
+	opacity:.85;
+	cursor: pointer; 
+}
+button.submit:active {
+	border: 1px solid #20911e;
+	box-shadow: 0 0 10px 5px #356b0b inset; 
+	-webkit-box-shadow:0 0 10px 5px #356b0b inset ;
+	-moz-box-shadow: 0 0 10px 5px #356b0b inset;
+	-ms-box-shadow: 0 0 10px 5px #356b0b inset;
+	-o-box-shadow: 0 0 10px 5px #356b0b inset;
+	
+}
+
+
+button.cancel {
+	margin-left: 25px;
+	background-color: #bf2c28;
+	background: -webkit-gradient(linear, left top, left bottom, from(#bf2c28), to(#ba1612));
+	background: -webkit-linear-gradient(top, #bf2c28, #ba1612);
+	background: -moz-linear-gradient(top, #bf2c28, #ba1612);
+	background: -ms-linear-gradient(top, #bf2c28, #ba1612);
+	background: -o-linear-gradient(top, #bf2c28, #ba1612);
+	background: linear-gradient(top, #bf2c28, #ba1612);
+	border: 1px solid #ba1612;
+	border-bottom: 1px solid #bf2c28;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	box-shadow: inset 0 1px 0 0 #de5f5b;
+	-webkit-box-shadow: 0 1px 0 0 #de5f5b inset ;
+	-moz-box-shadow: 0 1px 0 0 #de5f5b inset;
+	-ms-box-shadow: 0 1px 0 0 #de5f5b inset;
+	-o-box-shadow: 0 1px 0 0 #de5f5b inset;
+	color: white;
+	//font-weight: bold;
+	font-size: 15px;
+	font-family: 'Segoe';
+	padding: 8px 20px;
+	text-align: center;
+	text-shadow: 0 -1px 0 #396715;
+}
+button.cancel:hover {
+	opacity:.85;
+	cursor: pointer; 
+}
+button.cancel:active {
+	border: 1px solid #911e1e;
+	box-shadow: 0 0 10px 5px #6b0b0b inset; 
+	-webkit-box-shadow:0 0 10px 5px #6b0b0b inset ;
+	-moz-box-shadow: 0 0 10px 5px #6b0b0b inset;
+	-ms-box-shadow: 0 0 10px 5px #6b0b0b inset;
+	-o-box-shadow: 0 0 10px 5px #6b0b0b inset;
+	
+}
+
+button.delete {
+	margin-left: 25px;
+	background-color: #428ad8;
+	background: -webkit-gradient(linear, left top, left bottom, from(#428ad8), to(#1f5795));
+	background: -webkit-linear-gradient(top, #428ad8, #1f5795);
+	background: -moz-linear-gradient(top, #428ad8, #1f5795);
+	background: -ms-linear-gradient(top, #428ad8, #1f5795);
+	background: -o-linear-gradient(top, #428ad8, #1f5795);
+	background: linear-gradient(top, #428ad8, #1f5795);
+	border: 1px solid #1f5795;
+	border-bottom: 1px solid #428ad8;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	box-shadow: inset 0 1px 0 0 #1b4b80;
+	-webkit-box-shadow: 0 1px 0 0 #1b4b80 inset ;
+	-moz-box-shadow: 0 1px 0 0 #1b4b80 inset;
+	-ms-box-shadow: 0 1px 0 0 #1b4b80 inset;
+	-o-box-shadow: 0 1px 0 0 #1b4b80 inset;
+	color: white;
+	//font-weight: bold;
+	font-size: 15px;
+	font-family: 'Segoe';
+	padding: 8px 20px;
+	text-align: center;
+	text-shadow: 0 -1px 0 #396715;
+}
+button.delete:hover {
+	opacity:.85;
+	cursor: pointer; 
+}
+button.delete:active {
+	border: 1px solid #1e5791;
+	box-shadow: 0 0 10px 5px #0b3b6b inset; 
+	-webkit-box-shadow:0 0 10px 5px #0b3b6b inset ;
+	-moz-box-shadow: 0 0 10px 5px #0b3b6b inset;
+	-ms-box-shadow: 0 0 10px 5px #0b3b6b inset;
+	-o-box-shadow: 0 0 10px 5px #0b3b6b inset;
+	
+}
+
+#test {margin-left: 155px; margin-top: 20px; margin-bottom: 17px}
+#test input {width: 120px;}
+
+/*********************************************** PACIENTES ********************************************************/
+
+/* Form wrapper styling */
+.form-wrapper {
+	float: left;
+    //width: 450px;
+    padding: 15px;
+    background: #444;
+    background: rgba(0,0,0,.2);
+    border-radius: 10px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(241,241,241,.4);
+}
+ 
+/* Form text input */
+ 
+.form_busqueda input {
+    width: 340px;
+    height: 10px;
+    padding: 10px 5px;
+    float: left;    
+    font: 15px 'Segoe';
+    border: 0;
+    //background: rgba(0, 0, 0, 0.17);
+    border-radius: 3px 3px 3px 3px; 
+    margin-top: 7px;     
+    margin-right: 10px;
+    margin-left: 10px;
+    border: 1px solid #EEE;
+}
+ 
+.form_busqueda input:focus {
+    outline: 0;
+    background: #fff;
+    box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
+}
+ 
+.form_busqueda input::-webkit-input-placeholder {
+   color: #999;
+   font-weight: normal;
+   font-style: italic;
+}
+ 
+.form_busqueda input:-moz-placeholder {
+    color: #999;
+    font-weight: normal;
+    font-style: italic;
+}
+ 
+.form_busqueda input:-ms-input-placeholder {
+    color: #999;
+    font-weight: normal;
+    font-style: italic;
+}    
+ 
+/* Form submit button */
+.form_busqueda button {
+    overflow: visible;
+    position: relative;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    height: 30px;
+    width: 85px;
+    font-family: oswald;
+    font-size: 15px;
+    //font: bold 14px/50px 'Segoe';
+    color: #fff;
+    text-transform: uppercase;
+    background: #D83C3C;
+    border-radius: 3px 3px 3px 3px;      
+    text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
+    margin-top: 7px;
+}   
+   
+.form_busqueda button:hover{     
+    background: #e54040;
+}   
+   
+.form_busqueda button:active, 
+.form_busqueda button:focus{   
+    background: #c42f2f;
+    outline: 0;   
+}
+  
+.form-wrapper button:hover:before{
+    border-right-color: #e54040;
+}
+ 
+.form-wrapper button:focus:before,
+.form-wrapper button:active:before{
+        border-right-color: #c42f2f;
+}      
+ 
+.form-wrapper button::-moz-focus-inner { /* remove extra button spacing for Mozilla Firefox */
+    border: 0;
+    padding: 0;
+}   
+
+
+#parte_izq { width: 54%; float: left;}
+#parte_der { width: 100%; float: left; }
+
+
+#barra_superior {
+	float: left;
+	background-color: #8FAFCD;
+	height: 60px;
+	width: 60%;
+	color: white;
+	font-family: Oswald;
+	margin-bottom: 5px;
+}
+
+#busqueda_pacientes {
+	float: left;
+	background-color: #454545;
+	width: 100%;
+	height: 35px;
+	//margin-left: 5px;
+	margin-bottom: 5px;
+	//height: 60px;
+}
+
+#ingreso_pacientes_izq {
+	float: left;
+	//background-color: #F7F7F7;
+	width: 32.4%;
+	//height: 300px;
+	//border: 1px solid #EEE;
+}
+
+#ingreso_pacientes_cent {
+	float: left;
+	//background-color: #F7F7F7;
+	width: 33%;
+	//height: 300px;
+	//border: 1px solid #EEE;
+	margin-left: 10px;
+}
+
+#ingreso_pacientes_der {
+	float: left;
+	//background-color: #F7F7F7;
+	width: 33%;
+	//height: 300px;
+	//border: 1px solid #EEE;
+	margin-left: 10px;
+}
+
+#observaciones {
+	float: left;
+	width: 64.5%;
+	background-color: #F7F7F7;
+	border: 1px solid #EEE;
+	height: 140px;
+	padding-top: 20px;
+	padding-left: 20px;
+}
+
+#footer {
+	float: left;
+	width: 40%;
+}
+
+.subtitulo {
+	background-color: #454545;
+	height: 30px;
+	float: left;
+	width: 99.6%;
+	color: white;
+	font-family: Oswald;
+	font-size: 18px;
+	margin-bottom: 5px;
+
+}
+
+#busqueda {
+	float: right;
+	margin-right: 40px;
+}
+
+#guardar_paciente {
+	float: left;
+	//background-color: #F7F7F7;
+	//border: 1px solid #EEE;
+	height: 100px;
+	margin-top: 95px;
+}
+
+#guardar_paciente button {margin-left: 60px; margin-top: 25px }
+
+#mensaje {width: 800px; position: absolute; top: 20%; left: 50%; margin-left: -400px; }
+#titulo_mensaje {background-color: #454545; color: white; margin-bottom: 5px; padding-left: 10px; font-size: 18px; font-family: Oswald; height: 27px;}
+#datos_mensaje {font-size: 15px}
+#fila_mensaje {padding-left: 10px; padding-top: 5px; border: 1px solid #EEE; background-color: #F7F7F7; margin-bottom: 10px; height: 25px;}
+.texto {margin-right: 10px; float: left; font-size: 20px; color: #EC6389;}
+.texto1 {margin-right: 10px; float: left}
+#volver {width: 75px; background-color: #454545; height: 20px; padding-left: 5px; padding-top: 3px; text-decoration: none; color: white;}
+#volver_txt {float: right; margin-right: 10px; margin-top: -3px; font-family: Oswald}
+
+#buscar_paciente {width: 600px; position: absolute; left: 50%; margin-left: -300px; height: 50px; padding-top: 5px; float: left; }
+#buscar {float: left; background-color: #F7F7F7; border: 1px solid #EEE; width: 100%; height: 50px; padding-top: 4px}
+#buscar_input {margin-left: 70px;}
+#result {float: left; width: 617px; margin-left: -8px; height: 500px}
+#result_buscar {margin-left: 8px; margin-top: 5px; width: 600px}
+#iframe {width: 100%; border: none; min-height: 600px;}
+
+
+
+#titulo_izq {font-size: 18px; float: left; margin-left: 10px; margin-top: 4px;}
+#titulo_der {font-size: 20px; float: right;}
+
+.form_busqueda input {padding-left: 20px; height: 0px; width: 230px; font-size: 15px; background: white url("images/magnifying_glass_16x16.png") no-repeat 0% center;}
+.form_busqueda input:focus {background: white url("images/magnifying_glass_16x16.png") no-repeat 0% center;}
+#msg_repetido {font-family:Oswald; font-size: 25px; margin-left: 10px; margin-top:20px; float: left;}
+
+.texto_oswald{
+	font-family: Oswald;
+}

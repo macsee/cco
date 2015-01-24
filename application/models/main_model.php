@@ -8,9 +8,12 @@ class Main_model extends CI_Model
 	}
 	
 	
-	function turnos_del_dia($dia)
+	function turnos_del_dia($dia, $medico)
 	{
-		$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' ORDER BY hora");
+		if ($medico == "")
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' ORDER BY hora");
+		else	
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' AND medico = '$medico' ORDER BY hora");
 
 		if ($query->num_rows()>0)
 		{
@@ -84,9 +87,9 @@ class Main_model extends CI_Model
 			}	
 	} 
 	
-	function get_turnos($dia)
+	function get_turnos($dia,$medico)
 	{
-		$turnos = $this->turnos_del_dia($dia);
+		$turnos = $this->turnos_del_dia($dia ,$medico);
 		
 		if ($turnos <> 0)
 		{
@@ -98,7 +101,7 @@ class Main_model extends CI_Model
 					$this->db->query("UPDATE turnos SET ficha = '$ficha', id_paciente = '$id_paciente' WHERE id = '$turno->id'");
 				}								
 			}
-			return $this->turnos_del_dia($dia);
+			return $this->turnos_del_dia($dia, $medico);
 		}
 		else
 		{
@@ -133,6 +136,7 @@ class Main_model extends CI_Model
 	
 	function guardar_turno($array)
 	{	
+		
 		$data['tel1'] = $array['tel1_1'].'-'.$array['tel1_2'];
 		
 		if ($array['tel2_1'] == "") 
@@ -164,12 +168,14 @@ class Main_model extends CI_Model
 		$data['hora'] = $array['hora'].':'.$array['minutos'];
 		$data['citado'] = $array['hora_citado'].':'.$array['minutos_citado'];
 		$data['tipo'] = $cadena;
-		if ($data['ficha'] == "") {
+		//if ($data['ficha'] == "") {
+		if ($array['ficha'] == "") {
 			$data['ficha'] = 0;
 		}
 		else {
 			$data['ficha'] = $array['ficha'];
-			$data['id_paciente'] = $array['id'];		
+			$data['id_paciente'] = $array['id_paciente'];
+			//$data['id_paciente'] = $array['id'];	
 		}		
 				
 		if ( ($array['medico'] == "Otro") & ($array['otro'] <> "")) {
@@ -596,7 +602,7 @@ class Main_model extends CI_Model
 	}
 
 
-	function asignar_ficha($id_turno, $ficha, $mynombre, $myapellido) {
+	function asignar_ficha($id_turno, $ficha, $id_paciente, $mynombre, $myapellido) {
 
 		$nombre = urldecode($mynombre);
 		$nombre = ucwords($nombre);
@@ -610,6 +616,7 @@ class Main_model extends CI_Model
 		$data['ficha'] = $ficha;
 		$data['nombre'] = $nombre;
 		$data['apellido'] = $apellido;
+		$data['id_paciente'] = $id_paciente;
 
 		$where = "id = '".$id_turno."'";
 		$str = $this->db->update_string('turnos', $data, $where);
@@ -889,7 +896,6 @@ class Main_model extends CI_Model
 			return $this->calendar->generate($ano, $mes, $cal_data);
 	}
 
-	
 }
 
 ?>

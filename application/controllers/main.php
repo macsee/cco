@@ -11,15 +11,27 @@ class Main extends CI_Controller
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model('main_model');
+
+		$this->is_logged_in();
 	}
 	
 	
 	function index()
 	{
 		$this->load->view('home');
+		//$this->load->view('login_view');
 		//$this->cambiar_dia(date("Y-m-d"));
 	}
 	
+	function is_logged_in() {
+
+		$is_logged_in = $this->session->userdata('is_logged_in');
+
+		if (!isset($is_logged_in) || $is_logged_in != true)
+			redirect('login/index');
+		
+	}
+
 	function translate($fecha) 
 	{
 		$day    = date("l", strtotime($fecha));
@@ -67,7 +79,7 @@ class Main extends CI_Controller
 		$calendar_mes = $this->uri->segment(5);
 		$aux = explode('-',$dia);
 		$data['fecha'] = $dia;
-		$data['filas'] = $this->main_model->get_turnos($dia);
+		$data['filas'] = $this->main_model->get_turnos($dia,"");
 		$data['horario'] = $this->main_model->get_horarios();
 		$data['notas'] = $this->main_model->get_notas($dia);
 		$array = $this->translate($dia);
@@ -512,9 +524,9 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		redirect('main/buscar_paciente/'.$_POST['id_paciente'], 'location');
 	}
 
-	function asignar_ficha($id_turno, $ficha, $nombre, $apellido){
+	function asignar_ficha($id_turno, $ficha, $id, $nombre, $apellido){
 
-		$this->main_model->asignar_ficha($id_turno, $ficha, $nombre, $apellido);
+		$this->main_model->asignar_ficha($id_turno, $ficha, $id, $nombre, $apellido);
 		$resultado = $this->main_model->obtener_fecha_turno($id_turno);
 		redirect('main/cambiar_dia/'.$resultado->fecha, 'location');
 	}
@@ -623,7 +635,6 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		}
 
 		return $nombre_archivo;	
-
 
 	}
 	

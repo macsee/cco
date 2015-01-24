@@ -18,6 +18,22 @@
 	}
 	//body {width: 1630px; }
 
+	#select_medico {
+		float:left;
+		margin-top: 9px;
+		margin-right: 30px;
+	}
+
+	select {
+		-webkit-appearance: none;
+   		-moz-appearance: none;
+   		height: 30px;
+   		font-size: 12px;
+   		padding-left: 5px;
+   		border: 1px solid #E5E5E5;
+   		width: 110px;
+	}
+
 	</style>
 	<script>
 
@@ -75,6 +91,13 @@
 
         });
 
+		$( "select" ).change(function () {
+    		var str = "";
+    		$( "select option:selected" ).each(function() {
+      			str += $( this ).text() + " ";
+    		});
+    		alert( str );
+  		});
 	});
 
 
@@ -158,6 +181,17 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 	<div id = "fecha_dia">
 		<?php echo $day." ".$daynum.', '.$month." ".$year ?>
 	</div>
+
+	<div id = "select_medico">
+		<select name="seleccion_medico">
+			<option>TODOS</option>
+    		<option>Dr. Jelusich M</option>
+    		<option>Dr. Jelusich G</option>
+    		<option>Dr. Bosio</option>
+    		<option>OTROS</option>
+ 		</select>
+	</div>
+
 	<div class="count">
 			<?php 	if ($filas == 0) {
 						$cantidad_estudios = 0;
@@ -182,7 +216,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 					}
 			?>
 	</div>
-	<div class="count" style = "background-color:white; color: #D83C3C; margin-right: 10%">
+	<div class="count" style = "background-color:white; color: #D83C3C; margin-right: 9%">
 			<?php 	
 				echo $cantidad_estudios;
 			?>
@@ -332,10 +366,10 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 				
 				//echo '<div class = "fila_ocupada" onclick = "location.href=\''.base_url("/index.php/main/vista_turno/".$fila->id).'\';" style="cursor: pointer;">';
 				if ($fila->medico == "Dr. Jelusich") {
-						echo '<div class = "fila_ocupada">'; 
+					echo '<div class = "fila_ocupada">'; 
 				}
 				else {
-				echo '<div class = "fila_ocupada2">';
+					echo '<div class = "fila_ocupada2">';
 				}
 					echo '<div class = "fila_superior">';
 
@@ -399,7 +433,10 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 								//echo anchor('main/buscar_paciente', 'Buscar..');
 							}
 							else {
-								echo anchor('main/buscar_paciente/'.$fila->id_paciente, $fila->ficha);
+								if ($this->session->userdata('grupo') == "Medico")
+									echo anchor('main/historia_clinica/'.$fila->id_paciente, $fila->ficha);
+								else	
+									echo anchor('main/buscar_paciente/'.$fila->id_paciente, $fila->ficha);
 							}		
 						echo '</div>';
 

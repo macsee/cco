@@ -79,11 +79,33 @@
 				margin-left: -481px;
 			}
 
+	#login_info {
+		float:right;
+		font-family: Oswald;
+		font-size: 20px;
+	}		
+
+	#login_info a {
+		font-size: 18px;
+		font-weight: bold;
+		letter-spacing: -1px;
+	}
 	</style>
 	</head>	
 <body>
 	<div id = "home">
-	<div id = "portada_sup">	
+	<div id = "portada_sup">
+		<div id = "login_info">
+			<div style="float:left;margin-right:3px">
+				<?php echo "Hola,";?>
+			</div>
+			<div style="float:left;margin-right:3px;color:#97BFD9;">
+				<?php echo $this->session->userdata('nombre').".";?>
+			</div>
+			<div style="float:left">
+				<?php echo anchor("login/desconectar","Desconectar");?>
+			</div>
+		</div>	
 		<div id = "logo">
 			<img src="<?php echo base_url('css/images/logo.png')?>" alt="logo">
 		</div>

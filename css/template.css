@@ -44,7 +44,7 @@ body {
 
 #notas_dia {  background-color: #454545; height: 25px;color: white;font-family: oswald;font-size: 16px;  margin-left: 5px;float: left;  width: 284px;  padding-left: 10px;}
 
-#fecha_dia {float:left; width: 400px; margin-left: 130px; float: left; font-size: 25px;text-align: center;margin-top: 5px;color: white;font-family: oswald;}
+#fecha_dia {float:left; width: 300px; margin-left: 60px; float: left; font-size: 25px;text-align: center;margin-top: 5px;color: white;font-family: oswald;}
 #fecha_mes_ano {float:left; width: 700px; margin-left: 10px; float: left; font-size: 15px}
 
 

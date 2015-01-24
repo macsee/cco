@@ -76,7 +76,7 @@
 
   	});
 
-	function asignar(url,data,ficha,nom,ape) {
+	function asignar(url,data,ficha,id,nom,ape) {
 
 		var apellido = '<?php echo $this->uri->segment(3);?>';
 		var nombre = '<?php echo $this->uri->segment(4);?>';
@@ -91,7 +91,7 @@
             modal: true,
             buttons: {
                 "Si": function() {
-					var x = url+'/'+data+'/'+ficha+'/'+nom+'/'+ape;
+					var x = url+'/'+data+'/'+ficha+'/'+id+'/'+nom+'/'+ape;
 					//alert(x);
 					location.href = x;
                 },
@@ -208,7 +208,7 @@
 						//if ($id_turno <> "") {
 							
 							echo '<div style = "float:right; margin-right:10px">';
-								echo '<a style="cursor: pointer;" onclick = "return asignar(\''.base_url("/index.php/main/asignar_ficha").'\', \''.$id_turno.'\', \''.$key->nroficha.'\', \''.$key->nombre.'\', \''.$key->apellido.'\');">'; 
+								echo '<a style="cursor: pointer;" onclick = "return asignar(\''.base_url("/index.php/main/asignar_ficha").'\', \''.$id_turno.'\', \''.$key->nroficha.'\', \''.$key->id.'\', \''.$key->nombre.'\', \''.$key->apellido.'\');">'; 
 									echo '<img src = "'.base_url('css/images/transfer_24x18.png').'"/>'; 
 								echo '</a>';
 							echo '</div>';

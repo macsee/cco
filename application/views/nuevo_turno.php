@@ -93,7 +93,7 @@
 
 	 			var valorSeleccionado = $(this).val();
 	 			if(valorSeleccionado == "Otro"){
-	 				$('#test').fadeIn();  
+	 				$('#test').fadeIn();
 	 			}
 	 			else{
 	 				$('#test').fadeOut(); 
@@ -376,7 +376,10 @@ $obra = "";
 						<select id = "medico" name = "medico">
 							<?php
 								foreach ($medicos as $medico) {
-									echo '<option>'.$medico->nombre.'</option>';
+									if ($medico->nombre == $medico_seleccionado)
+										echo '<option selected>'.$medico->nombre.'</option>';
+									else
+										echo '<option>'.$medico->nombre.'</option>';
 								}
 							?>
 						</select>
@@ -386,9 +389,22 @@ $obra = "";
 				</li>
 				<li>
 					<label for="obra"><font color = "red">* </font> Obra social:</label>
-						<div class="ui-widget">
-							<input type="text" size = "20" id="obra" name ="obra" required autocomplete="off" value = "<?php echo $obra ?>" >
+						<div>
+							<select id ="obra" name = "obra" required>
+								<option value = ""></option>';
+							<?php
+								foreach ($obras as $value) {
+									if (!strcasecmp($obra,$value->obra))
+										echo '<option value ="'.$value->obra.'" selected>'.$value->obra.'</option>';
+									else
+										echo '<option value ="'.$value->obra.'">'.$value->obra.'</option>';
+								}
+							?>
+							</select>	
 						</div>
+						<!--<div class="ui-widget">
+							<input type="text" size = "20" id="obra" name ="obra" required autocomplete="off" value = "<?php echo $obra ?>" >
+						</div>-->
 				</li>
 			</ul>
 

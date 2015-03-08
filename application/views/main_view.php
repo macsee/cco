@@ -92,11 +92,15 @@
         });
 
 		$( "select" ).change(function () {
+			var base_url = '<?php echo base_url(); ?>';
     		var str = "";
+    		var segment = $(location).attr('href').split("/");
     		$( "select option:selected" ).each(function() {
-      			str += $( this ).text() + " ";
+      			str += base_url+"index.php/main/cambiar_medico/"+$(this).val()+"/"+segment[7];
+      			
     		});
-    		alert( str );
+    		//alert( segment[7] );
+    		location.href = str;
   		});
 	});
 
@@ -184,12 +188,25 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 
 	<div id = "select_medico">
 		<select name="seleccion_medico">
-			<option>TODOS</option>
-    		<option>Dr. Jelusich M</option>
-    		<option>Dr. Jelusich G</option>
-    		<option>Dr. Bosio</option>
-    		<option>OTROS</option>
- 		</select>
+			<?php
+				
+				if ($medico == "")
+					echo '<option value = 0 selected>TODOS</option>';
+
+				foreach ($medicos as $med) {	
+					if ($medico_selected == $med->nombre)
+						echo '<option value ='.$med->id.' selected>'.$med->nombre.'</option>';
+					else
+						echo '<option value ='.$med->id.'>'.$med->nombre.'</option>';
+				}
+			?>
+		</select>	
+			<!--<option value = 0>TODOS</option>
+    		<option value = 1>Dr. Jelusich M</option>
+    		<option value = 2>Dr. Jelusich G</option>
+    		<option value = 3>Dr. Bosio</option>
+    		<option value = 17>OTROS</option>-->
+ 		
 	</div>
 
 	<div class="count">
@@ -207,9 +224,11 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 								$cantidad_estudios++;
 							}
 							
-							if ($fila->medico == "Dr. Jelusich") {
+							if ($fila->medico == $medico_selected) {
 								$cantidad++; 
 							}
+							else
+								$cantidad++;
 
 						}
 						echo $cantidad;
@@ -363,14 +382,19 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 
 				$hora_completa = date('H:i', strtotime($fila->hora));
 				$cita = date('H:i', strtotime($fila->citado));
+				$config = $this->main_model->get_config_medico($fila->medico);
+				if (empty($config))
+					$color = "#F5C7CE";//#FFCDCD";
+				else
+					$color = $config->config;
 				
 				//echo '<div class = "fila_ocupada" onclick = "location.href=\''.base_url("/index.php/main/vista_turno/".$fila->id).'\';" style="cursor: pointer;">';
-				if ($fila->medico == "Dr. Jelusich") {
-					echo '<div class = "fila_ocupada">'; 
-				}
-				else {
-					echo '<div class = "fila_ocupada2">';
-				}
+				//if ($fila->medico == "Dr. Jelusich") {
+					echo '<div class = "fila_ocupada" style = "background-color:'.$color.'">'; 
+				//}
+				//else {
+				//	echo '<div class = "fila_ocupada2">';
+				//}
 					echo '<div class = "fila_superior">';
 
 					//echo '<div class = "clickeable" id = "'.$fila->id.'" style="cursor: pointer;">';
@@ -462,13 +486,13 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 				echo '</div>';
 				echo '<div id = "detalles_'.$fila->id.'" class="detalles" style = "display:none;">';
 
-					echo '<div id = "detalle_tel1">';
+					echo '<div id = "detalle_1">';
 						echo "<b>Obra social :</b>  ".$fila->obra_social;
 					echo '</div>';
-					echo '<div id = "detalle_tel1">';
+					echo '<div id = "detalle_1">';
 						echo "<b>Teléfono :</b>  ".$fila->tel1;
 					echo '</div>';
-					echo '<div id = "detalle_tel2">';
+					echo '<div id = "detalle_1">';
 							echo "<b>Teléfono 2 :</b>  ".$fila->tel2; 				
 					echo '</div>';
 					echo '<div id = "detalle_nota">';
@@ -492,6 +516,9 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						echo '<a href="'.base_url('index.php/main/set_turno/'.$fecha.'/'.$fila->id).'">';
 							echo '<img src = "'.base_url('css/images/plus_black_16x16.png').'"/>';  
 						echo '</a>';
+					echo '</div>';
+					echo '<div style = "font-style:italic;float:right;font-size:12px;">';
+						echo 'Ultima edición: '.date('d-m-Y@H:i', strtotime($fila->last_update)).' por <bold>'.$fila->usuario.'<bold>';
 					echo '</div>';	
 				echo '</div>';
 			}
@@ -546,6 +573,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 			foreach ($notas as $nota) {
 				echo '<li>';
 				echo anchor('main/edit_notas/'.$nota->id, $nota->nota);
+				echo '<p style = "font-size:12px;font-style:italic;float:right;margin-top:20px">'.date('d-m-Y@H:i', strtotime($nota->last_update)).' - '.$nota->usuario.'</p>';
 				echo '</li>';		
 			}
 		}

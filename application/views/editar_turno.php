@@ -266,18 +266,14 @@
 	    		<?php
 	    			$var = explode(':', $filas[0]->citado);
 					$hora_cita = $var[0];
-					$minuto = $var[1];
-					$cita = $hora_cita.':'.$minuto;
-
-		    		if ($cita <> '00:00') {
+					$minuto_cita = $var[1];
+					$cita = $hora_cita.':'.$minuto_cita;
 		    	?>	
-							<li>
-	            				<label for="citado"> Citado: </label>
-	            				<input type="text" size = "1" name="hora_citado" pattern="[0-9].{1,}" autocomplete="off" maxlength = "2" value= "<?php echo $hora_cita ?>" > : <input type="text" size = "1" name="minutos_citado" pattern="[0-9].{1,}" autocomplete="off" maxlength = "2" value="<?php echo $minuto ?>">
-	        				</li>
-				<?php
-						}
-				?>		
+							<!--<li>
+	            				<label for="citado"> Citado: </label> -->
+	            				<input type="hidden" size = "1" name="hora_citado" id = "hora_citado" value= "<?php echo $hora_cita ?>" ><input type="hidden" size = "1" name="minutos_citado" id = "minutos_citado" value="<?php echo $minuto_cita?>">
+	        				<!--</li>-->
+				
 	        	<li>
 	            	<label for="apellido"><font color = "red">* </font> Apellido: </label>
 	            	<input type="text" size = "20" name="apellido" autocomplete="off" value = "<?php echo $filas[0]->apellido ?>" style="text-transform:capitalize"required/>
@@ -355,13 +351,27 @@
 							<div id = "test" style = "display: none">
 								<input type="text" size = "14" name="otro" id = "otro" style="text-transform:capitalize" autocomplete="off"/>
 							</div>
-						<?php }?>	
+						<?php }
+
+						?>	
 				</li>
 				<li>
 					<label for="obra"><font color = "red">* </font> Obra social:</label>
-						<div class="ui-widget">
+						<select id ="obra" name = "obra" required>
+								<option value = ""></option>';
+							<?php
+								foreach ($obras as $value) {
+									if (!strcasecmp($filas[0]->obra_social,$value->obra))
+										echo '<option value ="'.$value->obra.'" selected>'.$value->obra.'</option>';
+									else
+										echo '<option value ="'.$value->obra.'">'.$value->obra.'</option>';
+								}
+							?>
+						</select>
+
+						<!--<div class="ui-widget">
 							<input type = "text" id="obra" size = "20" name = "obra" value = "<?php echo $filas[0]->obra_social?>" autocomplete="off" required>
-						</div>
+						</div>-->
 				</li>
 	        </ul>
 

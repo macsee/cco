@@ -5,32 +5,41 @@
 		<title>Historia Clinica</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript"  src="<?php echo base_url('js/jsPanel-master/jquery-2.1.3.min.js')?>"></script>
+		<script type="text/javascript" src="<?php echo base_url('js/jsPanel-master/jquery-ui-1.11.2.min.js')?>"></script>
 
 		<script type="text/javascript"  src="<?php echo base_url('js/jquery.popupoverlay.js')?>"></script>
-		<!--
-		<script type="text/javascript"  src="<?php echo base_url('js/fotorama-3.0.8/fotorama.js')?>"></script>
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url('js/fotorama-3.0.8/fotorama.css')?>" media="screen"/>
-		-->
-		<!--
-		<script type="text/javascript"  src="<?php echo base_url('js/fresco-1.2.2-light/js/fresco/fresco.js')?>"></script>
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url('js/fresco-1.2.2-light/css/fresco/fresco.css')?>" media="screen"/>
-		-->
-		<script type="text/javascript" src="<?php echo base_url('js/fancybox/source/jquery.fancybox.js?v=2.1.4')?>"></script>
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url('js/fancybox/source/jquery.fancybox.css?v=2.1.4')?>" media="screen"/>
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('css/styles.css')?>"/>
 
-		<!-- Add Thumbnail helper (this is optional)
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url('js/fancybox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7')?>" />
-		<script type="text/javascript" src="<?php echo base_url('js/fancybox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7')?>"></script>
-		<script type="text/javascript" src="<?php echo base_url('js/ddpowerzoomer.js')?>"></script>
-		-->
+		<!--<script type="text/javascript"  src="<?php echo base_url('js/jsPanel-master/source/jquery.jspanel.js')?>"></script>
+		<link rel="stylesheet" type="text/css" href="<?php echo base_url('js/jsPanel-master/source/jquery.jspanel.css')?>"/>-->
 
 		<script type="text/javascript">
 
 	  		$(document).ready(function()
 			{
-				
+				var content = $("<div style= 'margin-top:20px;margin-left:20px'>"+
+								"<form action='<?php echo base_url('index.php/main/add_record')?>' method='post'>"+
+  								"<input type='text' name='record'><br>"+
+  								"<input type='submit' value='Submit'>"+
+  								"</form>"+
+  								"</div>");
+
+				$('#sample-jspanel-1').click(function () {
+        			$.jsPanel({
+        					content: function(){ 
+    							$(this).load("../../../../cco/record_form.php"); 
+    						},
+        					size:     {width: 800, height: 600},
+        					//overflow: {vertical: 'scroll'},
+        				   	selector: "#container-1",
+    						position: "center",
+    						title:    "Nuevo registro",
+    						//content: window.location.pathname,
+    						//content:  content
+        			});
+    			});
+
 				$(".clickeable").click(function()
 				{ 
 					var id = $(this).attr("id");
@@ -45,28 +54,60 @@
 					}		
 				});
 
-			});
+				$("#nuevo_registro_boton").click(function()
+				{ 
+					//var id = $(this).attr("id");
+					if ($("#nuevo_registro").is(":hidden")) {
+						//$('[id^="nuevo_registro"]').slideUp("fast"); 
+						$("#nuevo_registro").slideDown("fast");
+						
+						//$("#detalles_*").;
+					} 
+					else {
+						$("#nuevo_registro").slideUp("fast");
+					}		
+				});
+
+				$("#nuevo_antecedente_boton").click(function()
+				{ 
+					//var id = $(this).attr("id");
+					if ($("#nuevo_antecedente").is(":hidden")) {
+						//$('[id^="nuevo_registro"]').slideUp("fast"); 
+						$("#nuevo_antecedente").slideDown("fast");
+						
+						//$("#detalles_*").;
+					} 
+					else {
+						$("#nuevo_antecedente").slideUp("fast");
+					}		
+				});
+			});	
 
 			$(function() {
 			    $('#my_modal').popup();
 			});
 
+			function resizeIframe(iframe) {
+   					iframe.height = iframe.contentWindow.document.body.scrollHeight + 1500 + "px";
+   					//alert(iframe.height);
+  			};
+
 		</script>
 
 		<style>
 		  /* Add these styles once per website */
-		  .popup_background {
+		 .popup_background {
 		    z-index: 2000; /* any number */
-		  }
-		  .popup_wrapper {
+		 }
+		 .popup_wrapper {
 		    z-index: 2001; /* any number + 1 */
-		  }
+		 }
 		  /* Add inline-block support for IE7 */
-		  .popup_align,
-		  .popup_content {
+		 .popup_align,
+		 .popup_content {
 		    *display: inline;
 		    *zoom: 1;
-		  }
+		 }
 		  
 		.buttonSubmit{
 			margin-left: 160px;
@@ -102,15 +143,19 @@
 			padding-left: 10px;
 		}
 
+		body {
+			overflow-y: scroll;
+		}
+
 		#content{
-			margin: auto;
-			width: 85%;
+			//margin: auto;
+			//width: 95%;
 		}
 
 		#estudios {
 			font-size: 15px;
 			float: left;
-			width: 24%;
+			width: 26%;
 		}
 
 		#estudios_titulo{
@@ -125,7 +170,7 @@
 
 		#ventana_principal{
 			float:left;
-			width:75.5%;
+			width:73.8%;
 			margin-right: 2px;
 		}
 
@@ -140,16 +185,17 @@
 
 		#datos_paciente {
 			margin-top: 2px;
-			min-height: 210px;
+			min-height: 150px;
 			border: 1px solid #EEE;
 			background-color: #F7F7F7;
+
 		}
 
 		#datos_paciente li{
 			list-style-type: none;
 			list-style-position: outside;
 			margin-bottom: 10px;
-			font-size: 15px;
+			font-size: 13pt;
 		}
 
 		#panel_izq{
@@ -171,8 +217,9 @@
 		
 		#historia_paciente{
 			margin-top: 10px;
-			margin-bottom: 50px;
+			margin-bottom: 20px;
 		}
+
 		#datos_historia{
 			height: 35px;
 			color: white;
@@ -220,7 +267,8 @@
 		}
 
 		#info{
-			color: #cfe1ed;
+			//color: #cfe1ed;
+			color: #97BFD9;
 		}
 
 		#info2{
@@ -229,72 +277,239 @@
 			text-align: left;
 		}
 
+		#info3{
+			float: right;
+			margin-right: 100px;
+			text-align: left;
+		}
+
 		#hist{
 			float: left;
 			margin-right: 10px;
 		}
-  		</style>
 
+		.jsPanel-hdr.jsPanel-theme-default{
+ 		   font-family: OSWALD;
+		}
+
+		.jsPanel-hdr *{
+		    font-size: 18px;
+		}
+
+		.nuevo_boton {
+			float:right;
+			width: 120px;
+			height: 25px;
+			background-color: #97d0d9;
+			font-family: OSWALD;
+			font-size: 17px;
+			font-weight: bold;
+			color: white;
+			padding-left: 10px;
+			cursor: pointer;
+		}	
+
+		#nuevo_registro {
+			margin-bottom: 20px;
+			//height: 1600px;
+			border: 1px solid #EEE;
+			background-color: #F7F7F7;
+			display: none;
+		}
+
+		#nuevo_antecedente {
+			margin-bottom: 20px;
+			height: 380px;
+			border: 1px solid #EEE;
+			background-color: #F7F7F7;
+			display: none;
+		}
+
+		.class_titulo {
+			margin-top:2px;
+			margin-bottom: 2px;
+			height: 25px;
+			background-color: #1e3e53;
+			font-family: OSWALD;
+			font-size: 14pt;
+			font-weight: bold;
+			color: white;
+			padding-left: 10px;
+		}	
+
+		#antecedentes {
+			margin-bottom: 30px;
+			min-height: 150px;
+			border: 1px solid #EEE;
+			background-color: #F7F7F7;
+			padding-right: 10px;
+		}
+
+		#antecedentes_list {
+			margin-left: 20px;
+			margin-top: 10px;
+		}
+
+		#nuevo_antecedente_boton {
+
+		}
+
+		.triangulo {
+			float:right;
+			width: 0px;
+			height: 0px;
+			border-top: 12px solid transparent;
+			border-right: 12px solid #97d0d9;
+			border-bottom: 12px solid transparent;
+		}
+
+		button.mod {
+			font-size: 14px;
+			padding: 5px 10px;
+		}
+
+  		</style>
 	</head>
 	<body>
 		<div id = "content">
 			<div id = "ventana_principal">
-				<div id = "barra_titulo" class = "texto_oswald">
-					<div id = "hist"> Historia Clínica Nº </div> <div id = "info"> <?php echo $datos_paciente[0]->nroficha.' - '.$datos_paciente[0]->apellido.', '.$datos_paciente[0]->nombre ?> </div>
-				</div>
-				<div id = "datos_paciente" class = "texto_oswald">
-					<div id = "panel_izq">
-						<ul>
-							<li> Fecha de Nacimiento: <div id = "info2"> <?php echo $datos_paciente[0]->fecha_nacimiento ?> </div></li>
-							<li> DNI: <div id = "info2"> <?php echo $datos_paciente[0]->dni ?> </div></li>
-							<li> Localidad: <div id = "info2"> <?php echo $datos_paciente[0]->localidad ?> </div></li>
-							<li> Dirección: <div id = "info2"> <?php echo $datos_paciente[0]->direccion ?> </div></li>
-						</ul>
+				<div style = "width:72.9%;position:fixed">
+					<div id = "barra_titulo" class = "texto_oswald">
+						<div id = "hist"> Historia Clínica Nº </div> <div id = "info"> <?php echo $datos_paciente[0]->nroficha.' - '.$datos_paciente[0]->apellido.', '.$datos_paciente[0]->nombre ?> </div>
 					</div>
-					<div id = "panel_der">
-						<ul>
-							<li> Teléfono: <?php echo $datos_paciente[0]->tel1 ?></li>
-							<li> Teléfono 2: <?php echo $datos_paciente[0]->tel2 ?></li>
-							<li> Obra Social: <?php echo $datos_paciente[0]->obra_social ?></li>
-							<li> Nro de Afiliado: <?php echo $datos_paciente[0]->nro_obra ?></li>
-						</ul>	
-					</div>
-					<div id = "panel_inf">
+					<div id = "datos_paciente" class = "texto_oswald">
+						<div id = "panel_izq">
+							<ul>
+								<li> Fecha de Nacimiento: <div id = "info2"> <?php echo $datos_paciente[0]->fecha_nacimiento ?> </div></li>
+								<li> DNI: <div id = "info2"> <?php echo $datos_paciente[0]->dni ?> </div></li>
+								<li> Localidad: <div id = "info2"> <?php echo $datos_paciente[0]->localidad ?> </div></li>
+								<li> Dirección: <div id = "info2"> <?php echo $datos_paciente[0]->direccion ?> </div></li>
+							</ul>
+						</div>
+						<div id = "panel_der">
+							<ul>
+								<li> Teléfono: <div id = "info3"> <?php echo $datos_paciente[0]->tel1 ?></li>
+								<li> Celular: <div id = "info3"> <?php echo $datos_paciente[0]->tel2 ?></li>
+								<li> Obra Social: <div id = "info3"> <?php echo $datos_paciente[0]->obra_social ?></li>
+								<li> Nro de Afiliado: <div id = "info3"> <?php echo $datos_paciente[0]->nro_obra ?></li>
+							</ul>	
+						</div>
+					<!--<div id = "panel_inf">
 						<ul>
 							<li> Observaciones: <?php echo $datos_paciente[0]->observaciones ?></li>
 						</ul>	
-					</div>	
+					</div>	-->	
+					</div>
+				</div>	
+				<div style = "margin-top:190px;width:100%">
+					<div class = "class_titulo">
+						Antecedentes
+						<?php if ($this->session->userdata('grupo') == "Medico") { ?>
+						<div id = "nuevo_antecedente_boton" class = "nuevo_boton">
+							Nuevo Antecedente
+						</div>
+						<div class = "triangulo"></div>
+						<?php } ?>
+					</div>
 					
-				</div>	
-				<div id = "historia_paciente">
-					<div id = "datos_historia" class = "texto_oswald">
-						<div id = "fecha_historia">
-							13-10-2014 @ 10:10:00 Hs
+					<?php if ($this->session->userdata('grupo') == "Medico") { ?>
+						<div id = "nuevo_antecedente">
+								<form method="post">
+									<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
+									<textarea style ="font-size:15px;width:755px;height:300px;margin-left:20px;margin-top:20px" name = "antecedente" required><?php echo $borrador_antecedente ?></textarea>
+									<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit" formaction="<?php echo base_url('index.php/main/add_antecedente')?>">Guardar</button>
+									<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>">Guardar Borrador</button>
+									<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>">Eliminar</button>
+								</form>
 						</div>
-						<div id = "medico_historia">
-							Dr. Jelusich
-						</div>
-					</div>
-					<div id = "content_historia">
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed imperdiet libero nisl, scelerisque fringilla ipsum luctus at. Integer vitae neque placerat, venenatis sapien ac, elementum neque. Donec placerat iaculis venenatis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet malesuada nulla. Cras imperdiet pellentesque sapien, ut porttitor erat fermentum vitae. Aliquam risus libero, iaculis in quam quis, condimentum pellentesque turpis. Phasellus ac urna sem. Fusce ultricies lorem sit amet orci malesuada, sed efficitur arcu elementum. Sed accumsan lobortis quam et hendrerit. Curabitur malesuada tortor sapien, eu consequat leo ornare vitae. Donec semper tempus nisi at ornare. Integer fringilla dui velit, vel mollis velit posuere ac. Nunc ac libero id risus tincidunt porta. Ut tincidunt congue ligula et ultrices.
+					<?php } ?>
 
-Duis dictum ac erat sed vulputate. Fusce ultricies, tortor aliquet scelerisque facilisis, elit justo vestibulum lacus, in elementum felis magna a justo. Nam sit amet placerat lacus. Cras quis turpis eu nibh accumsan egestas. Quisque tincidunt ornare enim, et posuere purus efficitur at. Curabitur vel est quis nisl porta consequat semper non lorem. Integer feugiat, enim a venenatis feugiat, risus diam hendrerit diam, et pharetra eros metus at lacus. Duis euismod justo ac leo pellentesque, vel porttitor dui interdum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed purus mauris, iaculis eget neque accumsan, malesuada vestibulum erat. Donec tristique turpis a est gravida malesuada. Mauris sit amet tortor ut arcu placerat tincidunt.
+					<div id = "antecedentes">
+						<?php
+						
+						if ($antecedentes == 0) {
+							echo "No hay antecedentes para este paciente.";
+						}
+						
+						else {
+							echo '<ul>';
+							foreach ($antecedentes as $value) {
+								echo '<li style ="margin-bottom:40px">';
+									echo '<p>'.$this->encrypt->decode($value->text).'</p>';
+									echo '<p style = "font-weight:bold;font-size:12px;font-style:italic;width:98%;text-align:right;margin-top:20px">Ingresado el '.date('d-m-Y @ H:i',strtotime($this->encrypt->decode($value->fecha))).' por Dr. '.$this->encrypt->decode($value->medico).'</p>';
+								echo '</li>';
+							}
+							echo '</ul>';
+						}
+
+					?>
 					</div>
+				</div>
+				<div style = "width:100%">	
+					<div class = "class_titulo">
+						Registros
+						<?php if ($this->session->userdata('grupo') == "Medico") {
+							echo '<div id = "nuevo_registro_boton" class = "nuevo_boton">';
+								echo "Nuevo Registro";
+							echo '</div>';
+							echo '<div class = "triangulo"></div>';
+						} ?>
+					</div>
+
+					<?php if ($this->session->userdata('grupo') == "Medico") {
+						echo '<div id = "nuevo_registro">';
+							echo '<iframe id = "myiframe" style = "border:none;width: 100%;margin-left:5px" src="'.base_url('index.php/main/load_hc_form/').'" onload="resizeIframe(this)"></iframe>';
+						echo '</div>';
+					/*<!--		<form method="post">
+								<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
+								<textarea style ="font-size:15px;width:755px;height:300px;margin-left:20px;margin-top:20px" name = "registro" required><?php echo $borrador_registro ?></textarea>
+								<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit" formaction="<?php echo base_url('index.php/main/add_registro')?>">Guardar</button>
+								<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>">Guardar Borrador</button>
+								<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>">Eliminar</button>
+							</form>
+						</div>-->*/
+					}	
+						if ($historia == 0) {
+							echo "No hay registros para este paciente.\n";
+						}
+						
+						else {
+							foreach ($historia as $value) {
+									
+								echo '<div id = "historia_paciente">';
+									echo '<div id = "datos_historia" class = "texto_oswald">';
+										echo '<div id = "fecha_historia">';
+											echo date('d-m-Y @ H:i',strtotime($this->encrypt->decode($value->fecha)));				
+										echo '</div>';
+
+										echo '<div id = "medico_historia">';
+											echo "Dr. ".$this->encrypt->decode($value->medico);
+										echo '</div>';
+									echo '</div>';
+
+									echo '<div id = "content_historia">';
+										echo $this->encrypt->decode($value->text);				
+									echo '</div>';
+								echo '</div>';
+							}
+						}
+
+					?>
 				</div>	
-			</div>	
+			</div>
 			<div id = "estudios">
 				<div id = "estudios_titulo" class ="texto_oswald">
 					Archivos Paciente
 				</div>
 
 			<?php 
-				if ($resultado == 0) {
+				if ($estudios == 0) {
 					echo "No hay archivos para este paciente";
 				}
 				else {
 					$tipo = "";
 					//echo '<div class="fotorama" data-width="1200" data-height="900">';
-					foreach ($resultado as $value) {
+					foreach ($estudios as $value) {
 
 						if ($value->tipo <> $tipo) {
 
@@ -323,6 +538,7 @@ Duis dictum ac erat sed vulputate. Fusce ultricies, tortor aliquet scelerisque f
 			
 			<br>
 			<button class="my_modal_open cargar">Cargar Archivos</button>
+			<!--<button id="sample-jspanel-1" type="button">Execute example above</button>-->
 		</div>
 		
 		<!-- INICIO VENTANA EMERGENTE PARA CARGA DE ARCHIVOS -->

@@ -10,9 +10,9 @@ class Main_model extends CI_Model
 	
 	function turnos_del_dia($dia, $medico)
 	{
-		if ($medico == "")
+		if ($medico == null)
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' ORDER BY hora");
-		else	
+		else
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' AND medico = '$medico' ORDER BY hora");
 
 		if ($query->num_rows()>0)
@@ -125,13 +125,21 @@ class Main_model extends CI_Model
 	
 	function get_medicos()
 	{
-		$query = $this->db->query("SELECT nombre FROM medicos ORDER BY id");
+		$query = $this->db->query("SELECT * FROM medicos ORDER BY id");
 		
 		foreach ($query->result() as $resultado)
 		{
 			$data[] = $resultado;
 		}
 		return $data;
+	}
+
+	function get_medico_by_id($id) {
+		$query = $this->db->query("SELECT nombre FROM medicos WHERE id = '$id'");
+		if ($query->num_rows > 0 )
+			return $query->row()->nombre;
+		else
+			return NULL;
 	}
 	
 	function guardar_turno($array)
@@ -193,6 +201,7 @@ class Main_model extends CI_Model
 			$data['medico'] = $array['medico'];
 		}
 		$data['notas'] = $array['notas'];
+		$data['usuario'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 		$str = $this->db->insert_string('turnos', $data);
 		$this->db->query($str);
 	}
@@ -201,6 +210,7 @@ class Main_model extends CI_Model
 	{
 		$data['fecha'] = $array['fecha'];
 		$data['nota'] = $array['notas'];
+		$data['usuario'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 		$str = $this->db->insert_string('notas', $data);
 		$this->db->query($str);
 	}
@@ -242,6 +252,7 @@ class Main_model extends CI_Model
 	function actualizar_notas($array)
 	{
 		$data['nota'] = $array['notas'];
+		$data['usuario'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 		$where = "id = '".$array['id']."'";
 		$str = $this->db->update_string('notas', $data, $where);
 		$this->db->query($str);
@@ -305,6 +316,7 @@ class Main_model extends CI_Model
 		}
 		
 		$data['notas'] = $array['notas'];
+		$data['usuario'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 		$where = "id = '".$array['id']."'";
 		$str = $this->db->update_string('turnos', $data, $where);
 		$this->db->query($str);
@@ -364,15 +376,27 @@ class Main_model extends CI_Model
 
 	function cantidad_turnos_man($fecha) 
 	{
-		$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
+		$medico_seleccionado = $this->session->userdata('medico_seleccionado');
 
+		if ($medico_seleccionado == 0)
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
+		else {
+			$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
+			$query = $this->db->query("SELECT * FROM turnos WHERE medico = '$medico' AND fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
+		}	
 		return $query->num_rows();
 	}
 
 	function cantidad_turnos_tarde($fecha) 
 	{
-		$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");
+		$medico_seleccionado = $this->session->userdata('medico_seleccionado');
 
+		if ($medico_seleccionado == 0)
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");	
+		else {
+			$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
+			$query = $this->db->query("SELECT * FROM turnos WHERE medico = '$medico' AND fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");
+		}
 		return $query->num_rows();
 	}
 
@@ -894,6 +918,105 @@ class Main_model extends CI_Model
 			$this->load->library('calendar', $conf);
 		
 			return $this->calendar->generate($ano, $mes, $cal_data);
+	}
+
+	function setSelectedMedico($medico) {
+		if ($medico == 'TODOS')
+			$this->db->query("UPDATE variables SET valor = NULL WHERE nombre = 'medico_seleccionado'");
+		else	
+			$this->db->query("UPDATE variables SET valor = '$medico' WHERE nombre = 'medico_seleccionado'");
+	}
+
+	function  getSelectedMedico() {
+
+		 $query = $this->db->query("SELECT valor FROM variables WHERE nombre = 'medico_seleccionado'");
+		 return $query->row();
+	}
+
+	function get_config_medico($medico) {
+		$query = $this->db->query("SELECT config FROM medicos WHERE nombre = '$medico'");
+		 return $query->row();
+	}
+
+	function get_historia($id) {
+
+		$query = $this->db->query("SELECT * FROM historia_clinica WHERE id_paciente = '$id' ORDER BY last_update DESC");
+		
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+			return $data;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	function get_antecedentes($id) {
+
+		$query = $this->db->query("SELECT * FROM antecedentes WHERE id_paciente = '$id' ORDER BY last_update DESC");
+		
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+			return $data;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	function  get_borrador($id, $tipo) {
+
+		 $query = $this->db->query("SELECT * FROM borradores WHERE id_paciente = '$id' and tipo = '$tipo'");
+		 return $query->row();
+		 //if ( $query->num_rows() >0 )
+		 //else
+		 //	return (object) ["text" => ""];
+	}
+
+	function insert_registro($data) {
+
+		$str = $this->db->insert_string('historia_clinica', $data);
+		$this->db->query($str);
+	}
+
+	function insert_antecedente($data) {
+
+		$str = $this->db->insert_string('antecedentes', $data);
+		$this->db->query($str);
+	}
+
+	function save_borrador($data) {
+
+		$id_paciente = $data['id_paciente'];
+		$tipo = $data['tipo'];
+
+		if (sizeof($this->get_borrador($id_paciente,$tipo)) == 0) {
+
+			$str = $this->db->insert_string('borradores', $data);
+			$this->db->query($str);
+		}
+		else {	
+			$data = array('text' => $data['text']);
+			$where = "id_paciente = '$id_paciente' and tipo = '$tipo'";
+			$str = $this->db->update_string('borradores', $data, $where);
+			$this->db->query($str);
+		}
+	}
+
+	function delete_borrador($data) {
+		$id = $data['id_paciente'];
+		$tipo = $data['tipo'];
+		$this->db->query("DELETE FROM borradores WHERE id_paciente = '$id' and tipo = '$tipo'");
 	}
 
 }

@@ -341,6 +341,49 @@ button.submit:active {
 }
 
 
+button.submit_borrador {
+
+	background-color: #f05d45;
+	background: -webkit-gradient(linear, left top, left bottom, from(#f05d45), to(#9a4639));
+	background: -webkit-linear-gradient(top, #f05d45, #9a4639);
+	background: -moz-linear-gradient(top, #f05d45, #9a4639);
+	background: -ms-linear-gradient(top, #f05d45, #9a4639);
+	background: -o-linear-gradient(top, #f05d45, #9a4639);
+	background: linear-gradient(top, #f05d45, #9a4639);
+	border: 1px solid #8c4033;
+	border-bottom: 1px solid #9a4639;
+	border-radius: 1px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	box-shadow: inset 0 1px 0 0 #f7583e;
+	-webkit-box-shadow: 0 1px 0 0 #f7583e inset ;
+	-moz-box-shadow: 0 1px 0 0 #f7583e inset;
+	-ms-box-shadow: 0 1px 0 0 #f7583e inset;
+	-o-box-shadow: 0 1px 0 0 #f7583e inset;
+	color: white;
+	//font-weight: bold;
+	font-size: 15px;
+	font-family: 'Segoe';
+	padding: 8px 20px;
+	text-align: center;
+	text-shadow: 0 -1px 0 #396715;
+}
+button.submit_borrador:hover {
+	opacity:.85;
+	cursor: pointer; 
+}
+button.submit_borrador:active {
+	border: 1px solid #20911e;
+	box-shadow: 0 0 10px 5px #356b0b inset; 
+	-webkit-box-shadow:0 0 10px 5px #356b0b inset ;
+	-moz-box-shadow: 0 0 10px 5px #356b0b inset;
+	-ms-box-shadow: 0 0 10px 5px #356b0b inset;
+	-o-box-shadow: 0 0 10px 5px #356b0b inset;
+	
+}
+
 button.cancel {
 	margin-left: 25px;
 	background-color: #bf2c28;

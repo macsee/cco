@@ -32,6 +32,7 @@ class Login extends CI_Controller
 			$data = array(
 				'user' => $_POST['user'],
 				'nombre' => $query->nombre,
+				'apellido' => $query->apellido,
 				'grupo' => $query->grupo,
 				'is_logged_in' => true
 			);

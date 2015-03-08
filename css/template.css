@@ -417,16 +417,16 @@ th {font-weight: normal;}
 .cinco {float:left; width: 13%;}
 #titulo_superior {width: 100%; float: left; background-color: #454545; margin-bottom: 5px; color: white; height: 25px; font-family: Oswald; font-size: 16px;}
 #titulo_superior2 {width: 100%; background-color: #454545;  color: white; height: 25px; font-family: Oswald; font-size: 18px; margin-bottom: 2px}
-#detalle_tel1, #detalle_tel2 {height: 25px;font-size: 14px;}
-#detalle_tel2 {height: 35px;}
-#detalle_nota {height: 55px;font-size: 14px;}
+#detalle_1, #detalle_2 {height: 25px;font-size: 14px;}
+#detalle_2 {height: 35px;}
+#detalle_nota {height: 65px;font-size: 14px;}
 #botones {width: 125px; float: right}
 #botones a {margin-left: 10px}
 .boton {margin-right: 10px;}
 #turnos_dia {float: left; width: 76%;}
 #notas {float: left;width: 272px;margin-left: 5px;background-color: #F7F7F7; //background: url('images/background_stripes.gif');margin-top: 5px;min-height: 195px;padding-right: 20px; border: 1px solid #E5E5E5;}
 #notas a {color: #000000; font-size: 15px;}
-#notas li {color: #3D3D3D; margin-bottom: 30px;}
+#notas li {color: #3D3D3D; margin-bottom: 50px;}
 #add_notas {float: right; margin-right: 10px;}
 #add_notas a {color: white; font-family: segoe; font-size: 12px}
 #calendario_turno {float: left; margin-left: 5px;width: 294px;margin-top: 5px;}

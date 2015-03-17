@@ -549,29 +549,35 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function my_encode($var) {
 		$key = $this->config->item('encryption_key');
-		return base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $var, MCRYPT_MODE_CBC, $key));//codifico el numero de historia clinica
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND); //genero el "salt"
+
+		return base64_encode($iv.mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $var, MCRYPT_MODE_CBC, $iv));//codifico y paso el "salt"
 	}
 
 	function my_decode($var) {
 		$key = $this->config->item('encryption_key');
-		return mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($id_encrypted), MCRYPT_MODE_CBC, $key); //decodificar
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+
+		$text = base64_decode($var);
+
+		$iv = substr($text, 0, $iv_size); //obtengo el "salt"
+		$toDecode = substr($text, $iv_size); //obtengo lo que quiero decodificar
+
+		return mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $toDecode, MCRYPT_MODE_CBC, $iv); //decodificar
 	}
 /******************************************** Historia Clinica ***********************************************/
 
-	function historia_clinica($id) {
+	/*function historia_clinica($id) {
 
 
-		/*$dir = './data/'.$id;
+		//$dir = './data/'.$id;
 
-		if (!is_dir($dir)) {
+		//if (!is_dir($dir)) {
 			mkdir($dir);
-		}*/
+		//}
 
-		//$key = $this->config->item('encryption_key');
-		//$id_encrypted = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $id, MCRYPT_MODE_CBC, $key));//codifico el numero de historia clinica
-		//mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($id_encrypted), MCRYPT_MODE_CBC, $key); //decodificar
-
-		$id_encrypted = $this->my_encode($id);
+		//$id_encrypted = hash('md5',$id);
 
 		$data['estudios'] = $this->main_model->get_fechas_estudios($id);
 		$data['datos_paciente'] = $this->main_model->buscar_id_paciente($id);
@@ -594,8 +600,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		
 		$data['paciente_id'] = $id;
 		$this->load->view('view_historia', $data);
-	}
-
+	}*/
 
 	function upload($paciente) {
 
@@ -692,54 +697,49 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		redirect('main/cambiar_dia/'.$fecha);
 	}
 
-	function add_registro() {
+	/*function add_entry($tipo) {
 
-		//$key = $this->config->item('encryption_key');
+		$data['fecha'] = $this->my_encode(date('Y-m-d H:i:s',time()));
+		$data['text'] = $this->my_encode($_POST['motivo']);
+		$data['id_paciente'] = hash('md5',$_POST['paciente']);
+		$data['medico'] = $this->my_encode($this->session->userdata('apellido').', '.$this->session->userdata('nombre'));
+		$data['tipo'] = $tipo;
 
-		$data['fecha'] = $this->encrypt->encode(date('Y-m-d H:i:s',time()));
-		$data['text'] = $this->encrypt->encode($_POST['registro']);
-		//$data['id_paciente'] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['paciente'], MCRYPT_MODE_CBC, $key));
-		$data['id_paciente'] = $this->my_encode($_POST['paciente']);
-		$data['medico'] = $this->encrypt->encode($this->session->userdata('apellido').', '.$this->session->userdata('nombre'));
-		$this->main_model->insert_registro($data);
-
-		$data['tipo'] = "registro";
+		$this->main_model->insert_record($data);
 		$this->main_model->delete_borrador($data);
 
-		redirect('main/historia_clinica/'.$_POST['paciente']);
-		//$data['id_paciente'] = $_POST['paciente'];//hash_hmac('sha256', $_POST['paciente'], $this->config->item('encryption_key')); //codifico el numero de historia clinica
-		//$data['id_paciente'] = $_POST['paciente'];
-		//$data['medico'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
+		redirect('main/historia_clinica/'.$_POST['paciente']);	
+	}*/
+
+	function historia_clinica($id) {
+
+		$data['estudios'] = $this->main_model->get_fechas_estudios($id);
+		$data['datos_paciente'] = $this->main_model->buscar_id_paciente($id);
+
+		$data['historia'] = $this->main_model->get_historia($id);
+		$data['antecedentes'] = $this->main_model->get_antecedentes($id);
+
+		//$borrador_registro = $this->main_model->get_borrador($id,"registro");
+		//$borrador_antecedente = $this->main_model->get_borrador($id_encrypted,"antecedente");
+
+		if (empty($borrador_registro))
+			$data['borrador_registro'] = "";
+		else
+			$data['borrador_registro'] = $this->encrypt->decode($borrador_registro->text);
+
+		if (empty($borrador_antecedente))
+			$data['borrador_antecedente'] = "";
+		else
+			$data['borrador_antecedente'] = $this->encrypt->decode($borrador_antecedente->text);
 		
+		$data['paciente_id'] = $id;
+		$this->load->view('view_historia', $data);
 	}
-
-	function add_antecedente() {
-
-		//$key = $this->config->item('encryption_key');
-
-		$data['fecha'] = $this->encrypt->encode(date('Y-m-d H:i:s',time()));
-		$data['text'] = $this->encrypt->encode($_POST['antecedente']);
-		//$data['id_paciente'] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['paciente'], MCRYPT_MODE_CBC, $key));
-		$data['id_paciente'] = $this->my_encode($_POST['paciente']);
-		$data['medico'] = $this->encrypt->encode($this->session->userdata('apellido').', '.$this->session->userdata('nombre'));
-		$this->main_model->insert_antecedente($data);
-
-		$data['tipo'] = "antecedente";
-		$this->main_model->delete_borrador($data);
-
-		redirect('main/historia_clinica/'.$_POST['paciente']);
-		//$data['id_paciente'] = $_POST['paciente'];//hash_hmac('sha256', $_POST['paciente'], $this->config->item('encryption_key')); //codifico el numero de historia clinica
-		//$data['id_paciente'] = $_POST['paciente'];
-		//$data['medico'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
-		
-	}
-
+	
 	function guardar_borrador($tipo) {
 
-		//$key = $this->config->item('encryption_key');
-		$data['text'] = $this->encrypt->encode($_POST[$tipo]);
-		//$data['id_paciente'] = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $_POST['paciente'], MCRYPT_MODE_CBC, $key));
-		$data['id_paciente'] = $this->my_encode($_POST['paciente']);
+		$data['text'] = $this->my_encode($_POST[$tipo]);
+		$data['id_paciente'] = hash('md5',$_POST['paciente']);
 		$data['tipo'] = $tipo;
 		$this->main_model->save_borrador($data);
 		redirect('main/historia_clinica/'.$_POST['paciente']);
@@ -748,16 +748,30 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function eliminar_borrador($tipo) {
 
-		$data['id_paciente'] = $this->my_encode($_POST['paciente']);
+		$data['id_paciente'] = hash('md5',$_POST['paciente']);
 		$data['tipo'] = $tipo;
 		$this->main_model->delete_borrador($data);
 		redirect('main/historia_clinica/'.$_POST['paciente']);
 	}
 
-	function load_hc_form() {
-		$this->load->view('form_hc');
+	function load_hc_form($paciente) {
+		$data['paciente'] = $paciente;
+		$this->load->view('form_hc',$data);
 	}
 	
+	function submit_data() { 
+		$data['fecha'] = date('Y-m-d H:i:s',time());
+		$data['text'] = json_encode($_POST);
+		$data['tipo'] = "registro";
+		$data['id_paciente'] = $_POST['paciente'];
+		$data['medico'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
+		$this->main_model->insert_record($data);
+
+		$data['tipo'] = "registro";
+		//$this->main_model->delete_borrador($data);
+
+		redirect('main/historia_clinica/'.$_POST['paciente']);
+	}
 }
 
 

@@ -97,7 +97,7 @@
 	<div id = "portada_sup">
 		<div id = "login_info">
 			<div style="float:left;margin-right:3px">
-				<?php echo "Hola,";?>
+				<?php echo "Hola ";?>
 			</div>
 			<div style="float:left;margin-right:3px;color:#97BFD9;">
 				<?php echo $this->session->userdata('nombre').".";?>

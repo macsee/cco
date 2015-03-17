@@ -940,8 +940,12 @@ class Main_model extends CI_Model
 
 	function get_historia($id) {
 
-		$query = $this->db->query("SELECT * FROM historia_clinica WHERE id_paciente = '$id' ORDER BY last_update DESC");
-		
+		$key = $this->config->item('encryption_key');
+		$query = $this->db->query("SELECT 
+									CONVERT(AES_DECRYPT(data, '$key') USING 'utf8') data,
+									CONVERT(AES_DECRYPT(medico, '$key') USING 'utf8')  medico,
+									CONVERT(AES_DECRYPT(fecha, '$key') USING 'utf8') fecha					
+									FROM historia_clinica WHERE AES_DECRYPT(id_paciente, '$key') = '$id' ORDER BY last_update DESC");
 		if ($query->num_rows()>0)
 		{
 			foreach ($query->result() as $fila)
@@ -956,9 +960,34 @@ class Main_model extends CI_Model
 		}
 	}
 
+	/*function get_historia($id) {
+
+		$query = $this->db->query("SELECT * FROM historia_clinica WHERE id_paciente = '$id' ORDER BY last_update DESC");
+		
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+			return $data;
+		}
+		else
+		{
+			return 0;
+		}
+	}*/
+
 	function get_antecedentes($id) {
 
-		$query = $this->db->query("SELECT * FROM antecedentes WHERE id_paciente = '$id' ORDER BY last_update DESC");
+		//$query = $this->db->query("SELECT * FROM antecedentes WHERE id_paciente = '$id' ORDER BY last_update DESC");
+
+		$key = $this->config->item('encryption_key');
+		$query = $this->db->query("SELECT 
+									CONVERT(AES_DECRYPT(data, '$key') USING 'utf8') data,
+									CONVERT(AES_DECRYPT(medico, '$key') USING 'utf8')  medico,
+									CONVERT(AES_DECRYPT(fecha, '$key') USING 'utf8') fecha					
+									FROM antecedentes WHERE AES_DECRYPT(id_paciente, '$key') = '$id' ORDER BY last_update DESC");
 		
 		if ($query->num_rows()>0)
 		{
@@ -983,17 +1012,37 @@ class Main_model extends CI_Model
 		 //	return (object) ["text" => ""];
 	}
 
-	function insert_registro($data) {
+	function insert_record($data) {
+		$key = $this->config->item('encryption_key');
+		$texto = $data['text'];
+		$medico = $data['medico'];
+		$fecha = $data['fecha'];
+		$paciente = $data['id_paciente'];
 
-		$str = $this->db->insert_string('historia_clinica', $data);
-		$this->db->query($str);
+		if ($data['tipo'] = "registro")
+			$tabla = "historia_clinica";
+		else
+			$tabla = "antecedentes";
+
+			$this->db->query("INSERT INTO ".$tabla." (id_paciente,data,medico,fecha) VALUES (
+								AES_ENCRYPT('$paciente','$key'),
+								AES_ENCRYPT('$texto','$key'),
+								AES_ENCRYPT('$medico','$key'),
+								AES_ENCRYPT('$fecha','$key')
+							)");
+		//SELECT CAST(AES_DECRYPT(data_mc, '$key') AS CHAR(50)) data_mc_decrypt FROM historia_clinica WHERE AES_DECRYPT(data_mc, '$key') LIKE '%Hola%'
 	}
 
-	function insert_antecedente($data) {
+	/*function insert_entrada($data) {
 
-		$str = $this->db->insert_string('antecedentes', $data);
+		if ($data['tipo'] = "registro") 
+			$str = $this->db->insert_string('historia_clinica', $data);
+		else
+			$str = $this->db->insert_string('antecedentes', $data);
+
 		$this->db->query($str);
-	}
+	}*/
+
 
 	function save_borrador($data) {
 
@@ -1018,7 +1067,6 @@ class Main_model extends CI_Model
 		$tipo = $data['tipo'];
 		$this->db->query("DELETE FROM borradores WHERE id_paciente = '$id' and tipo = '$tipo'");
 	}
-
 }
 
 ?>

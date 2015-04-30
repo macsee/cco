@@ -119,7 +119,10 @@
 			echo '<a class = "button_example clase2" href="'.base_url('index.php/main/pacientes/').'">Pacientes</a>';
 		echo '</div>';
 		echo '<div class = "boton_home">';
-			echo '<a class = "button_example clase3" href="#">Facturación</a>';
+		if ($this->session->userdata('grupo') != "Secretaria")
+			echo '<a class = "button_example clase3" href="'.base_url('index.php/main/pacientes_admitidos/'.date("Y-m-d")).'">Pacientes Admitidos</a>';
+		else	
+			echo '<a class = "button_example clase3" href="'.base_url('index.php/main/facturacion/').'">Facturación</a>';
 		echo '</div>';
 		echo '<div class = "boton_home">';
 			echo '<a class = "button_example clase4" href="'.base_url('index.php/main/agendas/').'">Agendas</a>';

@@ -7,10 +7,9 @@
 
 		<script type="text/javascript"  src="<?php echo base_url('js/jsPanel-master/jquery-2.1.3.min.js')?>"></script>
 		<script type="text/javascript" src="<?php echo base_url('js/jsPanel-master/jquery-ui-1.11.2.min.js')?>"></script>
-
-		<script type="text/javascript"  src="<?php echo base_url('js/jquery.popupoverlay.js')?>"></script>
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('css/styles.css')?>"/>
-
+		
+		<script type="text/javascript"  src="<?php echo base_url('js/jquery.popupoverlay.js')?>"></script>
 		<!--<script type="text/javascript"  src="<?php echo base_url('js/jsPanel-master/source/jquery.jspanel.js')?>"></script>
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('js/jsPanel-master/source/jquery.jspanel.css')?>"/>-->
 
@@ -86,12 +85,6 @@
 			$(function() {
 			    $('#my_modal').popup();
 			});
-
-			function resizeIframe(iframe) {
-   					iframe.height = iframe.contentWindow.document.body.scrollHeight + 1500 + "px";
-   					//alert(iframe.height);
-  			};
-
 		</script>
 
 		<style>
@@ -148,14 +141,14 @@
 		}
 
 		#content{
-			//margin: auto;
-			//width: 95%;
+			margin: auto;
+			width: 1100px;
 		}
 
 		#estudios {
 			font-size: 15px;
 			float: left;
-			width: 26%;
+			width: 298px;
 		}
 
 		#estudios_titulo{
@@ -170,7 +163,8 @@
 
 		#ventana_principal{
 			float:left;
-			width:73.8%;
+			//width:73.8%;
+			width:800px;
 			margin-right: 2px;
 		}
 
@@ -186,8 +180,9 @@
 		#datos_paciente {
 			margin-top: 2px;
 			min-height: 150px;
-			border: 1px solid #EEE;
-			background-color: #F7F7F7;
+			border: 1px solid #E0E0E0;
+			//background-color: #F7F7F7;
+			background-color: #F4F4F4;
 
 		}
 
@@ -195,18 +190,20 @@
 			list-style-type: none;
 			list-style-position: outside;
 			margin-bottom: 10px;
-			font-size: 13pt;
+			font-size: 12pt;
 		}
 
 		#panel_izq{
 			float: left;
-			width: 50%;
-
+			width: 48%;
+			margin-left: 20px;
+			margin-top:	5px;
 		}
 
 		#panel_der{
 			float: left;
-			width: 50%;
+			width: 48%;
+			margin-top:	5px;
 		}
 
 		#panel_inf{
@@ -221,29 +218,28 @@
 		}
 
 		#datos_historia{
-			height: 35px;
 			color: white;
-			font-size: 17px;
+			font-size: 11pt;
 		}
 
 		#fecha_historia{
 			background-color: #97BFD9;
 			float: left;
-			padding-left: 10px;
-			padding-right: 15px;
+			padding-left: 5px;
+			padding-right: 5px;
 			padding-top: 5px;
 			margin-right: 2px;
-			height: 27px;
+			height: 22px;
 		}
 
 		#hora_historia{
 			background-color: #97BFD9;
 			float: left;
-			padding-left: 10px;
-			padding-right: 15px;
+			padding-left: 5px;
+			padding-right: 5px;
 			padding-top: 5px;
 			margin-right: 2px;
-			height: 27px;
+			height: 22px;
 		}
 
 		#medico_historia{
@@ -253,14 +249,17 @@
 			padding-left: 10px;
 			padding-right: 10px;
 			padding-top: 5px;
-			height: 27px;
+			height: 22px;
 		}
 
 		#content_historia{
-			border: 1px solid #EEE;
-			background-color: #F7F7F7;
-			padding: 10px 10px 10px 10px;
+			border: 1px solid #E0E0E0;
+			//background-color: #F7F7F7;
+			background-color: #F4F4F4;
 			float:left;
+			margin-top: 2px;
+			margin-bottom: 10px;
+			width:798px;
 		}
 
 		.cargar{
@@ -313,16 +312,18 @@
 		#nuevo_registro {
 			margin-bottom: 20px;
 			//height: 1600px;
-			border: 1px solid #EEE;
-			background-color: #F7F7F7;
+			border: 1px solid #E0E0E0;
+			//background-color: #F7F7F7;
+			background-color: #F4F4F4;
 			display: none;
 		}
 
 		#nuevo_antecedente {
 			margin-bottom: 20px;
 			height: 280px;
-			border: 1px solid #EEE;
-			background-color: #F7F7F7;
+			border: 1px solid #E0E0E0;
+			//background-color: #F7F7F7;
+			background-color: #F4F4F4;
 			display: none;
 		}
 
@@ -339,10 +340,11 @@
 		}	
 
 		#antecedentes {
-			margin-bottom: 30px;
-			min-height: 150px;
-			border: 1px solid #EEE;
-			background-color: #F7F7F7;
+			margin-bottom: 20px;
+			min-height: 60px;
+			border: 1px solid #E0E0E0;
+			//background-color: #F7F7F7;
+			background-color: #F4F4F4;
 			padding-right: 10px;
 		}
 
@@ -371,33 +373,47 @@
 
 		.hc_titulo {
 			float:left;
-			font-size: 14pt;
-			//width: 30%;
-			margin-right: 30px;
-			font-weight: bold;
+			font-size: 10pt;
+			width: 100%;
+			margin-left: 10px;
+			margin-right: 10px;
+			//font-weight: bold;
+			//font-style: italic;
 		}		
 
 		.hc_contenido {
 			float:left;
-			//width:77%;
-			margin-top: 3px;
 			margin-right: 10px;
+			font-size: 10pt;
+			border-left:1px solid;
+			text-align: justify;
+		}
+
+		.hc_contenido p {
+			margin-top: 0px;
+			margin-bottom: 0px;
+			width: 680px;
 		}
 
 		.hc_fila {
 			width: 100%;
-			margin-bottom: 40px; 
 			float:left;
+			margin-top: 5px;
+			margin-bottom: 5px;
 		}
 
 		.tabla_ref td{
-			width: 50px;
+			width: 40px;
 			text-align:center;
 			background-color:white
 		}
 
+		.tabla_ref th {
+			font-size: 11pt;
+		}
+
 		.tabla_av td {
-			width: 48px;
+			width: 40px;
 			text-align:center;
 			background-color:white	
 		}
@@ -408,31 +424,114 @@
 			margin-top: 3px;
 			margin-right: -2px;
 		}
+
+		.tabla_paciente td{
+			width: 150px;
+			height: 30px;
+		}
+
+		.hc_col_izq {
+			float:left;
+			margin-left: 120px;
+			width: 300px;
+		}
+
+		.hc_col_der {
+			float:left;
+		}
+
+		.hc_subtitulo {
+			margin-top:15px;
+			font-style:italic;
+			margin-right: 10px;
+			font-size: 10pt;
+			float:left;
+			width:90px;
+			text-align: right;
+		}
   		</style>
 	</head>
 	<body>
+
+	<?php
+	function check($esf,$cil,$eje) {
+		
+		if (!strstr($esf, "-") && ($esf != "") )
+			$esf = "+".$esf;
+
+		if (!strstr($cil, "-") && ($cil != "") )
+			$cil = "+".$cil;
+
+		if ( ($cil != "") && ($eje != "") )
+			$cil = $cil." x ".$eje."º";
+		
+		if ( ($esf == "") && ($cil == "") )
+			$res = "-";
+		else 
+			$res = $esf." ".$cil;
+
+		return $res;
+	}
+
+	function checkKRT($krt,$eje) {
+
+		if ( ($krt != "") && ($eje != "") )
+			$res = $krt." x ".$eje."º";
+		else if ($krt == "")
+			$res = "-";
+		else
+			$res = $krt;
+
+		return $res;
+	}
+
+	?>	
 		<div id = "content">
 			<div id = "ventana_principal">
-				<div style = "width:72.9%;position:fixed">
+				<div style = "width:800px;position:fixed"> <!-- 72.9%-->
 					<div id = "barra_titulo" class = "texto_oswald">
 						<div id = "hist"> Historia Clínica Nº </div> <div id = "info"> <?php echo $datos_paciente[0]->nroficha.' - '.$datos_paciente[0]->apellido.', '.$datos_paciente[0]->nombre ?> </div>
 					</div>
 					<div id = "datos_paciente" class = "texto_oswald">
 						<div id = "panel_izq">
-							<ul>
-								<li> Fecha de Nacimiento: <div id = "info2"> <?php echo $datos_paciente[0]->fecha_nacimiento ?> </div></li>
-								<li> DNI: <div id = "info2"> <?php echo $datos_paciente[0]->dni ?> </div></li>
-								<li> Localidad: <div id = "info2"> <?php echo $datos_paciente[0]->localidad ?> </div></li>
-								<li> Dirección: <div id = "info2"> <?php echo $datos_paciente[0]->direccion ?> </div></li>
-							</ul>
+							<table class = "tabla_paciente">
+								<tr>
+									<td>Fecha de Nacimiento:</td>
+									<td><?php echo $datos_paciente[0]->fecha_nacimiento ?></td>
+								</tr>
+								<tr>
+									<td>DNI:</td>
+									<td><?php echo $datos_paciente[0]->dni ?></td>
+								</tr>
+								<tr>
+									<td>Localidad:</td>
+									<td><?php echo $datos_paciente[0]->localidad ?></td>
+								</tr>
+								<tr>
+									<td>Dirección:</td>
+									<td><?php echo $datos_paciente[0]->direccion ?></td>
+								</tr>
+							</table>
 						</div>
 						<div id = "panel_der">
-							<ul>
-								<li> Teléfono: <div id = "info3"> <?php echo $datos_paciente[0]->tel1 ?></li>
-								<li> Celular: <div id = "info3"> <?php echo $datos_paciente[0]->tel2 ?></li>
-								<li> Obra Social: <div id = "info3"> <?php echo $datos_paciente[0]->obra_social ?></li>
-								<li> Nro de Afiliado: <div id = "info3"> <?php echo $datos_paciente[0]->nro_obra ?></li>
-							</ul>	
+							<table class = "tabla_paciente">
+								<tr>
+									<td>Teléfono:</td>
+									<td><?php echo $datos_paciente[0]->tel1 ?></td>
+								</tr>
+								<tr>
+									<td>Celular:</td>
+									<td><?php echo $datos_paciente[0]->tel2 ?></td>
+								</tr>
+								<tr>
+									<td>Obra Social:</td>
+									<td><?php echo $datos_paciente[0]->obra_social ?></td>
+								</tr>
+								<tr>
+									<td>Nro de Afiliado:</td>
+									<td><?php echo $datos_paciente[0]->nro_obra ?></td>
+								</tr>
+							</table>
 						</div>
 					<!--<div id = "panel_inf">
 						<ul>
@@ -454,13 +553,13 @@
 					
 					<?php if ($this->session->userdata('grupo') == "Medico") { ?>
 						<div id = "nuevo_antecedente">
-								<form method="post">
-									<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
-									<textarea style ="font-size:15px;width:95%;height:200px;margin-left:20px;margin-top:20px" name = "antecedente" required><?php echo $borrador_antecedente ?></textarea>
-									<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit" formaction="<?php echo base_url('index.php/main/add_antecedente')?>">Guardar</button>
-									<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>">Guardar Borrador</button>
-									<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>">Eliminar</button>
-								</form>
+							<form method="post">
+								<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
+								<textarea style ="font-size:15px;width:95%;height:200px;margin-left:20px;margin-top:20px" name = "antecedente" required><?php echo $borrador_antecedente ?></textarea>
+								<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit" formaction="<?php echo base_url('index.php/main/submit_data/antecedente')?>">Guardar</button>
+								<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>">Guardar Borrador</button>
+								<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>">Eliminar</button>
+							</form>
 						</div>
 					<?php } ?>
 
@@ -468,16 +567,14 @@
 						<?php
 						
 						if ($antecedentes == 0) {
-							echo "No hay antecedentes para este paciente.";
+							echo "<p style ='font-style:italic;margin-left:10px;font-size:11pt'>No hay antecedentes para este paciente.</p>";
 						}
 						
 						else {
 							echo '<ul>';
 							foreach ($antecedentes as $value) {
 								echo '<li style ="margin-bottom:40px">';
-									//echo '<p>'.$this->encrypt->decode($value->text).'</p>';
-									//echo '<p style = "font-weight:bold;font-size:12px;font-style:italic;width:98%;text-align:right;margin-top:20px">Ingresado el '.date('d-m-Y @ H:i',strtotime($this->encrypt->decode($value->fecha))).' por Dr. '.$this->encrypt->decode($value->medico).'</p>';
-									echo '<p>'.$value->data.'</p>';
+									echo '<p>'.json_decode($value->data)->antecedente.'</p>';
 									echo '<p style = "font-weight:bold;font-size:12px;font-style:italic;width:98%;text-align:right;margin-top:20px">Ingresado el '.date('d-m-Y @ H:i',strtotime($value->fecha)).' por Dr. '.$value->medico.'</p>';
 								echo '</li>';
 							}
@@ -498,26 +595,20 @@
 						} ?>
 					</div>
 
-					<?php if ($this->session->userdata('grupo') == "Medico") {
+					<?php if ($this->session->userdata('grupo') == "Medico") 
+					{	
 						echo '<div id = "nuevo_registro">';
-							echo '<iframe id = "myiframe" style = "border:none;width: 100%" src="'.base_url('index.php/main/load_hc_form/'.$paciente_id).'" onload="resizeIframe(this)"></iframe>';
+							echo '<iframe id = "myiframe" style = "border:none;width: 798px; height: 2420px" src="'.base_url('index.php/main/load_hc_form/'.$paciente_id).'"></iframe>';
 						echo '</div>';
-					/*<!--		<form method="post">
-								<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
-								<textarea style ="font-size:15px;width:755px;height:300px;margin-left:20px;margin-top:20px" name = "registro" required><?php echo $borrador_registro ?></textarea>
-								<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit" formaction="<?php echo base_url('index.php/main/add_registro')?>">Guardar</button>
-								<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>">Guardar Borrador</button>
-								<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>">Eliminar</button>
-							</form>
-						</div>-->*/
 					}	
 						if ($historia == 0) {
-							echo "No hay registros para este paciente.\n";
+							echo "<p style ='font-style:italic;margin-left:10px;font-size:11pt'>No hay registros para este paciente</p>";
 						}
 						
 						else {
 							foreach ($historia as $value) {
 								$json = json_decode($value->data);
+								//echo $value->data;
 					?>	
 								<div id = "historia_paciente">
 									<div id = "datos_historia" class = "texto_oswald">
@@ -529,376 +620,658 @@
 											<?php echo "Dr. ".$value->medico;?>
 										</div>
 									</div>
-									<?php echo $value->data; ?>
 									<div id = "content_historia">
+										<?php if ($json->motivo != "") { ?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo" style = "width:100px;margin-top:2px">MOTIVO:</div>
+											<div class = "hc_contenido" style = "width: 600px;border:none">
+												<?php echo $json->motivo?>
+											</div>	
+										</div>
+										<?php } ?>
 
+										<?php if 	( 	($json->od_esf_arm_sd.$json->od_cil_arm_sd.$json->od_eje_arm_sd.$json->os_esf_arm_sd.$json->os_cil_arm_sd.$json->os_eje_arm_sd != "")	|| 
+														($json->od_esf_arm_cd.$json->od_cil_arm_cd.$json->od_eje_arm_cd.$json->os_esf_arm_cd.$json->os_cil_arm_cd.$json->os_eje_arm_cd != "")	||
+														isset($json->od_chk_arm_sd) ||	isset($json->os_chk_arm_sd) || isset($json->od_chk_arm_cd) || isset($json->os_chk_arm_cd) 
+													) {
+										?>
 										<div class = "hc_fila">
-											<div class = "hc_titulo">Motivo:</div>
-											<div class = "hc_contenido"><?php echo $json->motivo?></div>
-										</div>
-										<div class = "hc_fila">
-											<div class = "hc_titulo" style = "width:100%">Refracción:</div>
-											<div style = "float:left;width:60%">
-												<div class = "hc_contenido" style ="margin-top:30px">
-													<table class ="tabla_ref">
-									  					<tr>
-									  						<th></th>
-									    					<th style = "font-size:12pt" colspan = "3">ARM Sin Dilatación</th> 
-									  					</tr>
-									  					<tr>
-									  						<td style = "background-color:transparent"></td>
-									    					<td style ="background-color:#4289b8;color:white">Esf.</td>
-									    					<td style ="background-color:#4289b8;color:white">Cil.</td>
-									    					<td style ="background-color:#4289b8;color:white">Eje</td>
-									  					</tr>
-									  					<tr>
-									  						<td style = "background-color:transparent"> OD </td>
-									    					<td><?php echo $json->od_esf_arm_sd?></td>
-									    					<td><?php echo $json->od_cil_arm_sd?></td>
-									    					<td><?php echo $json->od_eje_arm_sd?></td>
-									  					</tr>
-									  					<tr>
-									  						<td style = "background-color:transparent"> OS </td>
-									    					<td><?php echo $json->os_esf_arm_sd?></td>
-									    					<td><?php echo $json->os_cil_arm_sd?></td>
-									    					<td><?php echo $json->os_eje_arm_sd?></td>
-									  					</tr>
-													</table>
+											<div class = "hc_titulo">
+												AUTOREFRACTOMETRÍA:
+											</div>
+								
+											<div class = "hc_col_izq">
+												<div class = "hc_subtitulo">
+													Sin Dilatación:
 												</div>
-												<div class = "hc_contenido" style ="margin-top:30px">
-													<table class ="tabla_ref">
-									  					<tr>
-									    					<th style = "font-size:12pt" colspan = "3">ARM Con Dilatación</th> 
-									  					</tr>
-									  					<tr>
-									    					<td style ="background-color:#4289b8;color:white">Esf.</td>
-									    					<td style ="background-color:#4289b8;color:white">Cil.</td>
-									    					<td style ="background-color:#4289b8;color:white">Eje</td>
-									  					</tr>
-									  					<tr>
-									  						
-									    					<td><?php echo $json->od_esf_arm_cd?></td>
-									    					<td><?php echo $json->od_cil_arm_cd?></td>
-									    					<td><?php echo $json->od_eje_arm_cd?></td>
-									  					</tr>
-									  					<tr>
-									  						
-									    					<td><?php echo $json->os_esf_arm_cd?></td>
-									    					<td><?php echo $json->os_cil_arm_cd?></td>
-									    					<td><?php echo $json->os_eje_arm_cd?></td>
-									  					</tr>
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td>
+																<?php
+																	if ( isset($json->od_chk_arm_sd) )
+																		echo "No mide";
+																	else
+																		echo check($json->od_esf_arm_sd,$json->od_cil_arm_sd,$json->od_eje_arm_sd);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td>
+																<?php
+																	if ( isset($json->os_chk_arm_sd) )
+																		echo "No mide";
+																	else
+																		echo check($json->os_esf_arm_sd,$json->os_cil_arm_sd,$json->os_eje_arm_sd);
+																?>
+															</td>
+														</tr>
 													</table>
 												</div>
 											</div>
-											<div style = "float:left;width:40%">	
-												<div class = "hc_contenido" style ="margin-top:30px">
-													<table class ="tabla_ref">
-									  					<tr>
-									  						<td style = "background-color:transparent"></td>
-									    					<th style = "font-size:12pt" colspan = "4">KRT OD</th> 
-									  					</tr>
-									  					<tr>
-									  						<td style = "background-color:transparent"></td>
-									    					<td style ="background-color:#97d9c1;color:white">K</td>
-									    					<td style ="background-color:#97d9c1;color:white">Eje</td>
-									  					</tr>
-									  					<tr>
-									  						<td style = "background-color:transparent">K1</td>
-									    					<td><?php echo $json->od_k1_krt?></td>
-									    					<td><?php echo $json->od_eje_krt?></td>
-									  					</tr>
-									  					<tr>
-									  						<td style = "background-color:transparent">K2</td>
-									  						<td><?php echo $json->od_k2_krt?></td>
-									    					<td><?php echo $json->od_eje_krt?></td>
-									  					</tr>
-									  					<tr>
-									  						<td style = "background-color:transparent">Ave.</td>
-									  						<td><?php echo $json->od_ave_krt?></td>
-									  					</tr>
+
+											<div class = "hc_col_der">
+												<div class = "hc_subtitulo">
+													Con Dilatación:
+												</div>
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td>
+																<?php
+																	if ( isset($json->od_chk_arm_cd) )
+																		echo "No mide";
+																	else
+																		echo check($json->od_esf_arm_cd,$json->od_cil_arm_cd,$json->od_eje_arm_cd);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td>
+																<?php
+																	if ( isset($json->os_chk_arm_cd) )
+																		echo "No mide";
+																	else
+																		echo check($json->os_esf_arm_cd,$json->os_cil_arm_cd,$json->os_eje_arm_cd);
+																?>
+															</td>
+														</tr>
 													</table>
 												</div>
-												<div class = "hc_contenido" style ="margin-top:30px">
-													<table class ="tabla_ref">
-									  					<tr>
-									  						
-									    					<th style = "font-size:12pt" colspan = "4">KRT OS</th> 
-									  					</tr>
-									  					<tr>
-									  						
-									    					<td style ="background-color:#97d9c1;color:white">K</td>
-									    					<td style ="background-color:#97d9c1;color:white">Eje</td>
-									  					</tr>
-									  					<tr>
-									  						
-									    					<td style = "background-color:white"><?php echo $json->os_k1_krt?></td>
-									    					<td style = "background-color:white"><?php echo $json->os_eje_krt?></td>
-									  					</tr>
-									  					<tr>
-									  						
-									  						<td style = "background-color:white"><?php echo $json->os_k2_krt?></td>
-									    					<td style = "background-color:white"><?php echo $json->os_eje_krt?></td>
-									  					</tr>
-									  					<tr>
-									  						
-									  						<td style = "background-color:white"><?php echo $json->os_ave_krt?></td>
-									  					</tr>
+											</div>
+										</div>
+										<?php }?>
+
+										<?php if 	( 	($json->od_k1_krt.$json->od_k1_eje_krt != "") 	|| 
+														($json->od_k2_krt.$json->od_k2_eje_krt != "")	||	
+														($json->os_k1_krt.$json->os_k1_eje_krt != "")	||	
+														($json->os_k2_krt.$json->os_k2_eje_krt != "")	||
+														($json->od_ave_krt.$json->os_ave_krt != "")		||
+														isset($json->od_chk_krt) || isset($json->od_chk_krt) 
+													) {
+										?>
+										<div class = "hc_fila">	
+											<div class = "hc_titulo">
+												KERATOMETRÍA:
+											</div>	
+											<div class = "hc_col_izq">
+												<div class = "hc_subtitulo">
+													OD:
+												</div>
+												<div class = "hc_contenido">
+													<?php if 	(!isset($json->od_chk_krt)) { ?>
+													<table>
+														<tr>
+															<td>K1:</td>
+															<td>
+																<?php
+																	echo checkKRT($json->od_k1_krt,$json->od_k1_eje_krt);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>K2:</td>
+															<td>
+																<?php
+																	echo checkKRT($json->od_k2_krt,$json->od_k2_eje_krt);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>Ave:</td>
+															<td>
+																<?php echo $json->od_ave_krt;?>
+															</td>
+														</tr>	
+													</table>
+													<?php } else 
+														echo "No mide";
+													?>
+												</div>
+											</div>
+
+											<div class = "hc_col_der">
+												<div class = "hc_subtitulo">
+													OS:
+												</div>
+												<div class = "hc_contenido">
+													<?php if 	(!isset($json->os_chk_krt)) { ?>
+													<table>
+														<tr>
+															<td>K1:</td>
+															<td>
+																<?php
+																	echo checkKRT($json->os_k1_krt,$json->os_k1_eje_krt);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>K2:</td>
+															<td>
+																<?php
+																	echo checkKRT($json->os_k2_krt,$json->os_k2_eje_krt);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>Ave:</td>
+															<td>
+																<?php echo $json->os_ave_krt;?>
+															</td>
+														</tr>	
+													</table>
+													<?php } else 
+														echo "No mide";
+													?>
+												</div>
+											</div>
+										</div>
+										<?php }?>
+
+										<?php
+											if (	($json->od_select_sc_lejos.$json->os_select_sc_lejos != "") ||
+													($json->od_select_sc_cerca.$json->os_select_sc_cerca != "")
+												) {
+										?>	
+										<div class = "hc_fila">
+											<div class = "hc_titulo">
+												A.V. SIN CORRECCIÓN:
+											</div>	
+											<div class = "hc_col_izq">
+												<div class = "hc_subtitulo">
+													Lejos:
+												</div>
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td>
+																<?php 
+																	if ($json->od_select_sc_lejos != "")
+																		echo $json->od_select_sc_lejos;
+																	else
+																		echo "-";
+																?>	
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td>
+																<?php 
+																	if ($json->os_select_sc_lejos != "")
+																		echo $json->os_select_sc_lejos;
+																	else
+																		echo "-";
+																?>	
+															</td>
+														</tr>	
 													</table>
 												</div>
 											</div>	
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo" style = "width: 100%;margin-bottom:10px;">Agudeza Visual:</div>
-											<div class = "hc_contenido_3" style = "width: 20%">
-												<div style = "float:left;height:350px;width:25px;background-color:#97d9c1">
-													<p style ="width: 150px;transform: rotate(-90deg);margin-left: -65px;margin-top: 160px;text-align: center;font-family:Oswald;font-weight:bold;color:white;font-size:14pt"/>Sin Corrección</p>
+											<div class = "hc_col_der">
+												<div class = "hc_subtitulo">
+													Cerca:
 												</div>
-												<div style = "border: 2px solid #97d9c1;height:348px">
-													<div style = "height:80px;margin-top:20px">
-														<table class = "tabla_av">
-															<tr>
-																<td style = "background-color:transparent">Lejos:</td>
-																<td style = "background-color:transparent">OD</td>
-																<td></td>
-															<tr>
-															<tr>
-																<td style = "background-color:transparent"></td>
-																<td style = "background-color:transparent">OS</td>
-																<td></td>
-															</tr>	
-														</table>	
-													</div>
-													<div style = "height:80px">
-														<table class = "tabla_av">
-															<tr>
-																<td style = "background-color:transparent">Cerca:</td>
-																<td style = "background-color:transparent">OD</td>
-																<td></td>
-															<tr>
-															<tr>
-																<td style = "background-color:transparent"></td>
-																<td style = "background-color:transparent">OS</td>
-																<td></td>
-															</tr>	
-														</table>	
-													</div>
-												</div>		
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td>
+																<?php 
+																	if ($json->od_select_sc_cerca != "")
+																		echo $json->od_select_sc_cerca;
+																	else
+																		echo "-";
+																?>	
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td>
+																<?php 
+																	if ($json->os_select_sc_cerca != "")
+																		echo $json->os_select_sc_cerca;
+																	else
+																		echo "-";
+																?>	
+															</td>
+														</tr>	
+													</table>
+												</div>
 											</div>
-											<div class = "hc_contenido_3">
-												<div style = "float:left;height:350px;width:25px;background-color:#97d0d9">
-													<p style ="width: 150px;transform: rotate(-90deg);margin-left: -65px;margin-top: 160px;text-align: center;font-family:Oswald;font-weight:bold;color:white;font-size:14pt"/>Con Corrección</p>
-												</div>
-												<div style = "border: 2px solid #97d0d9;height:348px">
-													<div style = "height:80px;margin-top:20px;margin-right:10px;float:left">
-														<table class = "tabla_av" style = "margin-top:18pt">
-															<tr>
-																<td style = "background-color:transparent">Lejos:</td>
-																<td style = "background-color:transparent">OD</td>
-																<td></td>
-															<tr>
-															<tr>
-																<td style = "background-color:transparent"></td>
-																<td style = "background-color:transparent">OS</td>
-																<td></td>
-															</tr>	
-														</table>	
-													</div>
-													<div style = "margin-top:20px;float:left;height:80px">
-														<table class ="tabla_av">
-										  					<tr>
-										    					<td style ="background-color:#97d0d9;color:white">Esf.</td>
-										    					<td style ="background-color:#97d0d9;color:white">Cil.</td>
-										    					<td style ="background-color:#97d0d9;color:white">Eje</td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->od_esf_arm_cd?></td>
-										    					<td><?php echo $json->od_cil_arm_cd?></td>
-										    					<td><?php echo $json->od_eje_arm_cd?></td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->os_esf_arm_cd?></td>
-										    					<td><?php echo $json->os_cil_arm_cd?></td>
-										    					<td><?php echo $json->os_eje_arm_cd?></td>
-										  					</tr>
-														</table>
-													</div>	
-													<div style = "height:80px;margin-top:20px;margin-right:10px;float:left">
-														<table class = "tabla_av" style = "margin-top:18pt">
-															<tr>
-																<td style = "background-color:transparent">Cerca:</td>
-																<td style = "background-color:transparent">OD</td>
-																<td></td>
-															<tr>
-															<tr>
-																<td style = "background-color:transparent"></td>
-																<td style = "background-color:transparent">OS</td>
-																<td></td>
-															</tr>	
-														</table>	
-													</div>
-													<div style = "margin-top:20px;float:left;height:80px">
-														<table class ="tabla_av">
-										  					<tr>
-										    					<td style ="background-color:#97d0d9;color:white">Esf.</td>
-										    					<td style ="background-color:#97d0d9;color:white">Cil.</td>
-										    					<td style ="background-color:#97d0d9;color:white">Eje</td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->od_esf_arm_cd?></td>
-										    					<td><?php echo $json->od_cil_arm_cd?></td>
-										    					<td><?php echo $json->od_eje_arm_cd?></td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->os_esf_arm_cd?></td>
-										    					<td><?php echo $json->os_cil_arm_cd?></td>
-										    					<td><?php echo $json->os_eje_arm_cd?></td>
-										  					</tr>
-														</table>
-													</div>
-												</div>		
-											</div>
-											<div class = "hc_contenido_3">
-												<div style = "float:left;height:350px;width:25px;background-color:#97afd9">
-													<p style ="width: 150px;transform: rotate(-90deg);margin-left: -65px;margin-top: 160px;text-align: center;font-family:Oswald;font-weight:bold;color:white;font-size:14pt"/>Corrección Subjetiva</p>
-												</div>
-												<div style = "border: 2px solid #97afd9;height:348px">
-													<div style = "height:80px;margin-top:20px;margin-right:10px;float:left">
-														<table class = "tabla_av" style = "margin-top:18pt">
-															<tr>
-																<td style = "background-color:transparent">Lejos:</td>
-																<td style = "background-color:transparent">OD</td>
-																<td></td>
-															<tr>
-															<tr>
-																<td style = "background-color:transparent"></td>
-																<td style = "background-color:transparent">OS</td>
-																<td></td>
-															</tr>	
-														</table>	
-													</div>
-													<div style = "margin-top:20px;float:left;height:80px">
-														<table class ="tabla_av">
-										  					<tr>
-										    					<td style ="background-color:#97afd9;color:white">Esf.</td>
-										    					<td style ="background-color:#97afd9;color:white">Cil.</td>
-										    					<td style ="background-color:#97afd9;color:white">Eje</td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->od_esf_arm_cd?></td>
-										    					<td><?php echo $json->od_cil_arm_cd?></td>
-										    					<td><?php echo $json->od_eje_arm_cd?></td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->os_esf_arm_cd?></td>
-										    					<td><?php echo $json->os_cil_arm_cd?></td>
-										    					<td><?php echo $json->os_eje_arm_cd?></td>
-										  					</tr>
-														</table>
-													</div>	
-													<div style = "height:80px;margin-top:20px;margin-right:10px;float:left">
-														<table class = "tabla_av" style = "margin-top:18pt">
-															<tr>
-																<td style = "background-color:transparent">Cerca:</td>
-																<td style = "background-color:transparent">OD</td>
-																<td></td>
-															<tr>
-															<tr>
-																<td style = "background-color:transparent"></td>
-																<td style = "background-color:transparent">OS</td>
-																<td></td>
-															</tr>	
-														</table>	
-													</div>
-													<div style = "margin-top:20px;float:left;height:80px">
-														<table class ="tabla_av">
-										  					<tr>
-										    					<td style ="background-color:#97afd9;color:white">Esf.</td>
-										    					<td style ="background-color:#97afd9;color:white">Cil.</td>
-										    					<td style ="background-color:#97afd9;color:white">Eje</td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->od_esf_arm_cd?></td>
-										    					<td><?php echo $json->od_cil_arm_cd?></td>
-										    					<td><?php echo $json->od_eje_arm_cd?></td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->os_esf_arm_cd?></td>
-										    					<td><?php echo $json->os_cil_arm_cd?></td>
-										    					<td><?php echo $json->os_eje_arm_cd?></td>
-										  					</tr>
-														</table>
-													</div>
-													<div style = "height:80px;margin-top:20px;margin-right:10px;float:left">
-														<table class = "tabla_av" style = "margin-top:18pt">
-															<tr>
-																<td style = "background-color:transparent">Media:</td>
-																<td style = "background-color:transparent">OD</td>
-																<td></td>
-															<tr>
-															<tr>
-																<td style = "background-color:transparent"></td>
-																<td style = "background-color:transparent">OS</td>
-																<td></td>
-															</tr>	
-														</table>	
-													</div>
-													<div style = "margin-top:20px;float:left;height:80px">
-														<table class ="tabla_av">
-										  					<tr>
-										    					<td style ="background-color:#97afd9;color:white">Esf.</td>
-										    					<td style ="background-color:#97afd9;color:white">Cil.</td>
-										    					<td style ="background-color:#97afd9;color:white">Eje</td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->od_esf_arm_cd?></td>
-										    					<td><?php echo $json->od_cil_arm_cd?></td>
-										    					<td><?php echo $json->od_eje_arm_cd?></td>
-										  					</tr>
-										  					<tr>
-										  						
-										    					<td><?php echo $json->os_esf_arm_cd?></td>
-										    					<td><?php echo $json->os_cil_arm_cd?></td>
-										    					<td><?php echo $json->os_eje_arm_cd?></td>
-										  					</tr>
-														</table>
-													</div>
-												</div>			
-											</div>	
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo">Presión Intraocular:</div>
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo">Biomicroscopía:</div>
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo">Fondo de Ojos:</div>
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo">Fondo de Ojos:</div>
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo">Diagnóstico:</div>
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo">Solicitud de Estudios/Análisis:</div>
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo">Indicación:</div>
-										</div>	
-										<div class = "hc_fila">
-											<div class = "hc_titulo">Observaciones:</div>
 										</div>
+										<?php }?>
+
+										<?php 
+											if ( 	($json->od_select_cc_lejos.$json->os_select_cc_lejos != "") ||
+													($json->od_esf_cc_lejos.$json->od_cil_cc_lejos.$json->od_eje_cc_lejos != "") ||
+													($json->os_select_cc_cerca.$json->os_select_cc_cerca != "") ||
+													($json->os_esf_cc_cerca.$json->os_cil_cc_cerca.$json->os_eje_cc_cerca != "")
+												) {
+										?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo">
+												A.V. CORRECCIÓN PACIENTE:
+											</div>
+											<div class = "hc_col_izq"> 
+												<div class = "hc_subtitulo">
+													Lejos:
+												</div>
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td style = "border-right:1px solid;width:30px">
+																<?php 
+																	if ($json->od_select_cc_lejos != "")
+																		echo $json->od_select_cc_lejos;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->od_esf_cc_lejos,$json->od_cil_cc_lejos,$json->od_eje_cc_lejos);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td style = "border-right:1px solid">
+																<?php 
+																	if ($json->os_select_cc_lejos != "")
+																		echo $json->os_select_cc_lejos;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->os_esf_cc_lejos,$json->os_cil_cc_lejos,$json->os_eje_cc_lejos);
+																?>
+															</td>
+														</tr>	
+													</table>
+												</div>
+											</div>
+											<div class = "hc_col_der">
+												<div class = "hc_subtitulo">
+													Cerca:
+												</div>
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td style = "border-right:1px solid;width:30px">
+																<?php 
+																	if ($json->od_select_cc_cerca != "")
+																		echo $json->od_select_cc_cerca;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->od_esf_cc_cerca,$json->od_cil_cc_cerca,$json->od_eje_cc_cerca);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td style = "border-right:1px solid">
+																<?php 
+																	if ($json->os_select_cc_cerca != "")
+																		echo $json->os_select_cc_cerca;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->os_esf_cc_cerca,$json->os_cil_cc_cerca,$json->os_eje_cc_cerca);
+																?>
+															</td>
+														</tr>	
+													</table>
+												</div>
+											</div>
+										</div>
+										<?php }?>
+
+										<?php 
+											if ( 	($json->od_select_subj_lejos.$json->os_select_subj_lejos != "") ||
+													($json->od_esf_subj_lejos.$json->od_cil_subj_lejos.$json->od_eje_subj_lejos != "") ||
+													($json->os_esf_subj_lejos.$json->os_cil_subj_lejos.$json->os_eje_subj_lejos != "") ||
+
+													($json->od_select_subj_cerca.$json->os_select_subj_cerca != "") ||
+													($json->od_esf_subj_cerca.$json->od_cil_subj_cerca.$json->od_eje_subj_cerca != "") ||
+													($json->os_esf_subj_cerca.$json->os_cil_subj_cerca.$json->os_eje_subj_cerca != "") ||
+
+													($json->od_select_subj_media.$json->os_select_subj_media != "") ||
+													($json->od_esf_subj_media.$json->od_cil_subj_media.$json->od_eje_subj_media != "") ||
+													($json->os_esf_subj_media.$json->os_cil_subj_media.$json->os_eje_subj_media != "")
+												) {
+										?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo">
+												A.V. CORRECCIÓN SUBJETIVA:
+											</div>	
+											<div class = "hc_col_izq">
+											<?php 	if 	( 	($json->od_select_subj_lejos.$json->os_select_subj_lejos != "") ||
+															($json->od_esf_subj_lejos.$json->od_cil_subj_lejos.$json->od_eje_subj_lejos != "") ||
+															($json->os_esf_subj_lejos.$json->os_cil_subj_lejos.$json->os_eje_subj_lejos != "")
+														) {
+											?>
+												<div class = "hc_subtitulo">
+													Lejos:
+												</div>
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td style = "border-right:1px solid;width:30px">
+																<?php 
+																	if ($json->od_select_subj_lejos != "")
+																		echo $json->od_select_subj_lejos;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->od_esf_subj_lejos,$json->od_cil_subj_lejos,$json->od_eje_subj_lejos);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td style = "border-right:1px solid;width:30px">
+																<?php 
+																	if ($json->os_select_subj_lejos != "")
+																		echo $json->os_select_subj_lejos;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->os_esf_subj_lejos,$json->os_cil_subj_lejos,$json->os_eje_subj_lejos);
+																?>
+															</td>	
+														</tr>	
+													</table>
+												</div>
+											<?php } ?>	
+											</div>
+
+											<div class = "hc_col_der">	
+												<?php 	if 	( 	($json->od_select_subj_cerca.$json->os_select_subj_cerca != "") ||
+															($json->od_esf_subj_cerca.$json->od_cil_subj_cerca.$json->od_eje_subj_cerca != "") ||
+															($json->os_esf_subj_cerca.$json->os_cil_subj_cerca.$json->os_eje_subj_cerca != "")
+														) {
+												?>	
+												<div class = "hc_subtitulo">
+													Cerca:
+												</div>
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td style = "border-right:1px solid;width:30px">
+																<?php 
+																	if ($json->od_select_subj_cerca != "")
+																		echo $json->od_select_subj_cerca;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->od_esf_subj_cerca,$json->od_cil_subj_cerca,$json->od_eje_subj_cerca);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td style = "border-right:1px solid;width:30px">
+																<?php 
+																	if ($json->os_select_subj_cerca != "")
+																		echo $json->os_select_subj_cerca;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->os_esf_subj_cerca,$json->os_cil_subj_cerca,$json->os_eje_subj_cerca);
+																?>
+															</td>	
+														</tr>	
+													</table>
+												</div>
+											<?php } ?>	
+											</div>
+
+											<div class = "hc_col_izq" style = "margin-top:5px">
+												<?php 	if 	( 	($json->od_select_subj_media.$json->os_select_subj_media != "") ||
+															($json->od_esf_subj_media.$json->od_cil_subj_media.$json->od_eje_subj_media != "") ||
+															($json->os_esf_subj_media.$json->os_cil_subj_media.$json->os_eje_subj_media != "")
+														) {
+												?>	
+												<div class = "hc_subtitulo">
+													Media:
+												</div>
+												<div class = "hc_contenido">
+													<table>
+														<tr>
+															<td>OD:</td>
+															<td style = "border-right:1px solid;width:30px">
+																<?php 
+																	if ($json->od_select_subj_media != "")
+																		echo $json->od_select_subj_media;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->od_esf_subj_media,$json->od_cil_subj_media,$json->od_eje_subj_media);
+																?>
+															</td>
+														</tr>
+														<tr>
+															<td>OS:</td>
+															<td style = "border-right:1px solid;width:30px">
+																<?php 
+																	if ($json->os_select_subj_media != "")
+																		echo $json->os_select_subj_media;
+																	else
+																		echo "-";
+																?>
+															</td>
+															<td>
+																<?php
+																	echo check($json->os_esf_subj_media,$json->os_cil_subj_media,$json->os_eje_subj_media);
+																?>
+															</td>	
+														</tr>	
+													</table>
+												</div>
+											<?php } ?>	
+											</div>
+
+											<div class = "hc_col_der" style = "margin-top:5px">
+											<?php
+												if ($json->obs_subj != "") {
+											?>
+												<div class = "hc_subtitulo">
+													Observaciones:
+												</div>
+												<div class = "hc_contenido" style ="margin-top:15px;width:218px;border:none">
+													<?php echo $json->obs_subj?>
+												</div>
+											<?php } ?>	
+											</div>
 											
+										</div>
+										<?php }?>
+
+										<?php if ($json->od_presion.$json->os_presion != "") { ?>	
+										<div class = "hc_fila">
+											<div class = "hc_titulo" style = "width:170px">PRESIÓN INTRAOCULAR:</div>
+											<?php if ($json->od_presion != "") { ?>
+											<div class = "hc_col_izq" style = "width: 200px;margin-left:0px">
+												
+												<div class = "hc_subtitulo" style = "margin-top:0px;width:20px">
+													OD:
+												</div>
+												<div class = "hc_contenido" style ="border:none;">
+													<?php echo $json->od_presion?>
+												</div>
+											</div>
+											<?php }?>
+											<?php if ($json->os_presion != "") { ?>	
+											<div class = "hc_col_izq" style = "width: 600px;margin-left:190px;margin-top:5px">
+												<div class = "hc_subtitulo" style = "margin-top:0px;width:20px">
+													OS:
+												</div>
+												<div class = "hc_contenido" style ="border:none;">
+													<?php echo $json->os_presion?>
+												</div>
+											</div>
+											<?php }?>
+											<?php if ($json->obs_presion != "") { ?>	
+											<div class = "hc_col_izq" style = "width: 600px;margin-left:190px;margin-top:5px">
+												<div class = "hc_subtitulo" style ="margin-top:0px;width:89px">
+													Observaciones:
+												</div>
+												<div class = "hc_contenido" style ="border:none;width:450px">
+													<?php echo $json->obs_presion?>
+												</div>
+											</div>
+											<?php }?>										
+										</div>
+										<?php }?>
+
+										<?php if ($json->od_bio.$json->os_bio != "") { ?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo" style = "width:170px">BIOMICROSCOPÍA:</div>
+											<?php if ($json->od_bio != "") { ?>
+											<div class = "hc_col_izq" style = "width: 600px;margin-left:0px">
+												<div class = "hc_subtitulo" style = "margin-top:0px;width:20px">
+													OD:
+												</div>
+												<div class = "hc_contenido" style ="border:none;width:520px">
+													<?php echo $json->od_bio?>
+												</div>
+											</div>
+											<?php }?>
+											<?php if ($json->os_bio != "") { ?>
+											<div class = "hc_col_izq" style = "width: 600px;margin-left:190px;margin-top:5px">
+												<div class = "hc_subtitulo" style = "margin-top:0px;width:20px">
+													OS:
+												</div>
+												<div class = "hc_contenido" style ="border:none;width:520px">
+													<?php echo $json->os_bio?>
+												</div>
+											</div>
+											<?php }?>
+										</div>
+										<?php }?>
+
+										<?php if ($json->od_fo.$json->os_fo != "") { ?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo" style = "width:170px">FONDO DE OJOS:</div>
+											<?php if ($json->od_fo != "") { ?>
+											<div class = "hc_col_izq" style = "width: 600px;margin-left:0px">
+												<div class = "hc_subtitulo" style = "margin-top:0px;width:20px">
+													OD:
+												</div>
+												<div class = "hc_contenido" style ="border:none;width:520px">
+													<?php echo $json->od_fo?>
+												</div>
+											</div>
+											<?php }?>
+											<?php if ($json->os_fo != "") { ?>	
+											<div class = "hc_col_izq" style = "width: 600px;margin-left:190px;margin-top:5px">
+												<div class = "hc_subtitulo" style = "margin-top:0px;width:20px">
+													OS:
+												</div>
+												<div class = "hc_contenido" style ="border:none;width:520px">
+													<?php echo $json->os_fo?>
+												</div>
+											</div>
+											<?php }?>
+										</div>
+										<?php }?>
+
+										<?php if ( $json->txt_diag != "" ){ ?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo" style = "width:170px">DIAGNÓSTICO:</div>
+											<div class = "hc_contenido" style = "border:none;margin-top:2px;width:550px">
+												<?php echo $json->txt_diag; ?>
+											</div>	
+										</div>
+										<?php }?>
+
+										<?php if (isset($json->chk_sol)) { ?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo" style ="width: 170px">ESTUDIOS/ANÁLISIS:</div>
+											<div class ="hc_contenido" style = "width: 550px;border:none;margin-top:2px">
+												<?php
+													$cadena = ""; 
+													foreach ($json->chk_sol as $value) {
+															$cadena = $cadena.$value.", ";
+													}
+															$cadena = $cadena.$json->obs_sol;
+															echo trim($cadena, ", ");
+															
+												?>			
+											</div>	
+										</div>
+										<?php }?>
+
+										<?php if ($json->txt_indic != "") { ?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo" style = "width: 170px">INDICACIONES:</div>
+											<div class ="hc_contenido" style = "width: 550px;border:none;margin-top:2px">
+												<?php echo $json->txt_indic?>
+											</div>
+										</div>
+										<?php }?>
+
+										<?php if ($json->txt_obs != "") { ?>
+										<div class = "hc_fila">
+											<div class = "hc_titulo" style = "width: 170px">OBSERVACIONES</div>
+											<div class ="hc_contenido" style = "width: 550px;border:none;margin-top:2px">
+												<?php echo $json->txt_obs?>
+											</div>
+										</div>
+										<?php }?>
 									</div>				
 								</div>
 							<?php	

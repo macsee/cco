@@ -79,10 +79,12 @@ class Main extends CI_Controller
 		//$calendar_mes = $this->uri->segment(5);
 		$medico_seleccionado = $this->session->userdata('medico_seleccionado');
 
+		/*
 		if (!isset($medico_seleccionado)) {
 			$this->session->set_userdata('medico_seleccionado', 0);
 			$medico_seleccionado = 0;
 		}	
+		*/
 
 		$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
 		//$medico = $this->main_model->get_medico_by_id($this->main_model->getSelectedMedico()->valor);
@@ -104,7 +106,8 @@ class Main extends CI_Controller
 		$data['apellido_turno'] = $this->get('apellido');
 		$data['calendario'] = $this->main_model->create_calendar($calendar_anio, $calendar_mes);
 		$data['medicos'] = $this->main_model->get_medicos();
-		$data['medico_selected'] = $medico;
+		$data['medico_selected'] = $medico_seleccionado;
+		$data['obras'] = $this->main_model->get_obras();
 		$this->load->view('main_view', $data);
 	}
 	
@@ -568,40 +571,6 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	}
 /******************************************** Historia Clinica ***********************************************/
 
-	/*function historia_clinica($id) {
-
-
-		//$dir = './data/'.$id;
-
-		//if (!is_dir($dir)) {
-			mkdir($dir);
-		//}
-
-		//$id_encrypted = hash('md5',$id);
-
-		$data['estudios'] = $this->main_model->get_fechas_estudios($id);
-		$data['datos_paciente'] = $this->main_model->buscar_id_paciente($id);
-
-		$data['historia'] = $this->main_model->get_historia($id_encrypted);
-		$data['antecedentes'] = $this->main_model->get_antecedentes($id_encrypted);
-
-		$borrador_registro = $this->main_model->get_borrador($id_encrypted,"registro");
-		$borrador_antecedente = $this->main_model->get_borrador($id_encrypted,"antecedente");
-
-		if (empty($borrador_registro))
-			$data['borrador_registro'] = "";
-		else
-			$data['borrador_registro'] = $this->encrypt->decode($borrador_registro->text);
-
-		if (empty($borrador_antecedente))
-			$data['borrador_antecedente'] = "";
-		else
-			$data['borrador_antecedente'] = $this->encrypt->decode($borrador_antecedente->text);
-		
-		$data['paciente_id'] = $id;
-		$this->load->view('view_historia', $data);
-	}*/
-
 	function upload($paciente) {
 
 		$data['paciente'] = $paciente;
@@ -691,25 +660,14 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	}
 
-	function cambiar_medico($medico,$fecha) {
+	function cambiar_medico($medico,$fecha,$url) {
 		//$this->main_model->setSelectedMedico($medico);
 		$this->session->set_userdata('medico_seleccionado', $medico);
-		redirect('main/cambiar_dia/'.$fecha);
+		if ($url == "admision")
+			redirect('main/pacientes_admitidos/'.$fecha);
+		else
+			redirect('main/cambiar_dia/'.$fecha);
 	}
-
-	/*function add_entry($tipo) {
-
-		$data['fecha'] = $this->my_encode(date('Y-m-d H:i:s',time()));
-		$data['text'] = $this->my_encode($_POST['motivo']);
-		$data['id_paciente'] = hash('md5',$_POST['paciente']);
-		$data['medico'] = $this->my_encode($this->session->userdata('apellido').', '.$this->session->userdata('nombre'));
-		$data['tipo'] = $tipo;
-
-		$this->main_model->insert_record($data);
-		$this->main_model->delete_borrador($data);
-
-		redirect('main/historia_clinica/'.$_POST['paciente']);	
-	}*/
 
 	function historia_clinica($id) {
 
@@ -719,58 +677,168 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['historia'] = $this->main_model->get_historia($id);
 		$data['antecedentes'] = $this->main_model->get_antecedentes($id);
 
-		//$borrador_registro = $this->main_model->get_borrador($id,"registro");
-		//$borrador_antecedente = $this->main_model->get_borrador($id_encrypted,"antecedente");
-
-		if (empty($borrador_registro))
-			$data['borrador_registro'] = "";
-		else
-			$data['borrador_registro'] = $this->encrypt->decode($borrador_registro->text);
-
+		
+		$borrador_antecedente = $this->main_model->get_borrador($id,"antecedente");
+	
 		if (empty($borrador_antecedente))
 			$data['borrador_antecedente'] = "";
 		else
-			$data['borrador_antecedente'] = $this->encrypt->decode($borrador_antecedente->text);
+			$data['borrador_antecedente'] = json_decode($borrador_antecedente->data)->antecedente;
 		
 		$data['paciente_id'] = $id;
 		$this->load->view('view_historia', $data);
 	}
+
+	function load_hc_form($id) {
+		$data['paciente'] = $id;
+
+		$borrador_registro = $this->main_model->get_borrador($id,"registro");
+
+		if (empty($borrador_registro))
+			$data['borrador_registro'] = "";
+		else
+			$data['borrador_registro'] = $borrador_registro->data;
+
+		//$data['diagnosticos'] = $this->main_model->get_diagnosticos();
+		$this->load->view('form_hc',$data);
+	}
+
+	function submit_data($tipo) { 
+		$data['fecha'] = date('Y-m-d H:i:s',time());
+
+		if ($tipo == "registro") {
+			$test = str_replace(array('"',']','['),"", $_POST['txt_diag']);
+			$test = str_replace(',', ', ', $test);
+			$_POST['txt_diag'] = $test;
+		}
+			
+		$data['text'] = json_encode($_POST,JSON_UNESCAPED_UNICODE);
+		$data['tipo'] = $tipo;
+		$data['id_paciente'] = $_POST['paciente'];
+		$data['medico'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
+
+		$this->main_model->insert_record($data);
+
+		
+		//$this->main_model->delete_borrador($data);
+
+		redirect('main/historia_clinica/'.$_POST['paciente']);
+	}
 	
 	function guardar_borrador($tipo) {
 
-		$data['text'] = $this->my_encode($_POST[$tipo]);
-		$data['id_paciente'] = hash('md5',$_POST['paciente']);
+		//$data['fecha'] = date('Y-m-d H:i:s',time());
+		if ($tipo == "registro") {
+			$test = str_replace(array('"',']','['),"", $_POST['txt_diag']);
+			$test = str_replace(',', ', ', $test);
+			$_POST['txt_diag'] = $test;
+		}
+		$data['text'] = json_encode($_POST,JSON_UNESCAPED_UNICODE);
 		$data['tipo'] = $tipo;
+		$data['id_paciente'] = $_POST['paciente'];
+		$data['medico'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
+
 		$this->main_model->save_borrador($data);
+
 		redirect('main/historia_clinica/'.$_POST['paciente']);
 
 	}
 
 	function eliminar_borrador($tipo) {
 
-		$data['id_paciente'] = hash('md5',$_POST['paciente']);
+		$data['id_paciente'] = $_POST['paciente'];
 		$data['tipo'] = $tipo;
 		$this->main_model->delete_borrador($data);
 		redirect('main/historia_clinica/'.$_POST['paciente']);
 	}
-
-	function load_hc_form($paciente) {
-		$data['paciente'] = $paciente;
-		$this->load->view('form_hc',$data);
-	}
 	
-	function submit_data() { 
-		$data['fecha'] = date('Y-m-d H:i:s',time());
-		$data['text'] = json_encode($_POST);
-		$data['tipo'] = "registro";
-		$data['id_paciente'] = $_POST['paciente'];
-		$data['medico'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
-		$this->main_model->insert_record($data);
 
-		$data['tipo'] = "registro";
-		//$this->main_model->delete_borrador($data);
+	function pacientes_admitidos($fecha) {
 
-		redirect('main/historia_clinica/'.$_POST['paciente']);
+		//$fecha = date('Y-m-d',time());
+		//$fecha = date('Y-m-d',strtotime('2014-12-16'));
+		$data['fecha'] = date('Y-m-d',strtotime($fecha));
+		$data['medicos'] = $this->main_model->get_medicos();
+
+		$medico_selected = $this->session->userdata('medico_seleccionado');
+
+		$data['tipo_user'] = $this->session->userdata('grupo');
+		$data['medico_selected'] = $medico_selected;
+
+		$medico = $this->main_model->get_medico_by_id($medico_selected);
+		$data['filas'] = $this->main_model->get_pacientes_admitidos($fecha,$medico,$data['tipo_user']);
+
+		$array = $this->translate($fecha);
+		$data['day'] = $array['day'];
+		$data['daynum'] = $array['daynum'];
+		$data['month'] = $array['month'];
+		$data['year'] = $array['year'];
+		
+		$this->load->view('pacientes_ok',$data);
+	}
+
+	function add_to_facturacion($fecha) {
+
+		$test = str_replace(array('"',']','['),"", $_POST['chk_turno']);
+		$test = str_replace(',', ', ', $test);
+		$array_turno = implode(", ", $test);
+
+		$medico = $this->main_model->get_medico_by_id($_POST['sel_medico']);
+		$this->main_model->update_tipo_turno($_POST['id_turno'],$array_turno, $medico, $_POST['sel_estado']);
+
+		$array_fact['cvc'] = (strpos(strtolower($array_turno),'cvc') >= 0)? $_POST['sel_cvc'] : "";
+		$array_fact['iol'] = (strpos(strtolower($array_turno),'iol') >= 0) ? $_POST['sel_iol'] : "";
+		$array_fact['me'] = (strpos(strtolower($array_turno),'me') >= 0) ? $_POST['sel_me'] : "";
+		$array_fact['oct'] = (strpos(strtolower($array_turno),'oct') >= 0) ? $_POST['sel_oct'] : "";
+		$array_fact['topo'] = (strpos(strtolower($array_turno),'topo') >= 0) ? $_POST['sel_topo'] : "";
+		$array_fact['rfgc'] = (strpos(strtolower($array_turno),'rfgc') >= 0) ? $_POST['sel_rfgc'] : "";
+		$array_fact['rfg'] = (strpos(strtolower($array_turno),'rfg') >= 0) ? $_POST['sel_rfg'] : "";
+		$array_fact['yag'] = (strpos(strtolower($array_turno),'yag') >= 0) ? $_POST['sel_yag'] : "";
+		$array_fact['laser'] = (strpos(strtolower($array_turno),'laser') >= 0) ? $_POST['sel_laser'] : "";
+		$array_fact['obi'] = (strpos(strtolower($array_turno),'obi') >= 0) ? $_POST['sel_obi'] : "";
+		$array_fact['paqui'] = (strpos(strtolower($array_turno),'paqui') >= 0) ? $_POST['sel_paqui'] : "";
+		$array_fact['hrt'] = (strpos(strtolower($array_turno),'hrt') >= 0) ? $_POST['sel_hrt'] : "";
+		$array_fact['consulta'] = (strpos(strtolower($array_turno),'consulta') >= 0) ? $_POST['sel_consulta'] : "";
+
+		$array_fact['cvc_coseguro'] = $_POST['coseguro_cvc'];
+		$array_fact['iol_coseguro'] = $_POST['coseguro_iol'];
+		$array_fact['me_coseguro'] = $_POST['coseguro_me'];
+		$array_fact['oct_coseguro'] = $_POST['coseguro_oct'];
+		$array_fact['topo_coseguro'] = $_POST['coseguro_topo'];
+		$array_fact['rfgc_coseguro'] = $_POST['coseguro_rfgc'];
+		$array_fact['rfg_coseguro'] = $_POST['coseguro_rfg'];
+		$array_fact['yag_coseguro'] = $_POST['coseguro_yag'];
+		$array_fact['laser_coseguro'] = $_POST['coseguro_laser'];
+		$array_fact['obi_coseguro'] = $_POST['coseguro_obi'];
+		$array_fact['paqui_coseguro'] = $_POST['coseguro_paqui'];
+		$array_fact['hrt_coseguro'] = $_POST['coseguro_hrt'];
+		$array_fact['consulta_coseguro'] = $_POST['coseguro_consulta'];
+
+		if (isset($_POST['chk_ord']))
+			$array_fact['orden_pendiente'] = implode(", ",$_POST['chk_ord']);
+
+		
+
+		$this->main_model->update_facturacion($_POST['id_turno'], json_encode($array_fact), $medico);
+
+		redirect('main/cambiar_dia/'.$fecha);
+	}
+
+	function facturacion() {
+		
+		$data['obras'] = $this->main_model->get_obras();
+		$data['medicos'] = $this->main_model->get_medicos();
+
+		if (sizeof($_POST) != 0) {
+			$data['resultado'] = $this->main_model->buscar_facturacion($_POST['sel_obra'], $_POST['sel_medico'], $_POST['sel_localidad'], $_POST['fecha_desde'], $_POST['fecha_hasta']);
+			$data['obra_selected'] = $_POST['sel_obra'];
+			$data['localidad_selected'] = $_POST['sel_localidad'];
+			$data['medico_selected'] = $_POST['sel_medico'];
+			$data['fecha_desde'] = $_POST['fecha_desde'];
+			$data['fecha_hasta'] = $_POST['fecha_hasta'];
+		}
+
+		$this->load->view('facturacion_view',$data);		
 	}
 }
 

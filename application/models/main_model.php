@@ -12,7 +12,9 @@ class Main_model extends CI_Model
 	{
 		if ($medico == null)
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' ORDER BY hora");
-		else
+		else if ($medico == "Otro")
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' AND medico LIKE '%Otro%' ORDER BY hora");
+		else	
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' AND medico = '$medico' ORDER BY hora");
 
 		if ($query->num_rows()>0)
@@ -135,7 +137,7 @@ class Main_model extends CI_Model
 	}
 
 	function get_medico_by_id($id) {
-		$query = $this->db->query("SELECT nombre FROM medicos WHERE id = '$id'");
+		$query = $this->db->query("SELECT nombre FROM medicos WHERE id_medico = '$id'");
 		if ($query->num_rows > 0 )
 			return $query->row()->nombre;
 		else
@@ -377,11 +379,12 @@ class Main_model extends CI_Model
 	function cantidad_turnos_man($fecha) 
 	{
 		$medico_seleccionado = $this->session->userdata('medico_seleccionado');
+		$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
 
-		if ($medico_seleccionado == 0)
+		if ($medico == null)
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
 		else {
-			$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
+			//$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
 			$query = $this->db->query("SELECT * FROM turnos WHERE medico = '$medico' AND fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
 		}	
 		return $query->num_rows();
@@ -390,11 +393,12 @@ class Main_model extends CI_Model
 	function cantidad_turnos_tarde($fecha) 
 	{
 		$medico_seleccionado = $this->session->userdata('medico_seleccionado');
+		$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
 
-		if ($medico_seleccionado == 0)
+		if ($medico == null)
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");	
 		else {
-			$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
+			//$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
 			$query = $this->db->query("SELECT * FROM turnos WHERE medico = '$medico' AND fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");
 		}
 		return $query->num_rows();
@@ -920,6 +924,7 @@ class Main_model extends CI_Model
 			return $this->calendar->generate($ano, $mes, $cal_data);
 	}
 
+/*
 	function setSelectedMedico($medico) {
 		if ($medico == 'TODOS')
 			$this->db->query("UPDATE variables SET valor = NULL WHERE nombre = 'medico_seleccionado'");
@@ -932,7 +937,7 @@ class Main_model extends CI_Model
 		 $query = $this->db->query("SELECT valor FROM variables WHERE nombre = 'medico_seleccionado'");
 		 return $query->row();
 	}
-
+*/
 	function get_config_medico($medico) {
 		$query = $this->db->query("SELECT config FROM medicos WHERE nombre = '$medico'");
 		 return $query->row();
@@ -959,24 +964,6 @@ class Main_model extends CI_Model
 			return 0;
 		}
 	}
-
-	/*function get_historia($id) {
-
-		$query = $this->db->query("SELECT * FROM historia_clinica WHERE id_paciente = '$id' ORDER BY last_update DESC");
-		
-		if ($query->num_rows()>0)
-		{
-			foreach ($query->result() as $fila)
-			{
-				$data[] = $fila;
-			}
-			return $data;
-		}
-		else
-		{
-			return 0;
-		}
-	}*/
 
 	function get_antecedentes($id) {
 
@@ -1005,27 +992,30 @@ class Main_model extends CI_Model
 
 	function  get_borrador($id, $tipo) {
 
-		 $query = $this->db->query("SELECT * FROM borradores WHERE id_paciente = '$id' and tipo = '$tipo'");
-		 return $query->row();
-		 //if ( $query->num_rows() >0 )
-		 //else
-		 //	return (object) ["text" => ""];
+		$key = $this->config->item('encryption_key');
+		$query = $this->db->query("SELECT 
+									CONVERT(AES_DECRYPT(data, '$key') USING 'utf8') data					
+									FROM borradores WHERE AES_DECRYPT(id_paciente, '$key') = '$id'
+									AND AES_DECRYPT(tipo, '$key') = '$tipo'");
+
+		return $query->row();
 	}
 
 	function insert_record($data) {
+
 		$key = $this->config->item('encryption_key');
 		$texto = $data['text'];
 		$medico = $data['medico'];
 		$fecha = $data['fecha'];
-		$paciente = $data['id_paciente'];
+		$id = $data['id_paciente'];
 
-		if ($data['tipo'] = "registro")
+		if ($data['tipo'] == "registro")
 			$tabla = "historia_clinica";
 		else
 			$tabla = "antecedentes";
 
 			$this->db->query("INSERT INTO ".$tabla." (id_paciente,data,medico,fecha) VALUES (
-								AES_ENCRYPT('$paciente','$key'),
+								AES_ENCRYPT('$id','$key'),
 								AES_ENCRYPT('$texto','$key'),
 								AES_ENCRYPT('$medico','$key'),
 								AES_ENCRYPT('$fecha','$key')
@@ -1033,39 +1023,132 @@ class Main_model extends CI_Model
 		//SELECT CAST(AES_DECRYPT(data_mc, '$key') AS CHAR(50)) data_mc_decrypt FROM historia_clinica WHERE AES_DECRYPT(data_mc, '$key') LIKE '%Hola%'
 	}
 
-	/*function insert_entrada($data) {
-
-		if ($data['tipo'] = "registro") 
-			$str = $this->db->insert_string('historia_clinica', $data);
-		else
-			$str = $this->db->insert_string('antecedentes', $data);
-
-		$this->db->query($str);
-	}*/
-
-
 	function save_borrador($data) {
 
-		$id_paciente = $data['id_paciente'];
+		$key = $this->config->item('encryption_key');
+		$id = $data['id_paciente'];
 		$tipo = $data['tipo'];
+		$texto = $data['text'];
 
-		if (sizeof($this->get_borrador($id_paciente,$tipo)) == 0) {
+		if (sizeof($this->get_borrador($id,$tipo)) == 0) {
 
-			$str = $this->db->insert_string('borradores', $data);
-			$this->db->query($str);
+			$str = "INSERT INTO borradores (id_paciente,data,tipo) VALUES (
+								AES_ENCRYPT('$id','$key'),
+								AES_ENCRYPT('$texto','$key'),
+								AES_ENCRYPT('$tipo','$key')
+							)";
 		}
-		else {	
-			$data = array('text' => $data['text']);
-			$where = "id_paciente = '$id_paciente' and tipo = '$tipo'";
-			$str = $this->db->update_string('borradores', $data, $where);
-			$this->db->query($str);
+		else {
+
+			$str = "UPDATE borradores SET data = AES_ENCRYPT('$texto','$key')
+									WHERE AES_DECRYPT(id_paciente, '$key') = '$id' 
+									AND AES_DECRYPT(tipo, '$key') = '$tipo'";
 		}
+
+		$this->db->query($str);
 	}
 
 	function delete_borrador($data) {
+
+		$key = $this->config->item('encryption_key');
 		$id = $data['id_paciente'];
 		$tipo = $data['tipo'];
-		$this->db->query("DELETE FROM borradores WHERE id_paciente = '$id' and tipo = '$tipo'");
+		$this->db->query("DELETE FROM borradores WHERE AES_DECRYPT(id_paciente, '$key') = '$id' AND AES_DECRYPT(tipo, '$key') = '$tipo'");
+	}
+
+	function get_pacientes_admitidos($fecha, $medico_seleccionado, $tipo_user) {
+
+
+		if ($tipo_user == "Medico") {
+			$tipo = "";
+			$estado = "presente";
+		}
+		else {
+			$tipo = " AND (	tipo LIKE '%CVC%' or 
+							tipo LIKE '%IOL%' or 
+							tipo LIKE '%OCT%' or 
+							tipo LIKE '%RFG%' or 
+							tipo LIKE '%RFG Color%' or 
+							tipo LIKE '%ME%' or 
+							tipo LIKE '%TOPO%'
+						)";
+			$estado = "presente";
+		}			
+
+		if ($medico_seleccionado == null)
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND estado = '$estado'".$tipo);
+		else if ($medico_seleccionado == "Otro")
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND medico LIKE 'Otro%' AND estado = '$estado'".$tipo);
+		else
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND medico = '$medico_seleccionado' AND estado = '$estado'".$tipo);
+
+
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+			return $data;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	function update_tipo_turno($id, $tipo_turno, $medico, $estado) {
+
+		//print_r($tipo_turno);
+		$usuario = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
+
+		$this->db->query("UPDATE turnos SET usuario = '$usuario', tipo = '$tipo_turno', medico = '$medico', estado = '$estado' WHERE id = '$id'");
+	}
+
+	function update_facturacion($id, $data, $medico) {
+
+		$usuario = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
+
+		$q = $this->db->query("SELECT nombre, apellido, ficha, fecha FROM turnos WHERE id = '$id'");
+		$datos = $q->row();
+
+		$nombre = $datos->apellido.', '.$datos->nombre;
+		$ficha = $datos->ficha;
+		$fecha = $datos->fecha;
+
+		$query = $this->db->query("SELECT * FROM facturacion WHERE id_turno = '$id'");
+
+		if ($query->num_rows() != 0)
+			$this->db->query("UPDATE facturacion SET usuario = '$usuario', medico = '$medico', datos = '$data' WHERE id_turno = '$id'");
+		else
+			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,medico,usuario,fecha) VALUES ('$id','$nombre','$ficha','$data','$medico','$usuario','$fecha') ");
+	}
+
+	function buscar_facturacion ($obra, $medico, $localidad, $date_from, $date_to) {
+
+		$medico = $this->get_medico_by_id($medico);
+	
+		if ( $obra == "todos")
+			$obra = "";
+		if ( $medico == "")
+			$medico = "%%";
+
+		$string = "SELECT paciente, ficha, medico, datos, fecha FROM facturacion WHERE datos LIKE '%$obra%' AND medico LIKE '$medico' AND localidad LIKE '$localidad' AND (fecha BETWEEN '$date_from' AND '$date_to')";
+		
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+			return $data;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 }
 

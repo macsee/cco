@@ -37,6 +37,11 @@ class Login extends CI_Controller
 				'is_logged_in' => true
 			);
 			
+			if ($query->grupo == "Medico")
+				$this->session->set_userdata('medico_seleccionado', $query->id_user);
+			else
+				$this->session->set_userdata('medico_seleccionado', "todos");
+
 			$this->session->set_userdata($data);
 			redirect('main/index');
 		}

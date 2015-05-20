@@ -125,10 +125,10 @@
 			echo '<a class = "button_example clase3" href="'.base_url('index.php/main/facturacion/').'">Facturación</a>';
 		echo '</div>';
 		echo '<div class = "boton_home">';
-			echo '<a class = "button_example clase4" href="'.base_url('index.php/main/agendas/').'">Agendas</a>';
+			echo '<a class = "button_example clase5" href="'.base_url('index.php/main/agenda_cirugias/').'">Cirugías</a>';
 		echo '</div>';
 		echo '<div class = "boton_home">';
-			echo '<a class = "button_example clase5" href="'.base_url('index.php/main/show_calendar/').'">Calendario</a>';
+			echo '<a class = "button_example clase4" href="'.base_url('index.php/main/agendas/').'">Agendas</a>';
 		echo '</div>';
 ?>		
 	</div>

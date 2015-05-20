@@ -598,7 +598,7 @@
 					<?php if ($this->session->userdata('grupo') == "Medico") 
 					{	
 						echo '<div id = "nuevo_registro">';
-							echo '<iframe id = "myiframe" style = "border:none;width: 798px; height: 2420px" src="'.base_url('index.php/main/load_hc_form/'.$paciente_id).'"></iframe>';
+							echo '<iframe id = "myiframe" style = "border:none;width: 798px; height: 2450px" src="'.base_url('index.php/main/load_hc_form/'.$paciente_id).'"></iframe>';
 						echo '</div>';
 					}	
 						if ($historia == 0) {

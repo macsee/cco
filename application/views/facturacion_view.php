@@ -587,11 +587,12 @@
 									echo '<tr>';
 			  							echo '<th style = "text-align:left;width:100px">Fecha</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid;width:70px">Ficha</th>';
-			  							echo '<th style = "text-align:left;border-left:1px solid">Paciente</th>';
-			  							echo '<th style = "text-align:left;border-left:1px solid">Práctica</th>';
-			  							echo '<th style = "text-align:left;border-left:1px solid">Obra Social</th>';
+			  							echo '<th style = "text-align:left;border-left:1px solid;width:250px">Paciente</th>';
+			  							echo '<th style = "text-align:left;border-left:1px solid;width:80px">Práctica</th>';
+			  							echo '<th style = "text-align:left;border-left:1px solid;width:250px">Obra Social</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid">Médico</th>';
-			  							echo '<th style = "text-align:left;border-left:1px solid;width:100px">Coseguro</th>';
+			  							echo '<th style = "text-align:left;border-left:1px solid;width:50px">Coseguro</th>';
+			  							echo '<th style = "text-align:left;border-left:1px solid;width:100px">Informe</th>';
 									echo '</tr>';
 
 							foreach ($resultado as $value) {
@@ -606,6 +607,7 @@
 								$paciente = $value->paciente;
 								$medico = $value->medico;
 								$fecha = date('d-m-Y',strtotime($value->fecha));
+								$generar = '<a href = "#">Generar</a>';
 
 								$chk_ord = "";
 
@@ -622,6 +624,8 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -631,6 +635,7 @@
 										echo '<td>'.$json->cvc.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['cvc']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -645,6 +650,8 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -654,6 +661,7 @@
 										echo '<td>'.$json->iol.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['iol']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -668,6 +676,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -677,6 +686,7 @@
 										echo '<td>'.$json->topo.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['topo']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -691,6 +701,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -700,6 +711,7 @@
 										echo '<td>'.$json->oct.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['oct']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -714,6 +726,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -723,6 +736,7 @@
 										echo '<td>'.$json->me.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['me']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -737,6 +751,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -746,6 +761,7 @@
 										echo '<td>'.$json->rfg.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['rfg']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -760,6 +776,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -769,6 +786,7 @@
 										echo '<td>'.$json->rfgc.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['rfgc']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -783,6 +801,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -792,6 +811,7 @@
 										echo '<td>'.$json->paqui.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['paqui']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -806,6 +826,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -815,6 +836,7 @@
 										echo '<td>'.$json->obi.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['obi']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -829,6 +851,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -838,6 +861,7 @@
 										echo '<td>'.$json->hrt.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['hrt']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -852,6 +876,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -861,6 +886,7 @@
 										echo '<td>'.$json->laser.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['laser']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -875,6 +901,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -884,6 +911,7 @@
 										echo '<td>'.$json->yag.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['yag']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 									
@@ -898,6 +926,7 @@
 										$ficha = "";
 										$paciente = "";
 										$medico = "";
+										$generar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -907,6 +936,7 @@
 										echo '<td>'.$json->consulta.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['consulta']->coseg.'</td>';
+										echo '<td>'.$generar.'</td>';
 									echo '</tr>';
 								}
 							}

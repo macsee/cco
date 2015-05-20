@@ -840,6 +840,65 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 		$this->load->view('facturacion_view',$data);		
 	}
+
+	function coordinacion($id) {
+
+		$data['medicos'] = $this->main_model->get_medicos();
+		$data['paciente'] = $this->main_model->buscar_id_paciente($id);
+		$array['medico_derivador'] = $this->main_model->get_medico_by_id($this->session->userdata('user'));
+		print_r($this->session->userdata);
+		$this->load->view('coordinar_view',$data);
+	}
+
+	function proc_coordinacion() {
+
+		$array = $_POST;
+		$data['ok'] = "OK";
+		
+		$this->main_model->insert_datos_coord($array);
+
+		
+		$this->load->view('coordinar_view',$data);
+	}
+
+	function agenda_cirugias() {
+
+		$data = $_POST;
+		$data['obras'] = $this->main_model->get_obras();
+		$data['medicos'] = $this->main_model->get_medicos();
+		//$data['medico_selected'] = $this->main_model->get_medico_by_id($_POST['sel_medico']);
+		
+		if ( isset($_POST['fecha_desde']) && isset($_POST['fecha_hasta']) ) {
+
+			$data['resultado'] = $this->main_model->get_cirugias($data);
+			/*$data['obra_selected'] = $_POST['sel_obra'];
+			$data['medico_selected'] = $_POST['sel_medico'];
+			$data['fecha_desde'] = $_POST['fecha_desde'];
+			$data['fecha_hasta'] = $_POST['fecha_hasta'];
+			$data['practica_selected'] = $_POST['sel_practica'];*/
+		}
+
+		
+		$this->load->view('cirugias_view',$data);
+	}
+
+	function modificar_cirugia() {
+
+		$data = $_POST;
+		$data['obras'] = $this->main_model->get_obras();
+		$data['medicos'] = $this->main_model->get_medicos();
+
+		/*
+		$data['obra_selected'] = $_POST['sel_obra'];
+		$data['medico_selected'] = $_POST['sel_medico'];
+		$data['fecha_desde'] = $_POST['fecha_desde'];
+		$data['fecha_hasta'] = $_POST['fecha_hasta'];
+		$data['practica_selected'] = $_POST['sel_practica'];*/
+
+		//print_r($_POST);
+		$this->main_model->update_cirugia($_POST);
+		$this->load->view('cirugias_view',$data);	
+	}
 }
 
 

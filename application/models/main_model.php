@@ -1150,6 +1150,168 @@ class Main_model extends CI_Model
 			return 0;
 		}
 	}
+
+	function insert_datos_coord($data) {
+
+		$key = $this->config->item('encryption_key');
+
+		$ficha= $data['ficha'];
+		$paciente = $data['paciente'];
+		$obra = $data['obra'];
+		$nro_obra = $data['nro_obra'];
+		$practica = $data['practica'];
+		$ojo = $data['ojo'];
+		$obs = $data['obs'];
+		$medico = $data['medico_derivador'];
+		$fecha = date('Y-m-d');
+		$cirujano = $data['cirujano'];
+
+		$str = "INSERT INTO cirugias (id_paciente,paciente,obra,id_obra,practica,ojo,obs,medico,cirujano,confirmado,debe_orden,fecha_prop) VALUES (
+								AES_ENCRYPT('$ficha','$key'),
+								AES_ENCRYPT('$paciente','$key'),
+								AES_ENCRYPT('$obra','$key'),
+								AES_ENCRYPT('$nro_obra','$key'),
+								AES_ENCRYPT('$practica','$key'),
+								AES_ENCRYPT('$ojo','$key'),
+								AES_ENCRYPT('$obs','$key'),
+								AES_ENCRYPT('$medico','$key'),
+								AES_ENCRYPT('$cirujano','$key'),
+								AES_ENCRYPT('No','$key'),
+								AES_ENCRYPT('No','$key'),
+								'$fecha'
+							)";
+		
+		$this->db->query($str);
+	}
+
+	function get_cirugias($array) {
+
+		$key = $this->config->item('encryption_key');
+
+		$obra = $array['sel_obra'];
+		$practica = $array['sel_practica'];
+		$medico = $this->get_medico_by_id($_POST['sel_medico']);
+		//$cirujano = $this->get_medico_by_id($_POST['sel_cirujano']);
+
+		$date_from = $array['fecha_desde'];
+		$date_to = $array['fecha_hasta'];
+
+		if ( $obra == "todos")
+			$obra = "%%";
+		if ( $medico == "")
+			$medico = "%%";
+		if ( $practica == "todas")
+			$practica = "%%";
+
+		if (isset($array['check_orden']))
+			$debe_orden = "Si";
+		else
+			$debe_orden = "%%";
+
+		if (isset($array['check_conf']))
+			$confirmado = "Si";
+		else
+			$confirmado = "%%";
+
+		if (isset($array['check_deuda']))
+			$deuda = "AND AES_DECRYPT(plus_paciente, '$key') > AES_DECRYPT(pagado_paciente, '$key')";
+		else
+			$deuda = "";
+
+		$string = "SELECT
+						id,
+						CONVERT(AES_DECRYPT(id_paciente, '$key') USING 'utf8') id_paciente,
+						CONVERT(AES_DECRYPT(paciente, '$key') USING 'utf8') paciente,
+						CONVERT(AES_DECRYPT(obra, '$key') USING 'utf8') obra,
+						CONVERT(AES_DECRYPT(id_obra, '$key') USING 'utf8') id_obra,
+						CONVERT(AES_DECRYPT(practica, '$key') USING 'utf8') practica,
+						CONVERT(AES_DECRYPT(ojo, '$key') USING 'utf8') ojo,
+						CONVERT(AES_DECRYPT(medico, '$key') USING 'utf8') medico,
+						CONVERT(AES_DECRYPT(cirujano, '$key') USING 'utf8') cirujano,
+						CONVERT(AES_DECRYPT(presupuesto, '$key') USING 'utf8') presupuesto,
+						CONVERT(AES_DECRYPT(plus_paciente, '$key') USING 'utf8') plus_paciente,
+						CONVERT(AES_DECRYPT(pagado_paciente, '$key') USING 'utf8') pagado_paciente,
+						CONVERT(AES_DECRYPT(paga_obra, '$key') USING 'utf8') paga_obra,
+						CONVERT(AES_DECRYPT(coseguro_paciente, '$key') USING 'utf8') coseguro_paciente,
+						CONVERT(AES_DECRYPT(debe_orden, '$key') USING 'utf8') debe_orden,
+						CONVERT(AES_DECRYPT(confirmado, '$key') USING 'utf8') confirmado,
+						CONVERT(AES_DECRYPT(obs, '$key') USING 'utf8') obs,
+						fecha_prop
+						FROM cirugias WHERE AES_DECRYPT(obra, '$key') LIKE '$obra'
+						AND AES_DECRYPT(medico, '$key') LIKE '$medico'
+						AND AES_DECRYPT(practica, '$key') LIKE '$practica'
+						AND AES_DECRYPT(debe_orden, '$key') LIKE '$debe_orden'
+						AND AES_DECRYPT(confirmado, '$key') LIKE '$confirmado' ".$deuda. " AND (fecha_prop BETWEEN '$date_from' AND '$date_to')";
+
+		$query = $this->db->query($string);
+		
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+			return $data;
+		}
+		else
+		{
+			return null;
+		}				
+
+	}
+
+	function update_cirugia($array) {
+
+		$key = $this->config->item('encryption_key');
+
+		$obra = $array['sel_obra'];
+		$nro_obra = $array['nro_afiliado'];
+		$practica = $array['sel_practica'];
+		$ojo = $array['ojo'];
+		$obs = $array['obs'];
+		$fecha = $array['fecha'];
+		$cirujano = $array['sel_cirujano'];
+		$medico = $array['sel_medico'];
+
+		if (isset($array['orden']))
+			$debe_orden = "Si";
+		else
+			$debe_orden = "No";
+
+		if (isset($array['confirmado']))
+			$confirmado = "Si";
+		else
+			$confirmado = "No";
+
+		$presupuesto = $array['presupuesto'];
+		$plus_paciente = $array['plus_paciente'];
+		$pagado_paciente = $array['pagado_paciente'];
+		$paga_obra = $array['paga_obra'];
+		$coseguro_paciente = $array['coseguro_paciente'];
+		
+
+		$id = $array['id'];
+	
+		$string = "UPDATE cirugias SET
+								obra = AES_ENCRYPT('$obra','$key'),
+								id_obra = AES_ENCRYPT('$nro_obra','$key'),
+								practica = AES_ENCRYPT('$practica','$key'),
+								ojo = AES_ENCRYPT('$ojo','$key'),
+								obs = AES_ENCRYPT('$obs','$key'),
+								fecha_prop = '$fecha',
+								cirujano = AES_ENCRYPT('$cirujano','$key'),
+								medico = AES_ENCRYPT('$medico','$key'),
+								debe_orden = AES_ENCRYPT('$debe_orden','$key'),
+								confirmado = AES_ENCRYPT('$confirmado','$key'),
+								presupuesto = AES_ENCRYPT('$presupuesto','$key'),
+								plus_paciente = AES_ENCRYPT('$plus_paciente','$key'),
+								pagado_paciente = AES_ENCRYPT('$pagado_paciente','$key'),
+								paga_obra = AES_ENCRYPT('$paga_obra','$key'),
+								coseguro_paciente = AES_ENCRYPT('$coseguro_paciente','$key')
+						WHERE id = '$id'";
+				
+		$this->db->query($string);				
+	}
 }
 
 ?>

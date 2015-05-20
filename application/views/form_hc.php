@@ -134,6 +134,22 @@
 				padding: 5px 10px;
 			}
 
+			.boton {
+				background-color: #97d0d9;
+				font-family: 'OSWALD';
+				font-size: 12pt;
+				text-decoration: none;
+				padding-left: 20px;
+				padding-right: 20px;
+				padding-top: 5px;
+				padding-bottom: 5px;
+				color:white;
+				border-radius: 4px;
+			}
+
+			.boton:hover {
+				background-color: #1E91A3;
+			}
 		</style>
 		<script type="text/javascript">
 			$(document).ready( function() {
@@ -1545,6 +1561,7 @@
 				</div>
 				<div style ="margin-left:20px">
 	    			<textarea name = "txt_indic" style = "margin-top:25px;width:92%;height:100px;font-size:12pt"><?php echo (isset($json->txt_indic)) ? $json->txt_indic:""; ?></textarea>
+	    			<?php echo '<a class = "boton" style = "float:right" target= "_blank" href= "'.base_url("index.php/main/coordinacion/".$paciente).'">Coordinación Quirúrgica</a>'?>
 				</div>
 			</div>
 			<div class = "separador">

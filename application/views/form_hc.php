@@ -819,6 +819,10 @@
 					<p style ="width: 150px;transform: rotate(-90deg);margin-left: -65px;margin-top: 50px;text-align: center;font-family:Oswald;font-weight:bold;color:white;font-size:14pt"/>Sin Corrección</p>
 				</div>
 				<div style ="height:120px;margin-bottom:2px">
+					<?php
+						$list_lejos = array("10/10","9/10","8/10","7/10","6/10","5/10","4/10","3/10","2/10","1/10","CD1","VB","BPL","MPL","AMAU");
+						$list_cerca = array("2.00","1.75","1.50","1.25","1.00","0.75","0.50","0.25");
+					?>
 					<div class = "panel_izq">
 						<table class = "av_tabla">
 		  					<tr>
@@ -827,20 +831,8 @@
 		    					<td>
 		    						<select name = "od_select_sc_lejos">
 		    							<option></option>
-		    							<?php 
-		    								$list = array(
-		    												"1/10",
-		    												"2/10",
-		    												"3/10",
-		    												"4/10",
-		    												"5/10",
-		    												"6/10",
-		    												"7/10",
-		    												"8/10",
-		    												"9/10",
-		    												"10/10",
-		    											 );
-		    								foreach ($list as $value) {
+		    							<?php
+		    								foreach ($list_lejos as $value) {
 		    									if (isset($json->od_select_sc_lejos))
 		    										if ($value == $json->od_select_sc_lejos)
 		    											echo "<option selected = 'selected'>".$value."</option>";
@@ -860,19 +852,7 @@
 		    						<select name = "os_select_sc_lejos">
 		    							<option></option>
 		    							<?php 
-		    								$list = array(
-		    												"1/10",
-		    												"2/10",
-		    												"3/10",
-		    												"4/10",
-		    												"5/10",
-		    												"6/10",
-		    												"7/10",
-		    												"8/10",
-		    												"9/10",
-		    												"10/10",
-		    											 );
-		    								foreach ($list as $value) {
+		    								foreach ($list_lejos as $value) {
 		    									if (isset($json->os_select_sc_lejos))
 		    										if ($value == $json->os_select_sc_lejos)
 		    											echo "<option selected = 'selected'>".$value."</option>";
@@ -895,7 +875,7 @@
 		    					<td>
 		    						<select name = "od_select_sc_cerca">
 		    							<option></option>
-		    							<?php 
+		    							<?php /*
 		    								$list = array(
 		    												"1/10",
 		    												"2/10",
@@ -907,8 +887,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-		    								foreach ($list as $value) {
+		    											 );*/
+		    								foreach ($list_cerca as $value) {
 		    									if (isset($json->od_select_sc_cerca))
 		    										if ($value == $json->od_select_sc_cerca)
 		    											echo "<option selected = 'selected'>".$value."</option>";
@@ -927,8 +907,8 @@
 		    					<td>
 		    						<select name = "os_select_sc_cerca">
 		    							<option></option>
-		    							<?php 
-		    								$list = array(
+		    							<?php /*
+		    								$list_cerca = array(
 		    												"1/10",
 		    												"2/10",
 		    												"3/10",
@@ -939,8 +919,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-		    								foreach ($list as $value) {
+		    											 );*/
+		    								foreach ($list_cerca as $value) {
 		    									if (isset($json->os_select_sc_cerca))
 		    										if ($value == $json->os_select_sc_cerca)
 		    											echo "<option selected = 'selected'>".$value."</option>";
@@ -969,7 +949,7 @@
 			    					<td>
 			    						<select name = "od_select_cc_lejos">
 			    							<option></option>
-											<?php 
+											<?php /*
 		    									$list = array(
 		    												"1/10",
 		    												"2/10",
@@ -981,8 +961,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_lejos as $value) {
 			    									if (isset($json->od_select_cc_lejos))
 			    										if ($value == $json->od_select_cc_lejos)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1001,8 +981,8 @@
 			    					<td>
 			    						<select name = "os_select_cc_lejos">
 			    							<option></option>
-			    							<?php 
-		    									$list = array(
+			    							<?php /*
+		    									$list_lejos = array(
 		    												"1/10",
 		    												"2/10",
 		    												"3/10",
@@ -1013,8 +993,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_lejos as $value) {
 			    									if (isset($json->os_select_cc_lejos))
 			    										if ($value == $json->os_select_cc_lejos)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1058,7 +1038,7 @@
 			    					<td>
 			    						<select name = "od_select_cc_cerca">
 			    							<option></option>
-			    							<?php 
+			    							<?php /*
 		    									$list = array(
 		    												"1/10",
 		    												"2/10",
@@ -1070,8 +1050,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_cerca as $value) {
 			    									if (isset($json->od_select_cc_cerca))
 			    										if ($value == $json->od_select_cc_cerca)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1090,8 +1070,8 @@
 			    					<td>
 			    						<select name = "os_select_cc_cerca">
 			    							<option></option>
-			    							<?php 
-		    									$list = array(
+			    							<?php /*
+		    									$list_cerca = array(
 		    												"1/10",
 		    												"2/10",
 		    												"3/10",
@@ -1102,8 +1082,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_cerca as $value) {
 			    									if (isset($json->os_select_cc_cerca))
 			    										if ($value == $json->os_select_cc_cerca)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1152,7 +1132,7 @@
 			    					<td>
 			    						<select name = "od_select_subj_lejos">
 			    							<option></option>
-			    							<?php 
+			    							<?php /*
 		    									$list = array(
 		    												"1/10",
 		    												"2/10",
@@ -1164,8 +1144,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_lejos as $value) {
 			    									if (isset($json->od_select_subj_lejos))
 			    										if ($value == $json->od_select_subj_lejos)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1184,7 +1164,7 @@
 			    					<td>
 			    						<select name = "os_select_subj_lejos">
 			    							<option></option>
-			    							<?php 
+			    							<?php /*
 		    									$list = array(
 		    												"1/10",
 		    												"2/10",
@@ -1196,8 +1176,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_lejos as $value) {
 			    									if (isset($json->os_select_subj_lejos))
 			    										if ($value == $json->os_select_subj_lejos)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1242,7 +1222,7 @@
 			    					<td>
 			    						<select name = "od_select_subj_cerca">
 			    							<option></option>
-			    							<?php 
+			    							<?php /*
 		    									$list = array(
 		    												"1/10",
 		    												"2/10",
@@ -1254,8 +1234,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_cerca as $value) {
 			    									if (isset($json->od_select_subj_cerca))
 			    										if ($value == $json->od_select_subj_cerca)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1275,7 +1255,7 @@
 			    					<td>
 			    						<select name = "os_select_subj_cerca">
 			    							<option></option>
-			    							<?php 
+			    							<?php /*
 		    									$list = array(
 		    												"1/10",
 		    												"2/10",
@@ -1287,8 +1267,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_cerca as $value) {
 			    									if (isset($json->os_select_subj_cerca))
 			    										if ($value == $json->os_select_subj_cerca)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1334,6 +1314,9 @@
 					</div>	
 					<div class = "panel_der">
 						<div style = "float:left;margin-top:25px;margin-right:10px">
+							<?php
+								$list_media = array("10/10","9/10","8/10","7/10","6/10","5/10","4/10","3/10","2/10","1/10");
+							?>
 							<table class = "av_tabla">
 			  					<tr>
 			    					<td style = "width:40px">Media:</td>
@@ -1342,19 +1325,8 @@
 			    						<select name = "od_select_subj_media">
 			    							<option></option>
 			    							<?php 
-		    									$list = array(
-		    												"1/10",
-		    												"2/10",
-		    												"3/10",
-		    												"4/10",
-		    												"5/10",
-		    												"6/10",
-		    												"7/10",
-		    												"8/10",
-		    												"9/10",
-		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    									//$list = array("10/10","9/10","8/10","7/10","6/10","5/10","4/10","3/10","2/10","1/10");
+			    								foreach ($list_media as $value) {
 			    									if (isset($json->od_select_subj_media))
 			    										if ($value == $json->od_select_subj_media)
 			    											echo "<option selected = 'selected'>".$value."</option>";
@@ -1373,7 +1345,7 @@
 			    					<td>
 			    						<select name = "os_select_subj_media">
 			    							<option></option>
-			    							<?php 
+			    							<?php /*
 		    									$list = array(
 		    												"1/10",
 		    												"2/10",
@@ -1385,8 +1357,8 @@
 		    												"8/10",
 		    												"9/10",
 		    												"10/10",
-		    											 );
-			    								foreach ($list as $value) {
+		    											 );*/
+			    								foreach ($list_media as $value) {
 			    									if (isset($json->os_select_subj_media))
 			    										if ($value == $json->os_select_subj_media)
 			    											echo "<option selected = 'selected'>".$value."</option>";

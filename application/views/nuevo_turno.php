@@ -193,64 +193,7 @@
 		});
 	};
 
-	$(function() {
-        var availableTags = [
-            "AAPM - Propag. Med.",
-			"ACA Salud",
-			"ACINDAR",
-			"Agua y Energía",
-			"AMR",
-			"AMUR",
-			"APSOT",
-			"Asoc. Española",
-			"Caja Forense",
-			"Caja Ingenieros",
-			"Camioneros - Mutual",
-			"Ciencias Económicas",
-			"Docthos",
-			"Emedic",
-			"EPE-SMAI",
-			"Federación Médica",
-			"Femedic",
-			"Fuerza Aérea",
-			"Galeno",
-			"Grupo Oroño",
-			"IAPOS",
-			"IOSE",
-			"IPAM",
-			"Jerárquico Salud",
-			"Luis Pasteur",
-			"Luz y Fuerza",
-			"Luz y Fuerza - Mutual",
-			"Medicus",
-			"Medife",
-			"Mutual Federada",
-			"OMINT",
-			"OSDEA",
-			"OSDOP",
-			"OSPAC",
-			"OSPAGA",
-			"OSPESGA",
-			"OSPI Maderera",
-			"OSSIMRA",
-			"Particular",
-			"Patrones de Cabotaje",
-			"Poder Judicial",
-			"Prensa - OSPRO",
-			"Publicidad",
-			"SADAIC",
-			"San Pedro",
-			"SAT Televisión",
-			"SERVE Salud",
-			"Sind. Camioneros",
-			"Swiss Medical",
-			"Teleg. y Radioteleg.",
-			"Universidad"
-        ];
-        $( "#obra" ).autocomplete({
-            source: availableTags
-        });
-    });
+	
 
 /*	$(function() {
        
@@ -449,15 +392,18 @@ $obra = "";
 							<input type="checkbox" name="tipo[]" value = "YAG" id = "YAG"/> YAG
 						</div>
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "LASER" id = "LASER"/> LASER 
+							<input type="checkbox" name="tipo[]" value = "Laser" id = "LASER"/> LASER 
 						</div>
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "CONSULTA" id = "CONSULTA"/> Consulta  
+							<input type="checkbox" name="tipo[]" value = "Consulta" id = "CONSULTA"/> Consulta  
 						</div>			
 					</div>
 					<div class = "fila">
 						<div class = "celda">
 							<input type="checkbox" name="tipo[]" value = "HRT" id = "HRT"/> HRT 	
+						</div>
+						<div class = "celda">
+							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo"/> Sin Cargo 	
 						</div>				
 					</div>
 				</div>

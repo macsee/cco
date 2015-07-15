@@ -185,71 +185,89 @@
 			<form id = "form_cirugia" name = "form_cirugia" action="<?php echo base_url('index.php/main/agenda_cirugias')?>" method="post">
 				<div style ="float:left;margin-left:10px">
 					Práctica
-					<select style = "font-size: 12pt" id = "sel_practica" name = "sel_practica">
+					<select style = "font-size: 12pt" id = "sel_practica_" name = "sel_practica_">
 							<option value = "todas" selected>Todas</option>
-							<option value = "Catarata">Cirug. Catarata</option>
+							<?php
+							if (!isset($sel_practica_))
+								$sel_practica_ = "";
+
+								foreach ($tipo_cirugia as $cirugia)
+									if ($cirugia->nombre == $sel_practica_)
+										echo '<option selected>'.$cirugia->nombre.'</option>';
+									else
+										echo '<option>'.$cirugia->nombre.'</option>';
+							?>
 					</select>
 				</div>
 				<div style ="float:left;margin-left:20px">
 					Obra Social:
-					<select style = "font-size: 12pt" = "sel_obra" name="sel_obra">
+					<select style = "font-size: 12pt" id = "sel_obra_" name="sel_obra_">
 						<option value = "todos">Todas</option>
 						<?php
-							if (!isset($sel_obra))
-								$sel_obra = "";
+							if (!isset($sel_obra_))
+								$sel_obra_ = "";
 
 							foreach ($obras as $obra)
-								if ($obra->obra == $sel_obra)									
-									echo '<option value ='.$obra->obra.' selected>'.$obra->obra.'</option>';
+								if ($obra->obra == $sel_obra_)									
+									echo '<option selected>'.$obra->obra.'</option>';
 								else
-									echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+									echo '<option>'.$obra->obra.'</option>';
 						?>
 					</select>
 				</div>
-				<div style ="float:left;margin-left:20px">
+				<div style ="float:left;margin-left:20px;margin-right:250px">
 					Derivado por:
-					<select style = "font-size: 12pt" id = "sel_medico" name="sel_medico">
+					<select style = "font-size: 12pt" id = "sel_medico_" name="sel_medico_">
 						<option value = "todos">Todos</option>
 						<?php
-							if (!isset($sel_medico))
-									$sel_medico = "";
+							if (!isset($sel_medico_))
+									$sel_medico_ = "";
 
 							foreach ($medicos as $medico)
-								if ($medico->id_medico == $sel_medico)
+								if ($medico->id_medico == $sel_medico_)
 									echo '<option value ='.$medico->id_medico.' selected>'.$medico->nombre.'</option>';
 								else
 									echo '<option value ='.$medico->id_medico.'>'.$medico->nombre.'</option>';
 						?>
 					</select>
 				</div>
-				<div style ="float:left;margin-left:20px;">
+				<div style ="float:left;margin-left:20px;margin-top:15px">
 					Confirmadas:
 					<?php 	if (isset($check_conf))
-								$check_conf = "checked";
+								if ($check_conf != "")
+									$check_conf = "checked";
+								else
+									$check_conf = "";
 							else
 								$check_conf = "";	
 					?>
 					<input name = "check_conf" type = "checkbox" <?php echo $check_conf?>/>
 				</div>
-				<div style ="float:left;margin-left:30px;margin-bottom:10px">
+				<div style ="float:left;margin-left:30px;margin-top:15px">
 					Debe orden:
 					<?php 	if (isset($check_orden))
-								$check_orden = "checked";
+								if ($check_orden != "")
+									$check_orden = "checked";
+								else
+									$check_orden = "";
 							else
 								$check_orden = "";	
 					?>
 					<input name = "check_orden" type = "checkbox" <?php echo $check_orden?>/>
 				</div>
-				<div style ="float:left;margin-left:30px;margin-right:100px;margin-bottom:10px">
+				<div style ="float:left;margin-left:30px;margin-right:100px;margin-top:15px">
 					Deuda:
 					<?php 	if (isset($check_deuda))
-								$check_deuda = "checked";
+								if ($check_deuda != "")
+									$check_deuda = "checked";
+								else
+									$check_deuda = "";
 							else
 								$check_deuda = "";	
 					?>
 					<input name = "check_deuda" type = "checkbox" <?php echo $check_deuda?>/>
 				</div>	
-				<div style ="float:left;margin-left:10px;margin-top:10px">
+				<div style ="float:left;margin-left:10px;margin-top:15px">
 					<?php 
 						if (!isset($fecha_desde))
 							$fecha_desde = "";
@@ -259,10 +277,10 @@
 					?>
 					Desde: <input style = "font-size: 11pt;width:150px" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>" required/>
 				</div>
-				<div style ="float:left;margin-left:20px;margin-top:10px">
+				<div style ="float:left;margin-left:20px;margin-top:15px">
 					Hasta: <input style = "font-size: 11pt;width:150px" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" required/>
 				</div>	
-				<div style ="float:left;margin-left:20px;margin-top:10px">
+				<div style ="float:left;margin-left:20px;margin-top:15px">
 					<button style = "font-size: 12pt" type = "submit"> Buscar </button>
 				</div>
 			</form>
@@ -300,7 +318,7 @@
 				</table>
 				<?php foreach ($resultado as $value) { ?>
 
-					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:25px;margin-top:2px;width:99.7%">
+					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:40px;margin-top:2px;width:99.7%">
 						<div style = "width:62px;margin-left:2px" class = "paciente">
 							<?php echo $value->id_paciente ?>
 						</div>
@@ -353,9 +371,9 @@
 
 											foreach ($obras as $obra)
 												if ($obra->obra == $value->obra)									
-													echo '<option value ='.$obra->obra.' selected>'.$obra->obra.'</option>';
+													echo '<option selected>'.$obra->obra.'</option>';
 												else
-													echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+													echo '<option>'.$obra->obra.'</option>';
 										?>
 									</select>
 								</td>
@@ -368,7 +386,13 @@
 								<td class = "izq">Práctica:</td>
 								<td>
 									<select name = "sel_practica" required>
-										<option>Cirug. Catarata</option>
+										<?php
+											foreach ($tipo_cirugia as $cirugia)
+												if ($cirugia->nombre == $value->practica)
+													echo '<option selected>'.$cirugia->nombre.'</option>';
+												else	
+													echo '<option>'.$cirugia->nombre.'</option>';
+										?>
 									</select>
 								</td>
 							</tr>
@@ -376,13 +400,29 @@
 								<td class = "izq">Ojo:</td>
 								<td>
 									<select id = "ojo" name = "ojo" required>
-										<option selected><?php echo $value->ojo?></option>
-										<?php 	if ($value->selected != "AMBOS")
+										<?php
+											if ($value->ojo == "AMBOS")
+												echo '<option selected>AMBOS</option>';
+											else
+												echo '<option>AMBOS</option>';
+
+											if ($value->ojo == "OD")
+												echo '<option selected>OD</option>';
+											else
+												echo '<option>OD</option>';
+
+											if ($value->ojo == "OS")
+												echo '<option selected>OS</option>';
+											else
+												echo '<option>OS</option>';
+										?>
+										<?php 	/*if ($value->selected != "AMBOS")
 													echo '<option>AMBOS</option>';
 												if ($value->selected != "OD")
 													echo '<option>OD</option>';
 												if ($value->selected != "OS")
 													echo '<option>OS</option>';
+												*/	
 										?>		
 									</select>
 								</td>
@@ -471,9 +511,14 @@
 							<a id = "<?php echo $value->id ?>" class = "save" href = "#">Guardar Cambios</a>
 						</div>
 						<input type = "hidden" name = "id" id = "id" value = "<?php echo $value->id?>" />
+						<input type = "hidden" name = "sel_obra_panel" id = "sel_obra_panel" value = "<?php echo $sel_obra_?>" />
+						<input type = "hidden" name = "sel_practica_panel" id = "sel_practica_panel" value = "<?php echo $sel_practica_?>" />
+						<input type = "hidden" name = "sel_medico_panel" id = "sel_medico_panel" value = "<?php echo $sel_medico_?>" />
 						<input type = "hidden" name = "fecha_desde" id = "fecha_desde" value = "<?php echo $fecha_desde?>" />
 						<input type = "hidden" name = "fecha_hasta" id = "fecha_hasta" value = "<?php echo $fecha_hasta?>" />
-						
+						<input type = "hidden" name = "check_conf" value = "<?php echo $check_conf?>"/>
+						<input type = "hidden" name = "check_orden" value = "<?php echo $check_orden?>"/>
+						<input type = "hidden" name = "check_deuda" value = "<?php echo $check_deuda?>"/>
 					</form>
 				</div>
 			</div>

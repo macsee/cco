@@ -85,14 +85,15 @@ class Main extends CI_Controller
 			$medico_seleccionado = 0;
 		}	
 		*/
-
+	
 		$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
 		//$medico = $this->main_model->get_medico_by_id($this->main_model->getSelectedMedico()->valor);
 		$aux = explode('-',$dia);
 		$calendar_anio = $aux[0];
 		$calendar_mes = $aux[1];
 		$data['fecha'] = $dia;
-		$data['filas'] = $this->main_model->get_turnos($dia,$medico);
+		$data['filas'] = $this->main_model->turnos_del_dia($dia,$medico);
+		//$data['filas'] = $this->main_model->get_turnos($dia,$medico);
 		$data['horario'] = $this->main_model->get_horarios();
 		$data['notas'] = $this->main_model->get_notas($dia);
 		$array = $this->translate($dia);
@@ -108,6 +109,7 @@ class Main extends CI_Controller
 		$data['medicos'] = $this->main_model->get_medicos();
 		$data['medico_selected'] = $medico_seleccionado;
 		$data['obras'] = $this->main_model->get_obras();
+		$data['bloqueado'] = $this->main_model->is_bloqueado($dia);
 		$this->load->view('main_view', $data);
 	}
 	
@@ -119,6 +121,8 @@ class Main extends CI_Controller
 		$data['apellido'] = $_POST['apellido'];
 		$data['obra'] = $_POST['obra'];
 		$data['fecha'] = $_POST['fecha_turno'];
+		$data['id_turno'] = $_POST['id_turno'];
+		$data['obras'] = $this->main_model->get_obras();
 
 		$aux_tel = explode ('-',$_POST['tel1']);
 		$data['tel1_1'] = $aux_tel[0]; 
@@ -144,6 +148,7 @@ class Main extends CI_Controller
 		$data['fecha'] = $filas[0]->fecha;
 		$data['apellido'] = $filas[0]->apellido;
 		$data['obra'] = $filas[0]->obra_social;
+		$data['obras'] = $this->main_model->get_obras();
 
 		$aux_tel = explode ('-',$filas[0]->tel1);
 		$data['tel1_1'] = $aux_tel[0]; 
@@ -175,6 +180,8 @@ class Main extends CI_Controller
 		$data['direccion'] = $resultado[0]->direccion;
 		$data['localidad'] = $resultado[0]->localidad;
 		$data['obs'] = $resultado[0]->observaciones;
+
+		$data['obras'] = $this->main_model->get_obras();
 		
 		$repetidos = $this->main_model->check_ficha($data['ficha']); // NUEVO! Para saber si una ficha esta repetida al actualizar los datos de un paciente
 
@@ -236,7 +243,7 @@ class Main extends CI_Controller
 		else {
 			$data['resultado'] = $this->main_model->buscar_paciente($apellido);		
 		}
-		
+
 		$this->load->view('busqueda_paciente', $data);
 	}
 
@@ -340,7 +347,8 @@ class Main extends CI_Controller
 	{	
 		//print_r($_POST);
 		$this->main_model->guardar_turno($_POST);
-		redirect('main/cambiar_dia/'.$_POST['fecha'].'#'.$_POST['hora'].':'.$_POST['minutos'], 'location');
+		redirect('main/cambiar_dia/'.$_POST['fecha'], 'location');
+		//redirect('main/cambiar_dia/'.$_POST['fecha'].'#'.$_POST['hora'].':'.$_POST['minutos'], 'location');
 		//$this->load->view('nuevo_turno_exito');
 	}
 	
@@ -371,7 +379,8 @@ class Main extends CI_Controller
 	function pro_edit_turno()
 	{
 		$this->main_model->actualizar_turno($_POST);
-		redirect('main/cambiar_dia/'.$_POST['fecha'].'#'.$_POST['hora'], 'location');
+		redirect('main/cambiar_dia/'.$_POST['fecha'], 'location');
+		//redirect('main/cambiar_dia/'.$_POST['fecha'].'#'.$_POST['hora'], 'location');
 		//$this->load->view('nuevo_turno_exito');
 	}
 	
@@ -380,7 +389,8 @@ class Main extends CI_Controller
 		$data = $this->main_model->get_turno_by($id);
 		$hora = date('H:i', strtotime($data[0]->hora));
 		$this->main_model->delete_turno($id);
-		redirect('main/cambiar_dia/'.$data[0]->fecha.'#'.$hora, 'location');
+		redirect('main/cambiar_dia/'.$data[0]->fecha, 'location');
+		//redirect('main/cambiar_dia/'.$data[0]->fecha.'#'.$hora, 'location');
 	}
 
 	function cambiar_turno($fecha, $hora, $minuto)
@@ -391,7 +401,8 @@ class Main extends CI_Controller
 		$data['nombre_turno'] = $this->get('nombre');
 		$data['apellido_turno'] = $this->get('apellido');
 		$this->main_model->cambiar_turno($data);
-		redirect('main/cambiar_dia/'.$fecha.'#'.$data['hora'], 'location');
+		redirect('main/cambiar_dia/'.$fecha, 'location');
+		//redirect('main/cambiar_dia/'.$fecha.'#'.$data['hora'], 'location');
 	}
 
 	function set($var,$valor)
@@ -427,7 +438,8 @@ class Main extends CI_Controller
 	function anular_cambio_turno($fecha, $hora, $minuto)
 	{
 		$this->main_model->anular_cambio();
-		redirect('main/cambiar_dia/'.$fecha.'#'.$hora.':'.$minuto, 'location');
+		//redirect('main/cambiar_dia/'.$fecha.'#'.$hora.':'.$minuto, 'location');
+		redirect('main/cambiar_dia/'.$fecha, 'location');
 	}
 	
 	function set_cambio($fecha, $id, $nombre, $apellido)
@@ -462,7 +474,8 @@ class Main extends CI_Controller
 	function cambiar_estado($var,$id,$fecha,$hora,$minuto)
 	{	
 		$this->main_model->cambiar_estado($var,$id);
-		redirect('main/cambiar_dia/'.$fecha.'#'.$hora.':'.$minuto, 'location');
+		redirect('main/cambiar_dia/'.$fecha, 'location');
+		//redirect('main/cambiar_dia/'.$fecha.'#'.$hora.':'.$minuto, 'location');
 	}
 	
 	function busqueda()
@@ -502,6 +515,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	{
 		$resultado = $this->main_model->obtener_ultima_ficha();
 		$data['ultima_ficha'] = ($resultado->nroficha) + 1;
+		$data['obras'] = $this->main_model->get_obras();
+
 		$this->load->view('pacientes_home', $data);
 	}
 
@@ -522,7 +537,15 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			if ($data['ficha'] == 0	) {
 				
 				$this->main_model->ingresar_paciente($_POST);
-				redirect('main/pacientes/', 'location');
+
+				$url = $_POST['callback_url'];
+
+				if (strrpos($url,'cambiar_dia') !== FALSE) {
+					redirect($url);
+					
+				}	
+				else	
+					redirect('main/pacientes/', 'location');
 
 			}
 			else {
@@ -539,8 +562,14 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function pro_edit_paciente() {
 
+		//print_r($_SERVER);
 		$this->main_model->actualizar_paciente($_POST);
-		redirect('main/buscar_paciente/'.$_POST['id_paciente'], 'location');
+		
+		//$url = str_replace('_id', '', $_SERVER['HTTP_REFERER']);
+		$url = $_POST['callback_url'];
+		
+		redirect($url);
+		//redirect('main/buscar_paciente/'.$_POST['id_paciente'], 'location');
 	}
 
 	function asignar_ficha($id_turno, $ficha, $id, $nombre, $apellido){
@@ -578,19 +607,26 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	}
 
 	function do_upload() {
-
-		$fecha_sql =  date('Y-m-d');
+		
+		$fecha_sql =  date('d-m-Y');
 		$fecha =  date('dmY');
+
+		if ($_POST['fecha'] != "") {
+			$fecha_sql = date('d-m-Y', strtotime($_POST['fecha']));
+			$fecha = date('dmY', strtotime($_POST['fecha']));
+		}	
+			
 		$tipo = $_POST['tipo'];
 		$id_paciente = $_POST['paciente'];
 
-		$dir = "C:\\xampp\\htdocs\\cco\\data\\".$_POST['paciente']; 
+			
+		$dir = $this->config->item('upload_dir').$id_paciente.'/'.$tipo;
 
 		if (!is_dir($dir)) {
-			mkdir($dir);
+			mkdir($dir,0777,true);
 		}
 
-		$count = 0;
+		//$count = 0;
 
 		foreach ($_FILES['userfile']['name'] as $fieldName => $file) {
 
@@ -599,37 +635,57 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$extension = explode('.', $file);
 			$extension = ".".$extension[sizeof($extension)-1];
 
-			/*$name = $this->formatear($file, $tipo, $id_paciente);
-			$name_extension = $name.$extension;
-			$name_aux = $name;
+			$name = $tipo.'_'.$id_paciente.'_'.$fecha;
+			$exist = $name;
 
-			while (file_exists($dir.'\\'.$name_extension)) {
+			while (file_exists($dir.'/'.$exist.$extension)) {
 
-				$name_aux =$name.'-'.$contador_archivo;
-				$name_extension = $name_aux.$extension;
+				$exist = $name.'_'.$contador_archivo;
 				$contador_archivo++;
-			}*/
-			$date = (new DateTime())->format('U');
-			$imagen = $tipo.'-'.$fecha.'-'.$date;
-			$name_extension = $tipo.'-'.$id_paciente.'-'.$fecha.'-'.$date.$extension;
-		
-    		move_uploaded_file($_FILES['userfile']['tmp_name'][$count], "$dir/$name_extension");
+
+			}
+
+			$name_extension = $exist.$extension;
+
+			if($contador_archivo > 1)
+				$imagen = $contador_archivo.'_'.$fecha_sql;
+			else
+				$imagen = $fecha_sql;
+
+    		move_uploaded_file($_FILES['userfile']['tmp_name'][0], "$dir/$name_extension");
     		//$count++;
 
     		$array['id_paciente'] = $id_paciente;
 			$array['tipo'] = $tipo;
-			$array['fecha'] = $fecha_sql;
+			$array['fecha'] = date('Y-m-d', strtotime($fecha_sql));
 			$array['imagen'] = $imagen;
-			$array['ruta'] = base_url('data/'.$id_paciente.'/'.$name_extension);
+			$array['ruta'] = base_url('data/'.$id_paciente.'/'.$tipo.'/'.$name_extension);
 			$this->main_model->ingresar_estudios($array);
 
 		}
-		$data['url'] = base_url('index.php/main/historia_clinica/'.$id_paciente);
-		$this->load->view('upload_msg', $data);
 
+		//$data['url'] = base_url('index.php/main/historia_clinica/'.$id_paciente);
+		//$this->load->view('upload_msg', $data);
+
+		redirect('main/historia_clinica/'.$id_paciente);
 		//redirect('main/cambiar_dia/'.$resultado->fecha, 'location');
 		//header('Refresh: 1; url='.base_url('index.php/main/historia_clinica/'.$_POST['paciente']));
 
+	}
+
+	function borrar_estudio($id, $id_paciente) {
+
+
+		$result = $this->main_model->get_estudio($id);
+		$url = explode('/', $result->ruta);
+		$path_to_file = $url[5].'/'.$url[6].'/'.$url[7];
+		
+		if (unlink($this->config->item('upload_dir').$path_to_file)) {
+			$this->main_model->borrar_estudio($id);
+			redirect('main/historia_clinica/'.$id_paciente);
+		}	
+		else
+			echo "Error al borrar estudio";
 	}
 
 	function formatear($file, $tipo, $id) {
@@ -766,7 +822,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['medico_selected'] = $medico_selected;
 
 		$medico = $this->main_model->get_medico_by_id($medico_selected);
-		$data['filas'] = $this->main_model->get_pacientes_admitidos($fecha,$medico,$data['tipo_user']);
+		$data['filas'] = $this->main_model->get_pacientes_admitidos($fecha,$medico);
 
 		$array = $this->translate($fecha);
 		$data['day'] = $array['day'];
@@ -777,63 +833,162 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$this->load->view('pacientes_ok',$data);
 	}
 
-	function add_to_facturacion($fecha) {
+	function edit_facturacion($array) {
 
-		$test = str_replace(array('"',']','['),"", $_POST['chk_turno']);
-		$test = str_replace(',', ', ', $test);
-		$array_turno = implode(", ", $test);
+		$array_info['id_turno'] = $array['id_turno'];
+		$array_info['medico'] = $this->main_model->get_medico_by_id($array['sel_medico']); 
+		$array_info['ficha'] = $array['ficha_fact'];
+		$array_info['estado'] = $array['sel_estado'];
+		$array_info['fecha'] = $array['fecha_fact'];
+		$array_info['localidad'] = $array['sel_localidad'];
+		$array_info['paciente'] = $array['apellido_fact'].', '.$array['nombre_fact'];
 
-		$medico = $this->main_model->get_medico_by_id($_POST['sel_medico']);
-		$this->main_model->update_tipo_turno($_POST['id_turno'],$array_turno, $medico, $_POST['sel_estado']);
+		$obra_social = $this->main_model->get_turno_by($array_info['id_turno'])[0]->obra_social;
 
-		$array_fact['cvc'] = (strpos(strtolower($array_turno),'cvc') >= 0)? $_POST['sel_cvc'] : "";
-		$array_fact['iol'] = (strpos(strtolower($array_turno),'iol') >= 0) ? $_POST['sel_iol'] : "";
-		$array_fact['me'] = (strpos(strtolower($array_turno),'me') >= 0) ? $_POST['sel_me'] : "";
-		$array_fact['oct'] = (strpos(strtolower($array_turno),'oct') >= 0) ? $_POST['sel_oct'] : "";
-		$array_fact['topo'] = (strpos(strtolower($array_turno),'topo') >= 0) ? $_POST['sel_topo'] : "";
-		$array_fact['rfgc'] = (strpos(strtolower($array_turno),'rfgc') >= 0) ? $_POST['sel_rfgc'] : "";
-		$array_fact['rfg'] = (strpos(strtolower($array_turno),'rfg') >= 0) ? $_POST['sel_rfg'] : "";
-		$array_fact['yag'] = (strpos(strtolower($array_turno),'yag') >= 0) ? $_POST['sel_yag'] : "";
-		$array_fact['laser'] = (strpos(strtolower($array_turno),'laser') >= 0) ? $_POST['sel_laser'] : "";
-		$array_fact['obi'] = (strpos(strtolower($array_turno),'obi') >= 0) ? $_POST['sel_obi'] : "";
-		$array_fact['paqui'] = (strpos(strtolower($array_turno),'paqui') >= 0) ? $_POST['sel_paqui'] : "";
-		$array_fact['hrt'] = (strpos(strtolower($array_turno),'hrt') >= 0) ? $_POST['sel_hrt'] : "";
-		$array_fact['consulta'] = (strpos(strtolower($array_turno),'consulta') >= 0) ? $_POST['sel_consulta'] : "";
+		$array_fact = null;
+		$array_ordenes = null;
 
-		$array_fact['cvc_coseguro'] = $_POST['coseguro_cvc'];
-		$array_fact['iol_coseguro'] = $_POST['coseguro_iol'];
-		$array_fact['me_coseguro'] = $_POST['coseguro_me'];
-		$array_fact['oct_coseguro'] = $_POST['coseguro_oct'];
-		$array_fact['topo_coseguro'] = $_POST['coseguro_topo'];
-		$array_fact['rfgc_coseguro'] = $_POST['coseguro_rfgc'];
-		$array_fact['rfg_coseguro'] = $_POST['coseguro_rfg'];
-		$array_fact['yag_coseguro'] = $_POST['coseguro_yag'];
-		$array_fact['laser_coseguro'] = $_POST['coseguro_laser'];
-		$array_fact['obi_coseguro'] = $_POST['coseguro_obi'];
-		$array_fact['paqui_coseguro'] = $_POST['coseguro_paqui'];
-		$array_fact['hrt_coseguro'] = $_POST['coseguro_hrt'];
-		$array_fact['consulta_coseguro'] = $_POST['coseguro_consulta'];
+		$checks = ["cvc", "iol", "topo", "me", "oct", "rfgc", "rfg", "hrt", "obi", "paqui", "consulta", "laser", "yag"];
 
-		if (isset($_POST['chk_ord']))
-			$array_fact['orden_pendiente'] = implode(", ",$_POST['chk_ord']);
+		if (isset($array['chk_turno'])) {
 
-		
+			// Recordar que los elementos no estan seteados cuando estan deshabilitados
 
-		$this->main_model->update_facturacion($_POST['id_turno'], json_encode($array_fact), $medico);
+			foreach ($checks as $key) {
 
+				$array_['sel_'.$key] = $obra_social;
+
+				if (isset($array['sel_'.$key]))
+					if ($array['sel_'.$key] != "")
+						$array_['sel_'.$key] = $array['sel_'.$key];
+				
+			}
+
+			//print_r($array_);
+
+			$array_fact['cvc'] 		= in_array("CVC", $array['chk_turno']) 		? $array_['sel_cvc'] : "";
+			$array_fact['iol'] 		= in_array("IOL", $array['chk_turno']) 		? $array_['sel_iol'] : "";
+			$array_fact['me'] 		= in_array("ME", $array['chk_turno']) 		? $array_['sel_me'] : "";
+			$array_fact['oct'] 		= in_array("OCT", $array['chk_turno']) 		? $array_['sel_oct'] : "";
+			$array_fact['topo'] 	= in_array("TOPO", $array['chk_turno']) 	? $array_['sel_topo'] : "";
+			$array_fact['rfgc'] 	= in_array("RFGC", $array['chk_turno']) 	? $array_['sel_rfgc'] : "";
+			$array_fact['rfg'] 		= in_array("RFG", $array['chk_turno']) 		? $array_['sel_rfg'] : "";
+			$array_fact['yag'] 		= in_array("YAG", $array['chk_turno']) 		? $array_['sel_yag'] : "";
+			$array_fact['laser'] 	= in_array("Laser", $array['chk_turno']) 	? $array_['sel_laser'] : "";
+			$array_fact['obi'] 		= in_array("OBI", $array['chk_turno']) 		? $array_['sel_obi'] : "";
+			$array_fact['paqui'] 	= in_array("PAQUI", $array['chk_turno']) 	? $array_['sel_paqui'] : "";
+			$array_fact['hrt'] 		= in_array("HRT", $array['chk_turno']) 		? $array_['sel_hrt'] : "";
+			$array_fact['consulta'] = in_array("Consulta", $array['chk_turno']) ? $array_['sel_consulta'] : "";
+			$array_fact['sin_cargo'] = in_array("S/Cargo", $array['chk_turno']) ? "S/Cargo" : "";
+
+			$array_fact['cvc_coseguro'] 		= in_array("CVC", $array['chk_turno']) 		? $array['coseguro_cvc'] : "";
+			$array_fact['iol_coseguro'] 		= in_array("IOL", $array['chk_turno']) 		? $array['coseguro_iol'] : "";
+			$array_fact['me_coseguro'] 			= in_array("ME", $array['chk_turno']) 		? $array['coseguro_me'] : "";
+			$array_fact['oct_coseguro'] 		= in_array("OCT", $array['chk_turno']) 		? $array['coseguro_oct'] : "";
+			$array_fact['topo_coseguro'] 		= in_array("TOPO", $array['chk_turno']) 	? $array['coseguro_topo'] : "";
+			$array_fact['rfgc_coseguro'] 		= in_array("RFGC", $array['chk_turno']) 	? $array['coseguro_rfgc'] : "";
+			$array_fact['rfg_coseguro'] 		= in_array("RFG", $array['chk_turno']) 		? $array['coseguro_rfg'] : "";
+			$array_fact['yag_coseguro'] 		= in_array("YAG", $array['chk_turno']) 		? $array['coseguro_yag'] : "";
+			$array_fact['laser_coseguro'] 		= in_array("Laser", $array['chk_turno']) 	? $array['coseguro_laser'] : "";
+			$array_fact['obi_coseguro'] 		= in_array("OBI", $array['chk_turno']) 		? $array['coseguro_obi'] : "";
+			$array_fact['paqui_coseguro'] 		= in_array("PAQUI", $array['chk_turno']) 	? $array['coseguro_paqui'] : "";
+			$array_fact['hrt_coseguro'] 		= in_array("HRT", $array['chk_turno']) 		? $array['coseguro_hrt'] : "";
+			$array_fact['consulta_coseguro'] 	= in_array("Consulta", $array['chk_turno']) ? $array['coseguro_consulta'] : "";
+
+		}
+
+		if (isset($array['chk_ord'])) {
+
+			$array_ordenes['cvc_orden'] 		= in_array("ord_cvc", $array['chk_ord']) 		? "SI"	: "";
+			$array_ordenes['iol_orden'] 		= in_array("ord_iol", $array['chk_ord']) 		? "SI" 	: "";
+			$array_ordenes['me_orden'] 			= in_array("ord_me", $array['chk_ord']) 		? "SI"	: "";
+			$array_ordenes['oct_orden'] 		= in_array("ord_oct", $array['chk_ord']) 		? "SI" 	: "";
+			$array_ordenes['topo_orden'] 		= in_array("ord_topo", $array['chk_ord']) 		? "SI"	: "";
+			$array_ordenes['rfgc_orden'] 		= in_array("ord_rfgc", $array['chk_ord']) 		? "SI"	: "";
+			$array_ordenes['rfg_orden'] 		= in_array("ord_rfg", $array['chk_ord']) 		? "SI" 	: "";
+			$array_ordenes['yag_orden'] 		= in_array("ord_yag", $array['chk_ord']) 		? "SI" 	: "";
+			$array_ordenes['laser_orden'] 		= in_array("ord_laser", $array['chk_ord']) 		? "SI"	: "";
+			$array_ordenes['obi_orden'] 		= in_array("ord_obi", $array['chk_ord']) 		? "SI" 	: "";
+			$array_ordenes['paqui_orden'] 		= in_array("ord_paqui", $array['chk_ord']) 		? "SI"	: "";
+			$array_ordenes['hrt_orden'] 		= in_array("ord_hrt", $array['chk_ord']) 		? "SI" 	: "";
+			$array_ordenes['consulta_orden'] 	= in_array("ord_consulta", $array['chk_ord']) 	? "SI" 	: "";
+		}
+			
+		$this->main_model->update_facturacion($array_info, json_encode($array_fact,JSON_UNESCAPED_UNICODE), json_encode($array_ordenes,JSON_UNESCAPED_UNICODE));
+	}
+
+	function edit_turno($array, $facturado) {
+
+		$tipo_turno = null;
+		$array['facturado'] = $facturado;
+
+		if (isset($array['chk_turno'])) {
+
+			$array_fact['CVC'] 		= in_array("CVC", $array['chk_turno']);
+			$array_fact['IOL'] 		= in_array("IOL", $array['chk_turno']);
+			$array_fact['ME'] 		= in_array("ME", $array['chk_turno']);
+			$array_fact['OCT'] 		= in_array("OCT", $array['chk_turno']);
+			$array_fact['TOPO'] 	= in_array("TOPO", $array['chk_turno']);
+			$array_fact['RFG Color'] 	= in_array("RFGC", $array['chk_turno']);
+			$array_fact['RFG'] 		= in_array("RFG", $array['chk_turno']);
+			$array_fact['YAG'] 		= in_array("YAG", $array['chk_turno']);
+			$array_fact['Laser'] 	= in_array("Laser", $array['chk_turno']);
+			$array_fact['OBI'] 		= in_array("OBI", $array['chk_turno']);
+			$array_fact['PAQUI'] 	= in_array("PAQUI", $array['chk_turno']);
+			$array_fact['HRT'] 		= in_array("HRT", $array['chk_turno']);
+			$array_fact['Consulta'] = in_array("Consulta", $array['chk_turno']);
+			$array_fact['S/Cargo'] = in_array("S/Cargo", $array['chk_turno']);
+
+			foreach ($array_fact as $key => $value) {
+				if ($value)
+					$tipo_turno .= $key.', ';
+			}
+
+			$tipo_turno = trim($tipo_turno, ', ');
+
+		}
+
+		$this->main_model->update_tipo_turno($tipo_turno, $array);
+
+	}
+
+	function update_facturacion_turno($from) {
+
+		$this->edit_turno($_POST,$from);
+		$this->edit_facturacion($_POST);
+
+		//$fecha = date('Y-m-d', strtotime($_POST['fecha_fact']));
+		$fecha = $_POST['fecha_fact'];
+
+		if($from == 0)
+			redirect('main/cambiar_dia/'.$fecha);
+		else
+			redirect('main/facturacion/');
+	}
+
+	function bloquear_dia() {
+
+		$this->main_model->bloquear_dia($_POST);
+		redirect('main/cambiar_dia/'.$_POST['fecha']);
+	}
+
+	function desbloquear_dia() {
+
+		$fecha = $_POST['fecha'];
+		$this->main_model->desbloquear_dia($fecha);
 		redirect('main/cambiar_dia/'.$fecha);
 	}
 
 	function facturacion() {
-		
+
 		$data['obras'] = $this->main_model->get_obras();
 		$data['medicos'] = $this->main_model->get_medicos();
 
 		if (sizeof($_POST) != 0) {
-			$data['resultado'] = $this->main_model->buscar_facturacion($_POST['sel_obra'], $_POST['sel_medico'], $_POST['sel_localidad'], $_POST['fecha_desde'], $_POST['fecha_hasta']);
+			$data['resultado'] = $this->main_model->buscar_facturacion($_POST['sel_obra'], $_POST['sel_medico_'], $_POST['sel_localidad'], $_POST['fecha_desde'], $_POST['fecha_hasta']);
 			$data['obra_selected'] = $_POST['sel_obra'];
 			$data['localidad_selected'] = $_POST['sel_localidad'];
-			$data['medico_selected'] = $_POST['sel_medico'];
+			$data['medico_selected'] = $_POST['sel_medico_'];
 			$data['fecha_desde'] = $_POST['fecha_desde'];
 			$data['fecha_hasta'] = $_POST['fecha_hasta'];
 		}
@@ -845,8 +1000,9 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 		$data['medicos'] = $this->main_model->get_medicos();
 		$data['paciente'] = $this->main_model->buscar_id_paciente($id);
-		$array['medico_derivador'] = $this->main_model->get_medico_by_id($this->session->userdata('user'));
-		print_r($this->session->userdata);
+		$data['medico_seleccionado'] = $this->session->userdata('medico_seleccionado');
+		$data['tipo_cirugias'] = $this->main_model->get_tipo_cirugias();
+		//print_r($this->session->userdata);
 		$this->load->view('coordinar_view',$data);
 	}
 
@@ -866,6 +1022,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data = $_POST;
 		$data['obras'] = $this->main_model->get_obras();
 		$data['medicos'] = $this->main_model->get_medicos();
+		$data['tipo_cirugia'] = $this->main_model->get_tipo_cirugias();
 		//$data['medico_selected'] = $this->main_model->get_medico_by_id($_POST['sel_medico']);
 		
 		if ( isset($_POST['fecha_desde']) && isset($_POST['fecha_hasta']) ) {
@@ -878,7 +1035,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$data['practica_selected'] = $_POST['sel_practica'];*/
 		}
 
-		
+		//print_r($data);
 		$this->load->view('cirugias_view',$data);
 	}
 
@@ -887,6 +1044,11 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data = $_POST;
 		$data['obras'] = $this->main_model->get_obras();
 		$data['medicos'] = $this->main_model->get_medicos();
+		$data['tipo_cirugia'] = $this->main_model->get_tipo_cirugias();
+
+		$data['sel_obra_'] = $_POST['sel_obra_panel'];
+		$data['sel_practica_'] = $_POST['sel_practica_panel'];
+		$data['sel_medico_'] = $_POST['sel_medico_panel'];
 
 		/*
 		$data['obra_selected'] = $_POST['sel_obra'];
@@ -895,8 +1057,9 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['fecha_hasta'] = $_POST['fecha_hasta'];
 		$data['practica_selected'] = $_POST['sel_practica'];*/
 
-		//print_r($_POST);
+		//print_r($data);
 		$this->main_model->update_cirugia($_POST);
+		//$this->agenda_cirugias();
 		$this->load->view('cirugias_view',$data);	
 	}
 }

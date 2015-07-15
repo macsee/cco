@@ -41,65 +41,6 @@
     	};
   	});
 	
-
-		$(function() {
-        var availableTags = [
-            "AAPM - Propag. Med.",
-			"ACA Salud",
-			"ACINDAR",
-			"Agua y Energía",
-			"AMR",
-			"AMUR",
-			"APSOT",
-			"Asoc. Española",
-			"Caja Forense",
-			"Caja Ingenieros",
-			"Camioneros - Mutual",
-			"Ciencias Económicas",
-			"Docthos",
-			"Emedic",
-			"EPE-SMAI",
-			"Federación Médica",
-			"Femedic",
-			"Fuerza Aérea",
-			"Galeno",
-			"Grupo Oroño",
-			"IAPOS",
-			"IOSE",
-			"IPAM",
-			"Jerárquico Salud",
-			"Luis Pasteur",
-			"Luz y Fuerza",
-			"Luz y Fuerza - Mutual",
-			"Medicus",
-			"Medife",
-			"Mutual Federada",
-			"OMINT",
-			"OSDEA",
-			"OSDOP",
-			"OSPAC",
-			"OSPAGA",
-			"OSPESGA",
-			"OSPI Maderera",
-			"OSSIMRA",
-			"Particular",
-			"Patrones de Cabotaje",
-			"Poder Judicial",
-			"Prensa - OSPRO",
-			"Publicidad",
-			"SADAIC",
-			"San Pedro",
-			"SAT Televisión",
-			"SERVE Salud",
-			"Sind. Camioneros",
-			"Swiss Medical",
-			"Teleg. y Radioteleg.",
-			"Universidad"
-        ];
-        $( "#obra" ).autocomplete({
-            source: availableTags
-        });
-    });
 	</script>
 	<style>
 
@@ -151,7 +92,6 @@
 </head>
 <body>
 <?php 
-
 
 	if (!isset($nombre)) {
 		$nombre = "";
@@ -224,7 +164,7 @@
 				Ingreso de Pacientes
 			</div>
 
-			<div style = "float:left; margin-left:57%; margin-top:5px">
+			<div style = "float:left; margin-left:57%;">
 				<?php
 				echo '<a href="'.base_url('index.php').'">'; 
 					echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>'; 
@@ -232,7 +172,7 @@
 				?>
 			</div>
 
-			<div style = "float:left; margin-left:2%; margin-top:8px">
+			<div style = "float:left; margin-left:2%;">
 				<?php
 				echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date("Y-m-d")).'">';
 					echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 
@@ -324,9 +264,23 @@
 					</li>	
 					<li>
 						<label for="obra"> Obra social:</label>
+							<select id ="obra" name = "obra" required>
+								<option value = ""></option>';
+							<?php
+								foreach ($obras as $value) {
+									if (!strcasecmp($obra,$value->obra))
+										echo '<option value ="'.$value->obra.'" selected>'.$value->obra.'</option>';
+									else
+										echo '<option value ="'.$value->obra.'">'.$value->obra.'</option>';
+								}
+							?>
+							</select>	
+
+
+						<!--
 						<div class="ui-widget">
 							<input type="text" size = "18" id="obra" name ="obra" value = "<?php echo $obra ?>" = autocomplete="off">
-						</div>
+						</div>-->
 					</li>
 					<li>
 						<label for="apellido"> Nro de afiliado:</label>
@@ -340,15 +294,19 @@
 	            	<label for="obs">Observaciones:</label>
 	            	<textarea name="obs" cols="40" rows="6"><?php echo $obs ?></textarea>
 		</div>
-
+			<input type="hidden" name="callback_url" value="<?php echo str_replace('_id', '', $_SERVER['HTTP_REFERER'])?>"/>
 		<?php
+
 			if (!isset($id)) {
 
 		?>		
-				<input type="hidden" name="id_paciente" value="0"/>
+				<!--<input type="hidden" name="id_paciente" value="0"/>-->
+				<input type="hidden" name="id_turno" value="<?php echo $id_turno?>"/>
+
 				<div id = "guardar_paciente">
 					<button class="submit" type="submit">Nuevo Paciente</button>
 				</div>
+
 		<?php	if (isset($fecha)) { ?>	
 				<div id = "guardar_paciente">
 					<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/cambiar_dia/$fecha")?>';">Cancelar</button>
@@ -360,15 +318,18 @@
 			else {
 		?>		
 				<input type="hidden" name="id_paciente" value="<?php echo $id?>"/>
+				
+				
 				<div id = "guardar_paciente">
 					<button class="submit" type="submit">Actualizar Paciente</button>
 				</div>	
 
 				<div id = "guardar_paciente">
-					<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/buscar_paciente/$id")?>';">Cancelar</button>
+					<!--<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/buscar_paciente/$id")?>';">Cancelar</button>-->
+					<button class="cancel" type = "button" onclick = "location.href= '<?php echo str_replace('_id', '', $_SERVER['HTTP_REFERER']);?>';">Cancelar</button>
 				</div>	
 
-		<?php } ?>				
+		<?php }	?>				
 
 	</form>	
 	</div>

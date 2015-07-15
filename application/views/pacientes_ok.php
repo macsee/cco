@@ -98,6 +98,28 @@
 	.clickeable {
 		cursor: pointer;
 	}
+
+	.titulo_paciente {
+		margin-top: 2px;
+		margin-bottom: 2px;
+		height: 25px;
+		background-color: #1e3e53;
+		font-family: OSWALD;
+		font-size: 14pt;
+		font-weight: bold;
+		color: white;
+		//padding-left: 10px;
+		float:left;
+		width:100%;
+		margin-bottom: 5px;
+	}
+
+	.texto_pacientes {
+		text-align: center;
+		font-style: italic;
+		font-size: 12pt;
+	}
+
 	</style>
 
 	<script>
@@ -117,7 +139,9 @@
 		$(".check").click(function(event)
 		{
 			var base_url = '<?php echo base_url(); ?>';
-			var img1 = '<?php echo base_url("css/images/check_16x13.png"); ?>'; //unchecked
+			var tipo_user = '<?php echo $tipo_user; ?>';
+
+			var img1 = '<?php echo base_url("css/images/espera.png"); ?>'; //unchecked
 			var img2 = '<?php echo base_url("css/images/check_alt_24x24.png"); ?>'; //checked
 			
 			//event.preventDefault();
@@ -128,12 +152,18 @@
 
             if ($(this).attr('src') === img1) {
              	$(this).attr('src', img2);
-             	status = "atendido";
+             	if (tipo_user == "Medico")
+             		status = "ok";
+             	else
+             		status = "estudios_ok";
              	//var datastring = "posteo="+value+","+"1";
             }	
          	else {
           		$(this).attr('src', img1);
-          		status = "esperando";
+          		if (tipo_user == "Medico")
+          			status = "medico";
+          		else
+          			status = "estudios";
           		//var datastring = "posteo="+value+","+"0";
           	}
 
@@ -164,7 +194,7 @@
 
 	});
 
-
+/*
 	function get_historia(data) {
         	var base_url = '<?php echo base_url(); ?>';
       		str = base_url+"index.php/main/historia_clinica/"+data;
@@ -194,8 +224,9 @@
                 }
             }
         });
-   };
 
+   };
+*/
    function submitform() {
   		document.form_nuevo.submit();
 	}
@@ -278,7 +309,7 @@
 				echo '</a>';
 				?>
 			</div>
-			<div style = "float:left;margin-top:15px;margin-left:20px">
+			<div style = "float:left;margin-top:8px;margin-left:20px">
 				<?php
 				echo '<a target= "_blank" href="'.base_url('index.php/main/cambiar_dia'."/".$fecha).'">';
 					echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 
@@ -306,75 +337,169 @@
 
 		</div>
 		<div id="borrar_turno" title="¿Borrar turno?"></div>
+		<?php
+			$array_pacientes_dia = array();
+			$array_pacientes_ok = array();
 
-		<div id = "turnos_dia" style = "width:100%">
-
-			<div id = "titulo_superior">
-				<div class = "hora_turno">
-					Hora Turno
-				</div>
-				<div class = "hora_admision">
-					Hora Admisión
-				</div>	
-				<div class = "paciente">
-					Paciente
-				</div>
-				<div class = "obra_social">
-					Obra Social
-				</div>
-				<div class = "tipo_turno_">
-					Turno
-				</div>
-				<div class = "ficha">
-					Ficha
-				</div>
-				<div class = "estado_">
-					Estado
-				</div>
-			</div>
-
-			<div id = "horarios">
-			<?php
-			if ($filas <> 0) {
+			if ($filas != null)
 				foreach ($filas as $turno) {
-					echo '<div class = "fila_ocupada clickeable" id = "'.$turno->id_paciente.'">';
-						echo '<div class = "fila_superior">';
-								echo '<div class = "hora_turno" style = "margin-top:8px">';
-									echo date('H:i', strtotime($turno->hora));
-								echo '</div>';	
-								echo '<div class = "hora_admision" style = "margin-top:8px">';
-									echo date('H:i', strtotime($turno->last_update));
-								echo '</div>';	
-								echo '<div class = "paciente" style= "font-size:11pt;margin-top:8px">';
-									echo $nombre = $turno->apellido.', '.$turno->nombre;
-								echo '</div>';
-								echo '<div class = "obra_social" style= "font-size:11pt;margin-top:8px">';
-									echo $turno->obra_social;
-								echo '</div>';
-								echo '<div class = "tipo_turno_" style= "font-size:10pt;margin-top:8px">';
-									echo $turno->tipo;
-								echo '</div>';
-								echo '<div class = "valor_ficha" style = "width:80px">';
-									//echo anchor('main/historia_clinica/'.$turno->id_paciente, $turno->ficha);
-									echo $turno->ficha;
-								echo '</div>';
+					if ($turno->estado != "medico" && $turno->estado != "ok" && $turno->estado != "")
+						$array_pacientes_dia[] = $turno;
+					else if ($turno->estado == "medico" || $turno->estado == "ok")
+						$array_pacientes_ok[] = $turno;
+				}
+		?>		
+		<div id = "turnos_dia" style = "width:100%">
+		<?php if ($tipo_user == "Medico") { ?>
+			<div class = "titulo_paciente"><div style = "margin-left:10px">Pacientes en tránsito</div></div>
+			<?php if ($array_pacientes_dia != null) { ?>
+				<div id = "titulo_superior">
+					<div class = "hora_turno">
+						Hora Turno
+					</div>
+					<div class = "hora_admision">
+						Hora Admisión
+					</div>	
+					<div class = "paciente">
+						Paciente
+					</div>
+					<div class = "obra_social">
+						Obra Social
+					</div>
+					<div class = "tipo_turno_">
+						Turno
+					</div>
+					<div class = "ficha">
+						Ficha
+					</div>
+					<div class = "estado_">
+						Estado
+					</div>
+				</div>
 
-								echo '<div class = "estado" id = "'.$turno->id.'" style="cursor: pointer;margin-left:15px">';
-							
-									if ($turno->estado == "presente")
-										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/check_16x13.png').'"/>';  
+				<div id = "horarios">
+				<?php
+					foreach ($array_pacientes_dia as $turno) {
+						echo '<div class = "fila_ocupada" id = "'.$turno->id_paciente.'">';
+							echo '<div class = "fila_superior">';
+									echo '<div class = "hora_turno" style = "margin-top:8px">';
+										echo date('H:i', strtotime($turno->hora));
+									echo '</div>';	
+									echo '<div class = "hora_admision" style = "margin-top:8px">';
+										echo date('H:i', strtotime($turno->last_update));
+									echo '</div>';	
+									echo '<div class = "paciente" style= "font-size:11pt;margin-top:8px">';
+										echo $nombre = $turno->apellido.', '.$turno->nombre;
+									echo '</div>';
+									echo '<div class = "obra_social" style= "font-size:11pt;margin-top:8px">';
+										echo $turno->obra_social;
+									echo '</div>';
+									echo '<div class = "tipo_turno_" style= "font-size:10pt;margin-top:8px">';
+										echo $turno->tipo;
+									echo '</div>';
+									echo '<div class = "valor_ficha" style = "width:80px">';
+										echo '<a target = "_blank" href = "'.base_url('index.php/main/historia_clinica/'.$turno->id_paciente).'">'.$turno->ficha.'</a>';
+										//echo anchor('main/historia_clinica/'.$turno->id_paciente, $turno->ficha);
+										//echo $turno->ficha;
+									echo '</div>';
+
+									echo '<div class = "estado" id = "'.$turno->id.'" style="cursor: pointer;margin-left:15px">';
+										
+									if ($turno->estado == "estudios")	
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/estudios.png').'"/>'; 
+									else if ($turno->estado == "estudios_ok")	
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/estudios_ok.png').'"/>';
+									else if ($turno->estado == "medico")	
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/medico.png').'"/>';
+									else if ($turno->estado == "dilatacion")	
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/dilatacion.png').'"/>';
 									else
 										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'"/>';
-								echo '</div>';
-							
-						echo '</div>';
-					echo '</div>';
-				}
-			}	
-		?>
-			</div>
 
+									echo '</div>';
+								
+							echo '</div>';
+						echo '</div>';
+					}
+				?>
+				</div>
+			<?php }
+			else {
+				echo "<p class = 'texto_pacientes'>No se encontraron pacientes</p>";
+			}
+		}		
+		?>
+
+			<div class = "titulo_paciente" style = "margin-top:30px"><div style = "margin-left:10px">Pacientes en espera</div></div>
+			<?php if ($array_pacientes_ok != null) { ?>
+				<div id = "titulo_superior">
+					<div class = "hora_turno">
+						Hora Turno
+					</div>
+					<div class = "hora_admision">
+						Hora Admisión
+					</div>	
+					<div class = "paciente">
+						Paciente
+					</div>
+					<div class = "obra_social">
+						Obra Social
+					</div>
+					<div class = "tipo_turno_">
+						Turno
+					</div>
+					<div class = "ficha">
+						Ficha
+					</div>
+					<div class = "estado_">
+						Estado
+					</div>
+				</div>
+
+				<div id = "horarios">
+				<?php
+					foreach ($array_pacientes_ok as $turno) {
+						echo '<div class = "fila_ocupada" id = "'.$turno->id_paciente.'">';
+							echo '<div class = "fila_superior">';
+									echo '<div class = "hora_turno" style = "margin-top:8px">';
+										echo date('H:i', strtotime($turno->hora));
+									echo '</div>';	
+									echo '<div class = "hora_admision" style = "margin-top:8px">';
+										echo date('H:i', strtotime($turno->last_update));
+									echo '</div>';	
+									echo '<div class = "paciente" style= "font-size:11pt;margin-top:8px">';
+										echo $nombre = $turno->apellido.', '.$turno->nombre;
+									echo '</div>';
+									echo '<div class = "obra_social" style= "font-size:11pt;margin-top:8px">';
+										echo $turno->obra_social;
+									echo '</div>';
+									echo '<div class = "tipo_turno_" style= "font-size:10pt;margin-top:8px">';
+										echo $turno->tipo;
+									echo '</div>';
+									echo '<div class = "valor_ficha" style = "width:80px">';
+										echo '<a target = "_blank" href = "'.base_url('index.php/main/historia_clinica/'.$turno->id_paciente).'">'.$turno->ficha.'</a>';
+										//echo anchor('main/historia_clinica/'.$turno->id_paciente, $turno->ficha);
+										//echo $turno->ficha;
+									echo '</div>';
+
+									echo '<div class = "estado" id = "'.$turno->id.'" style="cursor: pointer;margin-left:15px">';
+								
+										if ($turno->estado != "ok")
+											echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/espera.png').'"/>';  
+										else
+											echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'"/>';
+									echo '</div>';
+								
+							echo '</div>';
+						echo '</div>';
+					}
+				?>
+				</div>
+			<?php }
+			else {
+				echo "<p class = 'texto_pacientes'>No se encontraron pacientes</p>";
+			}	
+			?>
 		</div>
-	</div>
 </body>
 </html>

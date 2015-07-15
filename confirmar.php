@@ -2,6 +2,7 @@
 	
 	
 	$id = $_POST['id'];
+	
 	//echo $id;
 	//$datos = explode(",", $cadena);
 
@@ -12,7 +13,9 @@
 	mysql_select_db("cco")
 	or die("Error en la selección de la base de datos");
 
-	$query = sprintf("SELECT * FROM turnos WHERE id = '%d' ", $id);
+	$query_turno = sprintf("SELECT * FROM turnos WHERE id = '%d' ", $id);
+
+	$query_facturacion = sprintf("SELECT * FROM facturacion WHERE id_turno = '%d' ", $id);
 
 	/*
 	if ($estado == "1")
@@ -22,10 +25,34 @@
 	*/	
 	// Perform Query
 	
-	$result = mysql_query($query)
+	mysql_set_charset("UTF8");
+	
+	$result_turno = mysql_query($query_turno)
 	or die("Error en la consulta SQL");
 
-	echo json_encode(mysql_fetch_array ($result));
+	$result_facturacion = mysql_query($query_facturacion)
+	or die("Error en la consulta SQL");
+
+	if (mysql_num_rows($result_facturacion) > 0) {
+		$array['facturar'] = "SI";
+		$result = mysql_fetch_array ($result_facturacion);
+		$paciente = explode(",",$result['paciente']);
+		$array['apellido'] = $paciente[0];
+		$array['nombre'] = $paciente[1];
+		$array['tipo'] = $result['datos'];
+		$array['orden'] = $result['ordenes_pendientes'];
+		$array['medico'] = $result['medico'];
+		$array['ficha'] = $result['ficha'];
+		$array['fecha'] = date('Y-m-d', strtotime($result['fecha']));
+		$array['estado'] = $result['estado'];
+		$array['localidad'] = $result['localidad'];
+	}	
+	else {
+		$array = mysql_fetch_array ($result_turno);
+		$array['facturar'] = "NO";
+	}	
+
+	echo json_encode($array);
 
 	#Mostramos los resultados obtenidos
 

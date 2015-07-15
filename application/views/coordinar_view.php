@@ -126,7 +126,8 @@
 							echo '<td class = "izq impar">Práctica:</td>';
 							echo '<td class ="der impar">';
 								echo '<select name = "practica">';
-									echo '<option>Cirug. Catarata</option>';
+									foreach ($tipo_cirugias as $practica)
+										echo '<option>'.$practica->nombre.'</option>';
 								echo '</select>';
 							echo '</td>';	
 						echo '</tr>';
@@ -143,7 +144,7 @@
 						echo '<tr>';
 							echo '<td class = "izq impar">Derivado por:</td>';
 							echo '<td class = "der impar">';
-								echo '<select name = "medico">';
+								echo '<select name = "medico" required>';
 									foreach ($medicos as $medico) {
 										if ($medico->id_medico == $medico_seleccionado)
 											echo '<option selected>'.$medico->nombre.'</option>';
@@ -156,8 +157,7 @@
 						echo '<tr>';
 							echo '<td class = "izq par">Cirujano:</td>';
 							echo '<td class = "der par">';
-								echo '<select name = "cirujano">';
-									echo '<option></option>';
+								echo '<select required name = "cirujano">';
 									foreach ($medicos as $medico) {
 										if ($medico->cirujano == 1)
 											echo '<option>'.$medico->nombre.'</option>';
@@ -165,7 +165,7 @@
 								echo '</select>';
 							echo '</td>';
 						echo '</tr>';
-					echo '</table>';	
+					echo '</table>';					
 					echo '<div class = "impar" style ="height:120px;width:504px;margin-left:2px">';
 						echo '<div class = "izq" style = "float:left;padding-left:5px">Observaciones:</div>';
 						echo '<div style = "float:left"><textarea style = "width:300px;height:100px;margin-left:4px;margin-top:5px" name = "obs" id = "obs"> </textarea></div>';

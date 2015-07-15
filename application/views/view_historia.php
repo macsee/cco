@@ -2,9 +2,14 @@
 
 <html>
 	<head>
-		<title>Historia Clinica</title>
+		<title>Historia Clínica</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
+		<script type="text/javascript" src="<?php echo base_url('js/jquery-1.8.2.min.js')?>"></script>
+		<script type="text/javascript" src="<?php echo base_url('js/jquery-ui-1.8.24.custom.min.js')?>"></script>
+		<link href="<?php echo base_url('css/jquery-ui.css')?>" rel="stylesheet" type="text/css"/>
+		<link rel="stylesheet" type="text/css" href="<?php echo base_url('css/styles.css')?>"/>
+		<!--
 		<script type="text/javascript"  src="<?php echo base_url('js/jsPanel-master/jquery-2.1.3.min.js')?>"></script>
 		<script type="text/javascript" src="<?php echo base_url('js/jsPanel-master/jquery-ui-1.11.2.min.js')?>"></script>
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('css/styles.css')?>"/>
@@ -12,7 +17,6 @@
 		<script type="text/javascript"  src="<?php echo base_url('js/jquery.popupoverlay.js')?>"></script>
 		<!--<script type="text/javascript"  src="<?php echo base_url('js/jsPanel-master/source/jquery.jspanel.js')?>"></script>
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('js/jsPanel-master/source/jquery.jspanel.css')?>"/>-->
-
 		<script type="text/javascript">
 
 	  		$(document).ready(function()
@@ -23,21 +27,6 @@
   								"<input type='submit' value='Submit'>"+
   								"</form>"+
   								"</div>");
-
-				$('#sample-jspanel-1').click(function () {
-        			$.jsPanel({
-        					content: function(){ 
-    							$(this).load("../../../../cco/record_form.php"); 
-    						},
-        					size:     {width: 800, height: 600},
-        					//overflow: {vertical: 'scroll'},
-        				   	selector: "#container-1",
-    						position: "center",
-    						title:    "Nuevo registro",
-    						//content: window.location.pathname,
-    						//content:  content
-        			});
-    			});
 
 				$(".clickeable").click(function()
 				{ 
@@ -80,14 +69,66 @@
 						$("#nuevo_antecedente").slideUp("fast");
 					}		
 				});
-			});	
 
-			$(function() {
-			    $('#my_modal').popup();
+				$("#cargar_archivos").click(function()
+				{ 
+					$( "#cargar_ventana" ).dialog({
+						autoOpen: true,
+			            resizable: false,
+						width: 450,
+			            height: 250,
+			            modal: true,
+			            buttons: {
+			                "Cargar": function() {
+			                	if ($("#tipo").val() == "")
+			                		$("#error_subida").html("Error! Debe seleccionarse un tipo de archivo!");
+			                	else if ($("#seleccionar_archivo").val() == "")
+									$("#error_subida").html("Error! Debe seleccionarse algún archivo!");
+								else
+									$("#cargar_form").submit();
+			                },
+							"Cancelar": function() {
+			                    $( this ).dialog( "close" );
+							}
+			            }
+        			});
+				});
+
 			});
+
+			function borrar(id,id_paciente) {
+			        $( "#borrar_estudio" ).dialog({
+						autoOpen: true,
+			            resizable: false,
+						width: 300,
+			            height: 80,
+			            modal: true,
+			            buttons: {
+			                "Si": function() {
+			                	var base_url = '<?php echo base_url("index.php/main"); ?>';
+								var x = base_url+"/borrar_estudio/"+id+"/"+id_paciente;
+								location.href = x;
+			                },
+							"No": function() {
+			                    $( this ).dialog( "close" );
+							}
+			            }
+			        });
+			};	
+
+			//$(function() {
+			//    $('#my_modal').popup();
+			//});
 		</script>
 
 		<style>
+		.ui-widget {
+			font-size: 14px;
+		}
+		.ui-dialog {
+			//position: relative;
+			margin: auto;
+		}
 		  /* Add these styles once per website */
 		 .popup_background {
 		    z-index: 2000; /* any number */
@@ -112,13 +153,14 @@
 		}
 
 		.select {
-			margin-left: 60px;
+			//margin-left: 60px;
 		}
 
 		.browse{
 			font-size: 15px;
 			margin-top: 10px;
-			margin-left: 10px;
+			margin-right: 100px;
+			margin-bottom: 10px;
 		}
 
 		#form_load_file {
@@ -269,6 +311,8 @@
 		#info{
 			//color: #cfe1ed;
 			color: #97BFD9;
+			float:left;
+			width: 580px;
 		}
 
 		#info2{
@@ -449,6 +493,22 @@
 			width:90px;
 			text-align: right;
 		}
+
+		#cargar_archivos {
+			background-color: #58ADE5;
+			font-family: 'OSWALD';
+			font-size: 12pt;
+			text-decoration: none;
+			padding-left: 20px;
+			padding-right: 20px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			color: white;
+			border-radius: 4px;
+			float: left;
+			margin-top: 20px;
+		}
+
   		</style>
 	</head>
 	<body>
@@ -486,11 +546,19 @@
 	}
 
 	?>	
+		<div id="borrar_estudio" title="¿Borrar Estudio?"></div>
 		<div id = "content">
 			<div id = "ventana_principal">
 				<div style = "width:800px;position:fixed"> <!-- 72.9%-->
 					<div id = "barra_titulo" class = "texto_oswald">
 						<div id = "hist"> Historia Clínica Nº </div> <div id = "info"> <?php echo $datos_paciente[0]->nroficha.' - '.$datos_paciente[0]->apellido.', '.$datos_paciente[0]->nombre ?> </div>
+						<div id = "principal">
+							<?php
+							echo '<a href="'.base_url('index.php').'">'; 
+								echo '<img src = "'.base_url('css/images/home_24x24.png').'" style = "margin-top:2px"/>';
+							echo '</a>';
+							?>
+						</div>
 					</div>
 					<div id = "datos_paciente" class = "texto_oswald">
 						<div id = "panel_izq">
@@ -1307,7 +1375,10 @@
 							echo '<div id = "detalles_'.$value->tipo.'" class="detalles" style = "display:none;">';
 							
 						}
-							echo '<a href="'.$value->ruta.'">'.$value->imagen.'</a>';
+							echo '<a target = "_blank" href="'.$value->ruta.'">'.$value->imagen.'</a>';
+							echo '<a target = "_blank" style="float:right;cursor:pointer" onclick = "return borrar(\''.$value->id.'\', \''.$datos_paciente[0]->id.'\');">';
+								echo '<img src = "'.base_url('css/images/delete_icon&16.png').'"/>';
+							echo '</a>';
 							echo '</br>';	
 	    				//	echo '<a rel="'.$value->ruta.'" href="'.$value->ruta.'"><img src="'.$value->imagen.'"/></a>';
 						//echo '<a class="fancybox-thumbs" data-fancybox-group="thumb" href="'.$value->ruta.'"><img src="'.$value->imagen.'"/></a>';
@@ -1319,39 +1390,37 @@
 				}	
 			?>
 			
-			<br>
-			<button class="my_modal_open cargar">Cargar Archivos</button>
+			<!--<button class="my_modal_open cargar">Cargar Archivos</button>-->
 			<!--<button id="sample-jspanel-1" type="button">Execute example above</button>-->
+			<a id = "cargar_archivos" href = "#">Cargar Archivos</a>
 		</div>
 		
-		<!-- INICIO VENTANA EMERGENTE PARA CARGA DE ARCHIVOS -->
-
-		<div id="my_modal">
-			<div id = "form_load_file">
-				<form action="<?php echo base_url('index.php/main/do_upload')?>" method="post" enctype="multipart/form-data">
-
-						<input class = "texto_oswald browse" type="file" multiple name="userfile[]" size="20" />
-						<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
-						<select class = "select" id = "tipo" name = "tipo" required>
-							<option value="">Seleccionar</option>
-			  				<option value="OCT">OCT</option>
-			  				<option value="RFG">RFG</option>
-			  				<option value="ME">ME</option>
-			  				<option value="IOL">IOL</option>
-			  				<option value="CVC">CVC</option>
-			  				<option value="TOPO">TOPO</option>
-			  				<option value="HRT">HRT</option>
-			  				<option value="PAQUI">PAQUI</option>
-			  				<option value="HC">HC</option>
-			  				<option value="IMAGEN">IMAGEN</option>
-						</select> 
-						<br /><br />
-
-						<button class="buttonSubmit texto_oswald" type="submit"> Subir Archivo </button>
-
-				</form>
-			</div>
+		<div id="cargar_ventana" title="Seleccionar Archivos" style = "display:none">
+			<form id = "cargar_form" action="<?php echo base_url('index.php/main/do_upload')?>" method="post" enctype="multipart/form-data">
+				<input class = "texto_oswald browse" type="file" multiple id = "seleccionar_archivo" name="userfile[]" size="20" style = "font-size:14px"/>
+				<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
+				<div style = "float:left;margin-top:10px;font-size:14px">
+				Tipo archivo:
+					<select class = "select" id = "tipo" name = "tipo" required style="font-size:14px;font-family:'Segoe'">
+						<option value="">Seleccionar</option>
+		  				<option value="OCT">OCT</option>
+		  				<option value="RFG">RFG</option>
+		  				<option value="ME">ME</option>
+		  				<option value="IOL">IOL</option>
+		  				<option value="CVC">CVC</option>
+		  				<option value="TOPO">TOPO</option>
+		  				<option value="HRT">HRT</option>
+		  				<option value="PAQUI">PAQUI</option>
+		  				<option value="HC">HC</option>
+		  				<option value="IMAGEN">IMAGEN</option>
+					</select>
+				</div>
+				<div style = "float:left;margin-top:10px;font-size:14px">
+					Fecha archivo: 
+					<input class = "texto_oswald browse" type="date" name="fecha" size="20" />
+				</div>
+				<div id = "error_subida" style = "color:red;float:left;width:100%"></div>	
+			</form>
 		</div>
-
 	</body>
 </html>

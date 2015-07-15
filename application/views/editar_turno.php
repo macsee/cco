@@ -150,65 +150,6 @@
 		});
 	};
 
-	$(function() {
-        var availableTags = [
-            "AAPM - Propag. Med.",
-			"ACA Salud",
-			"ACINDAR",
-			"Agua y Energía",
-			"AMR",
-			"AMUR",
-			"APSOT",
-			"Asoc. Española",
-			"Caja Forense",
-			"Caja Ingenieros",
-			"Camioneros - Mutual",
-			"Ciencias Económicas",
-			"Docthos",
-			"Emedic",
-			"EPE-SMAI",
-			"Federación Médica",
-			"Femedic",
-			"Fuerza Aérea",
-			"Galeno",
-			"Grupo Oroño",
-			"IAPOS",
-			"IOSE",
-			"IPAM",
-			"Jerárquico Salud",
-			"Luis Pasteur",
-			"Luz y Fuerza",
-			"Luz y Fuerza - Mutual",
-			"Medicus",
-			"Medife",
-			"Mutual Federada",
-			"OMINT",
-			"OSDEA",
-			"OSDOP",
-			"OSPAC",
-			"OSPAGA",
-			"OSPESGA",
-			"OSPI Maderera",
-			"OSSIMRA",
-			"Particular",
-			"Patrones de Cabotaje",
-			"Poder Judicial",
-			"Prensa - OSPRO",
-			"Publicidad",
-			"SADAIC",
-			"San Pedro",
-			"SAT Televisión",
-			"SERVE Salud",
-			"Sind. Camioneros",
-			"Swiss Medical",
-			"Teleg. y Radioteleg.",
-			"Universidad"
-        ];
-        $( "#obra" ).autocomplete({
-            source: availableTags
-        });
-    });
-
 /*	$(function() {
        
         $( "#obra" ).autocomplete({
@@ -230,7 +171,7 @@
 			Editar Turno
 		</div>
 
-		<div style = "float:left; margin-left:61%; margin-top:5px">
+		<div style = "float:left; margin-left:61%;">
 				<?php
 				echo '<a href="'.base_url('index.php').'">'; 
 					echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>'; 
@@ -238,7 +179,7 @@
 				?>
 			</div>
 
-			<div style = "float:left; margin-left:2%; margin-top:8px">
+			<div style = "float:left; margin-left:2%;">
 				<?php
 				echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d', strtotime($filas[0]->fecha))).'">';
 					echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 
@@ -467,19 +408,19 @@
 						<?php }?>		 
 						</div>
 						<div class = "celda">
-						<?php if ( strstr($cadena, "LASER") <> "") {?>	
-							<input type="checkbox" name="tipo[]" value = "LASER" id = "LASER" checked/> LASER 
+						<?php if ( strstr($cadena, "Laser") <> "") {?>	
+							<input type="checkbox" name="tipo[]" value = "Laser" id = "LASER" checked/> LASER 
 						<?php }
 							else { ?>
-							<input type="checkbox" name="tipo[]" value = "LASER" id = "LASER"/> LASER 
+							<input type="checkbox" name="tipo[]" value = "Laser" id = "LASER"/> LASER 
 						<?php }?>		
 						</div>
 						<div class = "celda">
-						<?php if ( strstr($cadena, "CONSULTA") <> "") {?>
-							<input type="checkbox" name="tipo[]" value = "CONSULTA" id = "CONSULTA" checked/> Consulta 
+						<?php if ( strstr($cadena, "Consulta") <> "") {?>
+							<input type="checkbox" name="tipo[]" value = "Consulta" id = "CONSULTA" checked/> Consulta 
 						<?php }
 							else { ?>
-							<input type="checkbox" name="tipo[]" value = "CONSULTA" id = "CONSULTA"/> Consulta 
+							<input type="checkbox" name="tipo[]" value = "Consulta" id = "CONSULTA"/> Consulta 
 						<?php }?>		
 						</div>			
 					</div>
@@ -490,6 +431,14 @@
 						<?php }
 							else { ?>
 							<input type="checkbox" name="tipo[]" value = "HRT" id = "HRT"/> HRT  
+						<?php }?>		
+						</div>
+						<div class = "celda">
+						<?php if ( strstr($cadena, "S/Cargo") <> "") {?>
+							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo" checked/> Sin Cargo 
+						<?php }
+							else { ?>
+							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo"/> Sin Cargo  
 						<?php }?>		
 						</div>			
 					</div>			

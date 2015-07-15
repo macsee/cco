@@ -161,7 +161,7 @@
 		Busqueda de Pacientes
 	</div>
 
-	<div style = "float:left; margin-left:80%; margin-top:5px">
+	<div style = "float:left; margin-left:80%;">
 				<?php
 				echo '<a href="'.base_url('index.php').'">'; 
 					echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>'; 
@@ -169,7 +169,7 @@
 				?>
 			</div>
 
-			<div style = "float:left; margin-left:2%; margin-top:8px">
+			<div style = "float:left; margin-left:2%;">
 				<?php
 				echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d')).'">';
 					echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 

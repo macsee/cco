@@ -24,6 +24,10 @@
 		margin-right: 30px;
 	}
 
+	#select_medico select {
+		width: 150px;
+	}
+
 	select {
 		-webkit-appearance: none;
    		-moz-appearance: none;
@@ -50,8 +54,11 @@
 	</style>
 	<script>
 
+	var checks = ["cvc", "iol", "topo", "me", "oct", "rfgc", "rfg", "hrt", "obi", "paqui", "consulta", "laser", "yag"];
+
 	$(document).ready(function()
-	{
+	{	
+		
 		
 		$(".clickeable").click(function()
 		{ 
@@ -66,44 +73,23 @@
 				$("#detalles_"+id).slideUp("slow");
 			}		
 		});
+		
+		$('input[name="chk_turno[]"]').change(function(event) {
+      		// State has changed to checked/unchecked.
+      		var id = $(this).attr("id");
+      		var tipo = id.substring(0, id.indexOf("_"));
 
-		$(".check").click(function(event)
-		{
-			/*
-			var base_url = '<?php echo base_url(); ?>';
-			var img1 = '<?php echo base_url("css/images/check_16x13.png"); ?>';
-			var img2 = '<?php echo base_url("css/images/check_alt_24x24.png"); ?>';
-			
-			//event.preventDefault();
-			var value = $(this).attr('id');
-			var status = "";
-
-			//alert($(this).attr('id'));
-
-            if ($(this).attr('src') === img1) {
-             	$(this).attr('src', img2);
-             	status = "presente";
-             	//var datastring = "posteo="+value+","+"1";
-            }	
-         	else {
-          		$(this).attr('src', img1);
-          		status = "";
-          		//var datastring = "posteo="+value+","+"0";
-          	}
-
-          	var values = {
-            		'id'		: value,
-            		'estado'	: status,
-    		};
-                  
-          	$.ajax({
-
-					type: 'POST',
- 					url: base_url+"cambiar_estado.php",
- 					data: values,
-			});
-	*/
-        });
+      		if ($(this).prop("checked") == false) {
+				$("#sel_"+tipo).prop('disabled', true);
+				$("#coseguro_"+tipo).prop('disabled', true);
+				$("#"+tipo+"_ord_chk").prop('disabled', true);	
+			}
+			else {
+				$("#sel_"+tipo).removeAttr('disabled');
+				$("#coseguro_"+tipo).removeAttr('disabled');
+				$("#"+tipo+"_ord_chk").removeAttr('disabled');
+			}
+		});
 
 		$( "#seleccion_medico" ).change(function () {
 			var base_url = '<?php echo base_url(); ?>';
@@ -137,6 +123,92 @@
         });
    	};
 
+   	function bloquear() {
+        $( "#bloquear_dia" ).dialog({
+			autoOpen: true,
+            resizable: false,
+			width: 350,
+            height: 200,
+            modal: true,
+            buttons: {
+                "Si": function() {
+                	if ($("#motivo").val() == "")
+                		$("#error_motivo").html("Debe escribir un motivo.");	
+                	else
+						$("#form_bloquear").submit();
+                },
+				"No": function() {
+                    $( this ).dialog( "close" );
+				}
+            }
+        });
+   	};
+
+   	function desbloquear() {
+        $( "#desbloquear_dia" ).dialog({
+			autoOpen: true,
+            resizable: false,
+			width: 300,
+            height: 100,
+            modal: true,
+            buttons: {
+                "Si": function() {
+					$("#form_desbloquear").submit();
+                },
+				"No": function() {
+                    $( this ).dialog( "close" );
+				}
+            }
+        });
+   	};
+
+   	function error() {
+        $( "#error" ).dialog({
+			autoOpen: true,
+            resizable: false,
+			width: 300,
+            height: 150,
+            modal: true,
+            buttons: {
+				"Aceptar": function() {
+                    $( this ).dialog( "close" );
+				}
+            }
+        });
+   	};
+
+   	function error_ficha() {
+        $( "#error_ficha" ).dialog({
+			autoOpen: true,
+            resizable: false,
+			width: 300,
+            height: 150,
+            modal: true,
+            buttons: {
+				"Aceptar": function() {
+                    $( this ).dialog( "close" );
+				}
+            }
+        });
+   	};
+
+   	function clear_all() {
+
+   		$.each( checks, function( i, val ) {
+							
+			$("#"+val+"_chk").prop('checked',false);
+			$("#sel_"+val).val("");
+			$("#coseguro_"+val).val("");
+			$("#"+val+"_ord_chk").prop('checked', false);
+
+			$("#sel_"+val).removeAttr('disabled');
+			$("#coseguro_"+val).removeAttr('disabled');
+			$("#"+val+"_ord_chk").removeAttr('disabled');
+		});
+
+		$("#sincargo_chk").prop('checked',false);
+   	};
+
    	function confirmar(id) {
 
    		var base_url = '<?php echo base_url(); ?>';
@@ -145,6 +217,8 @@
             		'id': id,
     	};
 
+    	clear_all();
+
         $.ajax({
 				type: 'POST',
 				url: base_url+"confirmar.php",
@@ -152,126 +226,64 @@
 				dataType: 'json',
 				success:function(response)
 				{	
+
 					$("#id_turno").val(id);
+					$("#ficha_fact").val(response["ficha"]);
+					$("#fecha_fact").val(response["fecha"]);
+					$("#apellido_fact").val(response["apellido"]);
+					$("#nombre_fact").val(response["nombre"]);
 
 					$("#nombreApellido").html(response["apellido"]+", "+response["nombre"]);
 
-					if (response["tipo"].indexOf("CVC") >= 0){
-						$("#cvc_chk").prop('checked',true);
-						$("#sel_cvc").val(response["obra_social"]);
-					}
-					else {
-						$("#cvc_chk").prop('checked',false);
-						$("#sel_cvc").val("");
-					}
+					//$("#nombreApellido").html(id);
+
+					$("#ficha").html(response["ficha"]);
+					$("#sel_estado").val(response["estado"]);
+					$("#sel_localidad").val(response["localidad"]);
+					$("#sel_medico option").filter(function() {
+					    return this.text == response["medico"]; 
+					}).attr('selected', true);
+					
+
+					if (response["facturar"] == "SI") {
+
+						var json = JSON.parse(response['tipo']);
+						var orden = JSON.parse(response['orden']);
+
+						$.each( checks, function( i, val ) {
+							if (json[val] != "") {
+								$("#"+val+"_chk").prop('checked',true);
+								$("#sel_"+val).val(json[val]);
+								$("#coseguro_"+val).val(json[val+"_coseguro"]);
+								if (orden != null)
+									$("#"+val+"_ord_chk").prop('checked', orden[val+"_orden"] == "SI");
+							}	
+							else {
+								$("#sel_"+val).prop('disabled', true);
+								$("#coseguro_"+val).prop('disabled', true);
+								$("#"+val+"_ord_chk").prop('disabled', true);
+							}
+							
+						});
 						
-					if (response["tipo"].indexOf("IOL") >= 0){
-						$("#iol_chk").prop('checked',true);
-						$("#sel_iol").val(response["obra_social"]);
+						$("#sincargo_chk").prop('checked',json.sin_cargo != "");
+
 					}
 					else {
-						$("#iol_chk").prop('checked',false);
-						$("#sel_iol").val("");
+
+						$.each( checks, function( i, val ) {
+							if (response["tipo"].toLowerCase().indexOf(val) >= 0){
+								$("#"+val+"_chk").prop('checked',true);
+								$("#sel_"+val).val(response["obra_social"]);
+							}
+							else {
+								$("#sel_"+val).prop('disabled', true);
+								$("#coseguro_"+val).prop('disabled', true);
+								$("#"+val+"_ord_chk").prop('disabled', true);
+							}
+						});
 					}
-						
-					if (response["tipo"].indexOf("RFG Color") >= 0){
-						$("#rfgc_chk").prop('checked',true);
-						$("#sel_rfgc").val(response["obra_social"]);
-					}
-					else {
-						$("#rfgc_chk").prop('checked',false);
-						$("#sel_rfgc").val("");
-					}
-						
-					if (response["tipo"].indexOf("RFG") >= 0){
-						$("#rfg_chk").prop('checked',true);
-						$("#sel_rfg").val(response["obra_social"]);
-					}
-					else {
-						$("#rfg_chk").prop('checked',false);
-						$("#sel_rfg").val("");
-					}
-						
-					if (response["tipo"].indexOf("TOPO") >= 0){
-						$("#topo_chk").prop('checked',true);
-						$("#sel_topo").val(response["obra_social"]);
-					}
-					else {
-						$("#topo_chk").prop('checked',false);
-						$("#sel_topo").val("");
-					}
-						
-					if (response["tipo"].indexOf("ME") >= 0){
-						$("#me_chk").prop('checked',true);
-						$("#sel_me").val(response["obra_social"]);
-					}
-					else {
-						$("#me_chk").prop('checked',false);
-						$("#sel_me").val("");
-					}
-						
-					if (response["tipo"].indexOf("HRT") >= 0){
-						$("#hrt_chk").prop('checked',true);
-						$("#sel_hrt").val(response["obra_social"]);
-					}
-					else {
-						$("#hrt_chk").prop('checked',false);
-						$("#sel_hrt").val("");
-					}
-						
-					if (response["tipo"].indexOf("Laser") >= 0){
-						$("#laser_chk").prop('checked',true);
-						$("#sel_laser").val(response["obra_social"]);
-					}
-					else {
-						$("#laser_chk").prop('checked',false);
-						$("#sel_laser").val("");	
-					}
-						
-					if (response["tipo"].indexOf("YAG") >= 0){
-						$("#yag_chk").prop('checked',true);
-						$("#sel_yag").val(response["obra_social"]);
-					}
-					else {
-						$("#yag_chk").prop('checked',false);
-						$("#sel_yag").val("");
-					}
-						
-					if (response["tipo"].indexOf("PAQUI") >= 0){
-						$("#paqui_chk").prop('checked',true);
-						$("#sel_paqui").val(response["obra_social"]);
-					}
-					else {
-						$("#paqui_chk").prop('checked',false);
-						$("#sel_paqui").val("");	
-					}
-						
-					if (response["tipo"].indexOf("OBI") >= 0){
-						$("#obi_chk").prop('checked',true);
-						$("#sel_obi").val(response["obra_social"]);
-					}
-					else {
-						$("#obi_chk").prop('checked',false);
-						$("#sel_obi").val("");
-					}
-						
-					if (response["tipo"].indexOf("OCT") >= 0) {
-						$("#oct_chk").prop('checked',true);
-						$("#sel_oct").val(response["obra_social"]);
-					}
-					else {
-						$("#oct_chk").prop('checked',false);
-						$("#sel_oct").val("");	
-					}
-						
-					if (response["tipo"].indexOf("CONSULTA") >= 0) {
-						$("#consulta_chk").prop('checked',true);
-						$("#sel_consulta").val(response["obra_social"]);
-					}
-					else {
-						$("#consulta_chk").prop('checked',false);
-						$("#sel_consulta").val("");	
-					}
+
 				},
 		});
    		
@@ -332,7 +344,7 @@
 	<div id = "dia_anterior">
 		<?php 
 			$dia_anterior = strtotime("-1 day", strtotime($fecha));
-echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_anterior)).'">';
+			echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_anterior)).'">';
 				echo '<img src = "'.base_url('css/images/arrow_left_24x24.png').'"/>';
 			echo '</a>';
 		?>
@@ -347,7 +359,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_anteri
 	<div id = "dia_siguiente">
 		<?php 
 			$dia_siguiente = strtotime("+1 day", strtotime($fecha));
-echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguiente)).'">';
+			echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguiente)).'">';
 				echo '<img src = "'.base_url('css/images/arrow_right_24x24.png').'"/>';
 			echo '</a>';
 		?>
@@ -423,6 +435,21 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 		echo '</a>';
 		?>
 	</div>
+	<?php if ($this->session->userdata('grupo') == "Secretaria") {
+		echo '<div id = "bloquear" style="float:left;margin-top:11px;margin-left:10px">';
+			if ($bloqueado != null) {
+				echo '<a href="#" onclick = "return desbloquear()">';
+					echo '<img src = "'.base_url('css/images/lock.png').'"/>'; 
+				echo '</a>';	
+			}
+			else {
+				echo '<a href="#" onclick = "return bloquear()">';
+					echo '<img src = "'.base_url('css/images/unlock.png').'"/>'; 
+				echo '</a>';	
+			}
+		}			
+	?>
+		</div>
 </div>
 
 <div id = "busqueda">
@@ -443,6 +470,20 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 
 </div>
 <div id="borrar_turno" title="¿Borrar turno?"></div>
+<div id="desbloquear_dia" title="¿Desbloquear dia?" style = "display:none">
+	<form id = "form_desbloquear" action="<?php echo base_url('index.php/main/desbloquear_dia/')?>" method="post">
+		<input name = "fecha" type = "hidden" value = "<?php echo $fecha?>"/>
+	</form>
+</div>	
+<div id="bloquear_dia" title="¿Bloquear dia?" style = "display:none">
+	<form id = "form_bloquear" action="<?php echo base_url('index.php/main/bloquear_dia/')?>" method="post">
+		<input name = "fecha" type = "hidden" value = "<?php echo $fecha?>"/>
+		Motivo: <textarea id = "motivo" name = "motivo" style = "width:250px;height:70px;float:right" required/></textarea>
+		<div id = "error_motivo" style ="color:red;float:left;width:100%"></div>
+	</form>
+</div>
+<div id="error" title="Atención" style = "display:none"> Este turno no puede modificarse.</div>
+<div id="error_ficha" title="Atención" style = "display:none"> Debe especificarse un número de ficha primero.</div>
 <div id = "turnos_dia">
 
 	<div id = "titulo_superior">
@@ -468,6 +509,8 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 
 	<div id = "horarios">
 	<?php
+
+	if ($bloqueado == null) {
 
 		if ($filas <> 0) {
 
@@ -569,7 +612,10 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 
 						echo '<div class = "hora_ocupada">';
 							echo '<div class = "horario">';
-								echo '<a href="'.base_url("/index.php/main/nuevo_turno/".$fila->fecha.'/'.$hora.'/'.$minutos).'" name="'.$hora_completa.'">'.$hora_completa.'</a>';
+								if ($this->session->userdata('grupo') == "Secretaria")
+									echo '<a href="'.base_url("/index.php/main/nuevo_turno/".$fila->fecha.'/'.$hora.'/'.$minutos).'" name="'.$hora_completa.'">'.$hora_completa.'</a>';
+								else
+									echo '<a href="#" name="'.$hora_completa.'">'.$hora_completa.'</a>';
 							echo '</div>';
 
 							echo '<div class = "hora_cita">';	
@@ -592,7 +638,10 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							$auxi = explode(' - ', $fila->medico);
 							$med = $auxi[0];
 							if ($med == "Otro") {
-								echo $auxi[1];
+								if (sizeof($auxi) > 1)
+									echo $auxi[1];
+								else
+									echo "Otro";
 							}
 							else {
 								echo $fila->medico;	
@@ -614,6 +663,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 								echo '<input type="hidden" name="tel1" value="'.$fila->tel1.'">';
 								echo '<input type="hidden" name="tel2" value="'.$fila->tel2.'">';
 								echo '<input type="hidden" name="fecha_turno" value="'.$fecha.'">';
+								echo '<input type="hidden" name="id_turno" value="'.$fila->id.'">';
 							?>
 								<a href="#" onclick="$(this).closest('form').submit(); return false;">Nuevo Paciente</a>
 							<?php	
@@ -628,21 +678,40 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 								if ($this->session->userdata('grupo') == "Medico")
 									echo anchor('main/historia_clinica/'.$fila->id_paciente, $fila->ficha);
 								else	
-									echo anchor('main/buscar_paciente/'.$fila->id_paciente, $fila->ficha);
+									echo anchor('main/editar_paciente/'.$fila->id_paciente, $fila->ficha);
 							}		
 						echo '</div>';
 
 						echo '<div class = "estado" id = "'.$fila->id.'" style="cursor: pointer;">';
+							if ($this->session->userdata('grupo') == "Secretaria") {
 
-							echo '<a onclick = "return confirmar(\''.$fila->id.'\')">';
+								if ($fila->ficha < 0)
+									echo '<a onclick = "return error_ficha()">';
+								else {
 
-								if ($fila->estado == "")
-									echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_16x13.png').'"/>';
-								else	
-									echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'"/>'; 
-								
-							echo '</a>';
+									if ($fila->ya_facturado == 0)
+										echo '<a onclick = "return confirmar(\''.$fila->id.'\')">';
+									else
+										echo '<a onclick = "return error()">';
+								}	
 
+							}
+							else
+								echo '<a>';
+
+							if ($fila->estado == "")
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_16x13.png').'"/></a>';
+							else if ($fila->estado == "estudios")	
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios.png').'"/></a>'; 
+							else if ($fila->estado == "estudios_ok")	
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios_ok.png').'"/></a>';
+							else if ($fila->estado == "medico")	
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/medico.png').'"/></a>';
+							else if ($fila->estado == "dilatacion")	
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/dilatacion.png').'"/></a>';
+							else
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'"/></a>';								
+									
 						echo '</div>';
 
 					echo '</div>';
@@ -667,21 +736,25 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							echo "<b>Notas: </b>".$fila->notas;
 						}
 					echo '</div>';
-					echo '<div id = "botones">';
-						echo '<a href="'.base_url('index.php/main/editar_turno/'.$fila->id).'">';
-							echo '<img src = "'.base_url('css/images/pencil_icon&16.png').'"/>';  
-						echo '</a>';
-						echo '<a style="cursor: pointer;" onclick = "return borrar(\''.base_url("/index.php/main/").'\', \''.$fila->id.'\');">'; 
-							echo '<img src = "'.base_url('css/images/delete_icon&16.png').'"/>';  
-						echo '</a>';
-						echo '<a href="'.base_url('index.php/main/set_cambio/'.$fecha.'/'.$fila->id.'/'.$fila->nombre.'/'.$fila->apellido).'">';
-							echo '<img src = "'.base_url('css/images/refresh_icon&16.png').'"/>';  
-						echo '</a>';
-						echo '<a href="'.base_url('index.php/main/set_turno/'.$fecha.'/'.$fila->id).'">';
-							echo '<img src = "'.base_url('css/images/plus_black_16x16.png').'"/>';  
-						echo '</a>';
-					echo '</div>';
-					echo '<div style = "font-style:italic;float:right;font-size:12px;">';
+					if ($this->session->userdata('grupo') == "Secretaria") {
+						echo '<div id = "botones">';
+							if ($fila->ya_facturado == 0) {
+								echo '<a href="'.base_url('index.php/main/editar_turno/'.$fila->id).'">';
+									echo '<img src = "'.base_url('css/images/pencil_icon&16.png').'"/>';  	
+								echo '</a>';
+								echo '<a style="cursor: pointer;" onclick = "return borrar(\''.base_url("/index.php/main/").'\', \''.$fila->id.'\');">'; 
+									echo '<img src = "'.base_url('css/images/delete_icon&16.png').'"/>';  
+								echo '</a>';	
+								echo '<a href="'.base_url('index.php/main/set_cambio/'.$fecha.'/'.$fila->id.'/'.$fila->nombre.'/'.$fila->apellido).'">';
+									echo '<img src = "'.base_url('css/images/refresh_icon&16.png').'"/>';  
+								echo '</a>';
+							}	
+							echo '<a href="'.base_url('index.php/main/set_turno/'.$fecha.'/'.$fila->id).'">';
+								echo '<img src = "'.base_url('css/images/plus_black_16x16.png').'"/>';  
+							echo '</a>';	
+						echo '</div>';
+					}
+					echo '<div style = "font-style:italic;float:right;font-size:12px;margin-right:10px">';
 						echo 'Ultima edición: '.date('d-m-Y@H:i', strtotime($fila->last_update)).' por <bold>'.$fila->usuario.'<bold>';
 					echo '</div>';	
 				echo '</div>';
@@ -690,34 +763,42 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 				$hora = date('H', strtotime($fila));
 				$minutos = date('i', strtotime($fila));
 				$data = $fecha.'/'.$hora.'/'.$minutos;
+				if ($this->session->userdata('grupo') == "Secretaria") {
 				
 					if ($id_turno <> NULL)
 					{	
-						if ($nuevo_turno == 1) {
-
+						if ($nuevo_turno == 1)
 							echo '<div class = "fila_vacia" onclick = "location.href=\''.base_url("/index.php/main/asignar_turno/".$fecha.'/'.$hora.'/'.$minutos).'\';" style="cursor: pointer;">';
-
-						}	
-						else {	
-					//echo '<div class = "fila_vacia" style="cursor: pointer;">';	
+						else
 							echo '<div class = "fila_vacia" style="cursor: pointer" onclick = "return chequear(\''.base_url("/index.php/main/").'\', \''.$data.'\');">';
-						}	
+
 					}	
 					else
-					{
-					//echo '<div class = "fila_vacia" style="cursor: pointer;">';
-					echo '<div class = "fila_vacia" onclick = "location.href=\''.base_url("/index.php/main/nuevo_turno/".$fecha.'/'.$hora.'/'.$minutos).'\';" style="cursor: pointer;">';	
-					}	
-					echo '<div class = "hora">'; 
-						echo '<a name="'.$fila.'">'.$fila.'</a>';
-					echo '</div>';	 
+						echo '<div class = "fila_vacia" onclick = "location.href=\''.base_url("/index.php/main/nuevo_turno/".$fecha.'/'.$hora.'/'.$minutos).'\';" style="cursor: pointer;">';
+				}
+				else 
+					echo '<div class = "fila_vacia">';
+						echo '<div class = "hora">'; 
+							echo '<a name="'.$fila.'">'.$fila.'</a>';
+						echo '</div>';	 
 				echo '</div>';
 			}
 		}
+	}
+	else {
+		if ($bloqueado->motivo != "")
+			$motivo = $bloqueado->motivo;
+		else
+			$motivo = "Sin Especificar";
 
+		echo '<div style = "height:486px">';
+			echo "<p style = 'text-align:center;font-size:25px;font-family:Oswald'>Agenda bloqueada para esta fecha.</p>";
+			echo "<p style = 'text-align:center;font-size:25px;font-family:Oswald'>Motivo: <i>".$motivo."</i></p>";
+			echo "<p style = 'text-align:center;font-size:15px;font-family:Oswald'>Última edición: <i>".date('d-m-Y',strtotime($bloqueado->last_update))." - ".$bloqueado->usuario."</i></p>";
+		echo '</div>';
+	}
 	?>
 	</div>
-
 </div>
 
 <div id = "notas_dia"> 
@@ -759,9 +840,9 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 
 
 <div id="confirmar_datos" title="Actualizar datos turno" style = "display:none">
+<form id = "form_facturacion" action="<?php echo base_url('index.php/main/update_facturacion_turno/0')?>" method="post">
 	<div style = "float:left;font-weight:bold;margin-right:10px">Paciente:</div><div id = "nombreApellido" style = "float:left"></div>
-
-<form id = "form_facturacion" action="<?php echo base_url('index.php/main/add_to_facturacion/'.$fecha)?>" method="post">
+	<div style = "float:left;font-weight:bold;margin-right:10px;margin-left: 50px">Ficha: </div><div id = "ficha" style = "float:left"></div>
 	<div style = "float:left;width:100%">
 		<div style = "float:left;width:50%">
 			<table class= "confirm_tabla" style = "margin-top:40px">
@@ -772,10 +853,9 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 					<td>
 						<select id = "sel_cvc" name="sel_cvc">
 							<option></option>
-							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -786,7 +866,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_cvc" name = "coseguro_cvc" style = "width:40px"/>
+						<input id = "coseguro_cvc" name = "coseguro_cvc" style = "width:40px" autocomplete="off"/>
 					</td>
 				<tr>
 				</tr>	
@@ -798,7 +878,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -809,7 +889,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_iol" name = "coseguro_iol" style = "width:40px"/>
+						<input id = "coseguro_iol" name = "coseguro_iol" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -821,7 +901,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -832,7 +912,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_oct" name = "coseguro_oct" style = "width:40px"/>
+						<input id = "coseguro_oct" name = "coseguro_oct" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -844,7 +924,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -855,7 +935,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_me" name = "coseguro_me" style = "width:40px"/>
+						<input id = "coseguro_me" name = "coseguro_me" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -867,7 +947,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -878,7 +958,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_rfg" name = "coseguro_rfg" style = "width:40px"/>
+						<input id = "coseguro_rfg" name = "coseguro_rfg" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -890,7 +970,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -901,19 +981,19 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_rfgc" name = "coseguro_rfgc" style = "width:40px"/>
+						<input id = "coseguro_rfgc" name = "coseguro_rfgc" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
 					<td>
-						<input id = "consulta_chk" name = "chk_turno[]" value = "CONSULTA" type = "checkbox"/> Consulta
+						<input id = "consulta_chk" name = "chk_turno[]" value = "Consulta" type = "checkbox"/> Consulta
 					</td>
 					<td>
 						<select id = "sel_consulta" name="sel_consulta">
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -924,7 +1004,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_consulta" name = "coseguro_consulta" style = "width:40px"/>
+						<input id = "coseguro_consulta" name = "coseguro_consulta" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 			</table>
@@ -940,7 +1020,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -951,7 +1031,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_hrt" name = "coseguro_hrt" style = "width:40px"/>
+						<input id = "coseguro_hrt" name = "coseguro_hrt" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -963,7 +1043,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -974,7 +1054,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_obi" name = "coseguro_obi" style = "width:40px"/>
+						<input id = "coseguro_obi" name = "coseguro_obi" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -986,7 +1066,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -997,7 +1077,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_paqui" name = "coseguro_paqui" style = "width:40px"/>
+						<input id = "coseguro_paqui" name = "coseguro_paqui" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -1009,7 +1089,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -1020,7 +1100,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_laser" name = "coseguro_laser" style = "width:40px"/>
+						<input id = "coseguro_laser" name = "coseguro_laser" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -1032,7 +1112,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -1043,7 +1123,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_yag" name = "coseguro_yag" style = "width:40px"/>
+						<input id = "coseguro_yag" name = "coseguro_yag" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>	
@@ -1055,7 +1135,7 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 							<option></option>
 						<?php
 							foreach ($obras as $obra)
-								echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 						</select>
 					</td>
@@ -1066,39 +1146,49 @@ echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguie
 						Coseguro:
 					</td>
 					<td>
-						<input id = "coseguro_topo" name = "coseguro_topo" style = "width:40px"/>
+						<input id = "coseguro_topo" name = "coseguro_topo" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input id = "sincargo_chk" name = "chk_turno[]" value = "S/CARGO" type = "checkbox"/> Sin Cargo
+						<input id = "sincargo_chk" name = "chk_turno[]" value = "S/Cargo" type = "checkbox"/> Sin Cargo
 					</td>	
 				</tr>	
 			</table>
 		</div>
 </div>
 	<div style = "float:left;margin-top:20px;width:50%">
-		Pasar a:
-		<select name="sel_estado" style = "width:180px">
+		Estado:
+		<select id = "sel_estado" name="sel_estado" style = "width:180px">
 			<option></option>
-			<option value = "espera_estudios"> Estudios </option>
-			<option value = "esperando"> Medico </option>
+			<option value = "estudios"> Espera para estudios </option>
+			<option value = "estudios_ok"> Estudios terminados</option>
+			<option value = "dilatacion"> En dilatación </option>
+			<option value = "medico"> Espera para médico </option>
 		</select>
 	</div>
 	<div style = "float:left;margin-top:20px;margin-left:20px">
 		Medico:
-		<select name="sel_medico" style = "width:180px">
+		<select id = "sel_medico" name="sel_medico" style = "width:180px">
 			<?php
 				foreach ($medicos as $med) {	
-					if ($medico_selected == $med->id_medico)
-						echo '<option value ='.$med->id_medico.' selected>'.$med->nombre.'</option>';
-					else
-						echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
+					echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
 				}
 			?>
 		</select>
 	</div>
-	<input id = "id_turno" name = "id_turno" type = "hidden"/>	
+	<div style = "float:left;margin-top:20px;margin-left:20px">
+		Localidad:
+		<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
+			<option value = "Rosario"> Rosario </option>
+			<option value = "Villa_Constitucion"> Villa Constitución </option>
+		</select>
+	</div>
+	<input id = "id_turno" name = "id_turno" type = "hidden"/>
+	<input id = "ficha_fact" name = "ficha_fact" type = "hidden"/>
+	<input id = "fecha_fact" name = "fecha_fact" type = "hidden"/>
+	<input id = "apellido_fact" name = "apellido_fact" type = "hidden"/>
+	<input id = "nombre_fact" name = "nombre_fact" type = "hidden"/>
 </form>
 </div>
 

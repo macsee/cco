@@ -77,6 +77,54 @@
 				border-left: 1px solid;
 			}
 
+			.ui-widget {
+				font-size: 14px;
+			}
+			.ui-dialog {
+				//position: relative;
+				margin: auto;
+			}
+			//body {width: 1630px; }
+
+			#select_medico {
+				float:left;
+				margin-top: 9px;
+				margin-right: 30px;
+			}
+
+			select {
+				-webkit-appearance: none;
+		   		-moz-appearance: none;
+		   		height: 30px;
+		   		font-size: 12px;
+		   		padding-left: 5px;
+		   		border: 1px solid #E5E5E5;
+		   		width: 110px;
+			}
+
+			.confirm_tabla {
+				font-size: 10pt;
+			}
+
+			.confirm_tabla td {
+				width: 100px;
+			}
+
+			#confirmar_datos select {
+				width: 120px;
+				font-size: 10pt;
+			}
+
+			#confirmar_datos tr {
+				border: none;
+			}
+
+			#confirmar_datos input {
+				width: 10px;
+				margin-left: 0px
+			}
+
+
 		</style>
 		<script type="text/javascript">
 			$(document).ready( function() {
@@ -244,7 +292,110 @@
 
 	  					$("#total").val(2);			
 	        		});
-			});		
+			});
+
+			var checks = ["cvc", "iol", "topo", "me", "oct", "rfgc", "rfg", "hrt", "obi", "paqui", "consulta", "laser", "yag"];        
+	
+			function clear_all() {
+
+		   		$.each( checks, function( i, val ) {
+									
+					$("#"+val+"_chk").prop('checked',false);
+					$("#sel_"+val).val("");
+					$("#coseguro_"+val).val("");
+					$("#"+val+"_ord_chk").prop('checked', false);
+
+					$("#sel_"+val).removeAttr('disabled');
+					$("#coseguro_"+val).removeAttr('disabled');
+					$("#"+val+"_ord_chk").removeAttr('disabled');
+				});
+
+				$("#sincargo_chk").prop('checked',false);
+		   	};
+
+			function confirmar(id) {
+
+					clear_all();
+
+					var base_url = '<?php echo base_url(); ?>';
+					
+					var values = {
+			        		'id': id,
+				};
+
+			    $.ajax({
+						type: 'POST',
+						url: base_url+"confirmar.php",
+						data: values,
+						dataType: 'json',
+						success:function(response)
+						{	
+
+							$("#id_turno").val(id);
+							$("#ficha_fact").val(response["ficha"]);
+							$("#fecha_fact").val(response["fecha"]);
+							$("#apellido_fact").val(response["apellido"]);
+							$("#nombre_fact").val(response["nombre"]);
+							//$("#nombreApellido").html(response["apellido"]+", "+response["nombre"]);
+
+							//$("#nombreApellido").html(id);
+
+							//$("#ficha").html(response["ficha"]);
+							$("#sel_estado").val(response["estado"]);
+							$("#sel_localidad").val(response["localidad"]);
+							$("#sel_medico option").filter(function() {
+							    return this.text == response["medico"]; 
+							}).attr('selected', true);
+							
+						
+							var json = JSON.parse(response['tipo']);
+							var orden = JSON.parse(response['orden']);
+
+							$.each( checks, function( i, val ) {
+								
+								if (json[val] != "") {
+									$("#"+val+"_chk").prop('checked',true);
+									$("#sel_"+val).val(json[val]);
+									$("#coseguro_"+val).val(json[val+"_coseguro"]);
+									if (orden != null)
+										$("#"+val+"_ord_chk").prop('checked', orden[val+"_orden"] == "SI");
+								}	
+								else {
+									$("#sel_"+val).prop('disabled', true);
+									$("#coseguro_"+val).prop('disabled', true);
+									$("#"+val+"_ord_chk").prop('disabled', true);
+								}
+								
+							});
+							
+							$("#sincargo_chk").prop('checked',json.sin_cargo != "");
+
+						},
+				});
+					
+			    $( "#confirmar_datos" ).dialog({
+					autoOpen: true,
+			        resizable: false,
+					width: 1200,
+			        height: 500,
+			        modal: true,
+			        buttons: {
+			        	"Eliminar": function() {
+			                $( this ).dialog( "close" );
+						},
+			            "Confirmar": function() {
+							//var x = url+"/borrar_turno/"+data;
+							//location.href = x;
+							$("#form_facturacion_edit").submit();
+			            },
+						"Cancelar": function() {
+			                $( this ).dialog( "close" );
+						}
+			        }
+			    });
+			    
+			};
+
 		</script>
 	</head>
 
@@ -292,198 +443,194 @@
 			
 		}
 
-		function count_turnos_obra($json,$obra,$array) {
+		function count_turnos_obra($json,$json_obra,$obra,$array) {
 			
-			$chk_ord = "";
 
-			if (isset($json->chk_ord))
-				$chk_ord = $json->chk_ord;
+			$json_obra = json_decode(json_encode($json_obra), true);
 
 			if ($obra == "todos") {
-				if ($json->cvc != "" && strpos($chk_ord, "ord_cvc") === false) {
+
+				if ($json->cvc != "" && $json_obra['cvc_orden'] != "SI") {
 					$array['cvc']->cant++;
 					$array['cvc']->coseg += intval($json->cvc_coseguro);
-				}	
+				}
 
-				if ($json->iol != "" && strpos($chk_ord, "ord_iol") === false) {
+				if ($json->iol != "" && $json_obra['iol_orden'] != "SI") {
 					$array['iol']->cant++;
 					$array['iol']->coseg += intval($json->iol_coseguro);
-				}	
+				}
 
-				if ($json->topo != "" && strpos($chk_ord, "ord_topo") === false) {
+				if ($json->topo != "" && $json_obra['topo_orden'] != "SI") {
 					$array['topo']->cant++;
 					$array['topo']->coseg += intval($json->topo_coseguro);
-				}	
+				}
 
-				if ($json->oct != "" && strpos($chk_ord, "ord_oct") === false) {
+				if ($json->oct != "" && $json_obra['oct_orden'] != "SI") {
 					$array['oct']->cant++;
 					$array['oct']->coseg += intval($json->oct_coseguro);
 				}	
 
-				if ($json->hrt != "" && strpos($chk_ord, "ord_hrt") === false) {
+				if ($json->hrt != "" && $json_obra['hrt_orden'] != "SI") {
 					$array['hrt']->cant++;
 					$array['hrt']->coseg += intval($json->hrt_coseguro);
 				}	
 
-				if ($json->me != "" && strpos($chk_ord, "ord_me") === false) {
+				if ($json->me != "" && $json_obra['me_orden'] != "SI") {
 					$array['me']->cant++;
 					$array['me']->coseg += intval($json->me_coseguro);
 				}	
 
-				if ($json->rfg != "" && strpos($chk_ord, "ord_rfg") === false) {
+				if ($json->rfg != "" && $json_obra['rfg_orden'] != "SI") {
 					$array['rfg']->cant++;
 					$array['rfg']->coseg += intval($json->rfg_coseguro);
 				}	
 
-				if ($json->rfgc != "" && strpos($chk_ord, "ord_rfgc") === false) {
+				if ($json->rfgc != "" && $json_obra['rfgc_orden'] != "SI") {
 					$array['rfgc']->cant++;
 					$array['rfgc']->coseg += intval($json->rfgc_coseguro);
 				}	
 					
-				if ($json->obi != "" && strpos($chk_ord, "ord_obi") === false) {
+				if ($json->obi != "" && $json_obra['obi_orden'] != "SI") {
 					$array['obi']->cant++;
 					$array['obi']->coseg += intval($json->obi_coseguro);
 				}	
 					
-				if ($json->paqui != "" && strpos($chk_ord, "ord_paqui") === false) {
+				if ($json->paqui != "" && $json_obra['paqui_orden'] != "SI") {
 					$array['paqui']->cant++;
 					$array['paqui']->coseg += intval($json->paqui_coseguro);
 				}	
 					
-				if ($json->consulta != "" && strpos($chk_ord, "ord_consulta") === false) {
+				if ($json->consulta != "" && $json_obra['consulta_orden'] != "SI") {
 					$array['consulta']->cant++;
 					$array['consulta']->coseg += intval($json->consulta_coseguro);
 				}	
 				
-				if ($json->laser != "" && strpos($chk_ord, "ord_laser") === false) {
+				if ($json->laser != "" && $json_obra['laser_orden'] != "SI") {
 					$array['laser']->cant++;
 					$array['laser']->coseg += intval($json->laser_coseguro);
 				}	
 					
-				if ($json->yag != "" && strpos($chk_ord, "ord_yag") === false) {
+				if ($json->yag != "" && $json_obra['yag_orden'] != "SI") {
 					$array['yag']->cant++;
 					$array['yag']->coseg += intval($json->yag_coseguro);
-				}	
+				}
+						
 			}
 			else {
 
-				if ($json->cvc == $obra && strpos($chk_ord, "ord_cvc") === false)
+				if ($json->cvc == $obra && $json_obra['cvc_orden'] != "SI")
 					$array['cvc']->cant++;
 
-				if ($json->iol == $obra && strpos($chk_ord, "ord_iol") === false)
+				if ($json->iol == $obra && $json_obra['iol_orden'] != "SI")
 					$array['iol']->cant++;
 						
-				if ($json->topo == $obra && strpos($chk_ord, "ord_topo") === false)
+				if ($json->topo == $obra && $json_obra['topo_orden'] != "SI")
 					$array['topo']->cant++;
 
-				if ($json->oct == $obra && strpos($chk_ord, "ord_oct") === false)
+				if ($json->oct == $obra && $json_obra['oct_orden'] != "SI")
 					$array['oct']->cant++;
 
-				if ($json->hrt == $obra && strpos($chk_ord, "ord_hrt") === false)
+				if ($json->hrt == $obra && $json_obra['hrt_orden'] != "SI")
 					$array['hrt']->cant++;
 
-				if ($json->me == $obra && strpos($chk_ord, "ord_me") === false)
+				if ($json->me == $obra && $json_obra['me_orden'] != "SI")
 					$array['me']->cant++;
 
-				if ($json->rfg == $obra && strpos($chk_ord, "ord_rfg") === false)
+				if ($json->rfg == $obra && $json_obra['rfg_orden'] != "SI")
 					$array['rfg']->cant++;
 
-				if ($json->rfgc == $obra && strpos($chk_ord, "ord_rfgc") === false)
+				if ($json->rfgc == $obra && $json_obra['rfgc_orden'] != "SI")
 					$array['rfgc']->cant++;
 					
-				if ($json->obi == $obra && strpos($chk_ord, "ord_obi") === false)
+				if ($json->obi == $obra && $json_obra['obi_orden'] != "SI")
 					$array['obi']->cant++;
 					
-				if ($json->paqui == $obra && strpos($chk_ord, "ord_paqui") === false)
+				if ($json->paqui == $obra && $json_obra['paqui_orden'] != "SI")
 					$array['paqui']->cant++;
 					
-				if ($json->consulta == $obra && strpos($chk_ord, "ord_consulta") === false)
+				if ($json->consulta == $obra && $json_obra['consulta_orden'] != "SI")
 					$array['consulta']->cant++;
 				
-				if ($json->laser == $obra && strpos($chk_ord, "ord_laser") === false)
+				if ($json->laser == $obra && $json_obra['laser_orden'] != "SI")
 					$array['laser']->cant++;
 					
-				if ($json->yag == $obra && strpos($chk_ord, "ord_yag") === false)
+				if ($json->yag == $obra && $json_obra['yag_orden'] != "SI")
 					$array['yag']->cant++;
 			}
-
+			
 			return $array;
 
 		}
 		
 		function pacientes_sin_orden($json,$value,$pacientes) {
-			$chk_ord = "";
+			//$chk_ord = "";
 			$cadena = "";
 
-			if (isset($json->chk_ord))
-				$chk_ord = $json->chk_ord;
+			$json = json_decode(json_encode($json), true);
+			//print_r($json);
 
-			if 	( strpos($chk_ord, "ord_cvc") !== false ) {
+			if ($json['cvc_orden'] == "SI") {
 				$paciente = $value;
 				$cadena .= "CVC,";
-			}	
+			}
 
-			if ( strpos($chk_ord, "ord_iol") !== false ) {
+			if ($json['iol_orden'] == "SI") {
 				$paciente = $value;
 				$cadena .= "IOL,";
 			}
 
-			if ( strpos($chk_ord, "ord_topo") !== false ) {
+			if ($json['topo_orden'] == "SI") {
 				$paciente = $value;
 				$cadena .= "TOPO,";
 			}
 
-			if ( strpos($chk_ord, "ord_oct") !== false ) {
-				$paciente = $value;
-				$cadena .= "OCT,";
-			}
-
-			if ( strpos($chk_ord, "ord_hrt") !== false ) {
-				$paciente = $value;
-				$cadena .= "HRT,";
-			}
-
-			if ( strpos($chk_ord, "ord_me") !== false ) {
-				$paciente = $value;
-				$cadena .= "ME,";
-			}
-			
-			if ( strpos($chk_ord, "ord_rfg") !== false ) {
+			if ($json['rfg_orden'] == "SI") {
 				$paciente = $value;
 				$cadena .= "RFG,";
 			}
 
-			if ( strpos($chk_ord, "ord_rfgc") !== false ) {
+			if ($json['rfgc_orden'] == "SI") {
 				$paciente = $value;
 				$cadena .= "RFG Color,";
 			}
 
-			if ( strpos($chk_ord, "ord_obi") !== false) {
+			if ($json['hrt_orden'] == "SI") {
+				$paciente = $value;
+				$cadena .= "HRT,";
+			}
+
+			if ($json['oct_orden'] == "SI") {
+				$paciente = $value;
+				$cadena .= "OCT,";
+			}
+
+			if ($json['obi_orden'] == "SI") {
 				$paciente = $value;
 				$cadena .= "OBI,";
 			}
-			
-			if ( strpos($chk_ord, "ord_paqui") !== false ) {
+
+			if ($json['paqui_orden'] == "SI") {
 				$paciente = $value;
 				$cadena .= "PAQUI,";
 			}
-			
-			if ( strpos($chk_ord, "ord_laser") !== false ) {
+
+			if ($json['laser_orden'] == "SI") {
 				$paciente = $value;
-				$cadena += "Laser,";
+				$cadena .= "LASER,";
 			}
-			
-			if ( strpos($chk_ord, "ord_yag") !== false ) {
+
+			if ($json['yag_orden'] == "SI") {
 				$paciente = $value;
-				$cadena += "YAG,";
+				$cadena .= "YAG,";
 			}
-			
-			if ( strpos($chk_ord, "ord_consulta") !== false ) {
+
+			if ($json['consulta_orden'] == "SI") {
 				$paciente = $value;
-				$cadena += "Consulta,";
+				$cadena .= "CONSULTA,";
 			}
 
 			$cadena = rtrim($cadena, ",");
+			
 
 			if ($cadena != "")
 				array_push($pacientes, new objetoArrays($paciente, $cadena));
@@ -515,7 +662,7 @@
 				</div>
 				<div style ="float:left;margin-left:20px">
 					Medico:
-					<select style = "font-size: 12pt" id = "sel_medico" name="sel_medico">
+					<select style = "font-size: 12pt" id = "sel_medico_" name="sel_medico_">
 						<option value = "todos">Todos</option>
 						<?php
 							if (!isset($medico_selected))
@@ -556,10 +703,10 @@
 						if (!isset($fecha_hasta))
 							$fecha_hasta = "";
 					?>
-					Desde: <input style = "font-size: 11pt" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>"/>
+					Desde: <input style = "font-size: 11pt" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>" required/>
 				</div>
 				<div style ="float:left;margin-left:20px">
-					Hasta: <input style = "font-size: 11pt" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>"/>
+					Hasta: <input style = "font-size: 11pt" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" required/>
 				</div>	
 				<div style ="float:left;margin-left:20px">
 					<button style = "font-size: 12pt" type = "submit"> Buscar </button>
@@ -578,29 +725,31 @@
 						$array = crear_objeto();
 						$total_coseguro = 0;
 
-						echo '<div style = "float:left;width: 61%;border-bottom:1px solid #A9A9A9;margin-top:5px;">';
+						echo '<div style = "float:left;width: 78%;border-bottom:1px solid #A9A9A9;margin-top:5px;">';
 							echo '<div style = "background-color:#1e3e53;float:left;width:100%;color:white;text-align:center">';
 								echo "Pacientes con órdenes";
 							echo '</div>';	
 							echo '<div style = "float:left;height:394px;overflow-y: scroll;margin-top:2px">';
 								echo '<table class = "listado" style = "font-size:11pt;border-bottom:1px solid">';
 									echo '<tr>';
-			  							echo '<th style = "text-align:left;width:100px">Fecha</th>';
+			  							echo '<th style = "text-align:left;width:80px">Fecha</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid;width:70px">Ficha</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid;width:250px">Paciente</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid;width:80px">Práctica</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid;width:250px">Obra Social</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid">Médico</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid;width:50px">Coseguro</th>';
-			  							echo '<th style = "text-align:left;border-left:1px solid;width:100px">Informe</th>';
+			  							echo '<th style = "text-align:left;border-left:1px solid;width:120px">Informe</th>';
 									echo '</tr>';
 
 							foreach ($resultado as $value) {
 								
-								$json = json_decode($value->datos);			
-								$array = count_turnos_obra($json,$obra_selected,$array);
+								$json = json_decode($value->datos);
+								$json_orden = json_decode($value->ordenes_pendientes);
 
-								$array_paciente = count_turnos_obra($json,$obra_selected,crear_objeto());
+								$array = count_turnos_obra($json,$json_orden,$obra_selected,$array);
+
+								$array_paciente = count_turnos_obra($json,$json_orden,$obra_selected,crear_objeto());
 								$flag = 0;
 
 								$ficha = $value->ficha;
@@ -608,10 +757,11 @@
 								$medico = $value->medico;
 								$fecha = date('d-m-Y',strtotime($value->fecha));
 								$generar = '<a href = "#">Generar</a>';
+								$modificar = '<a href = "#" onclick = "return confirmar(\''.$value->id_turno.'\')">Modificar</a>';
 
 								$chk_ord = "";
 
-								$pacientes = pacientes_sin_orden($json,$value,$pacientes);
+								$pacientes = pacientes_sin_orden($json_orden,$value,$pacientes);
 
 								if ($array_paciente['cvc']->cant != 0){
 
@@ -625,7 +775,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
-										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -635,7 +785,7 @@
 										echo '<td>'.$json->cvc.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['cvc']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -651,7 +801,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
-										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -661,7 +811,7 @@
 										echo '<td>'.$json->iol.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['iol']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -677,6 +827,9 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
+										$modificar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -686,7 +839,7 @@
 										echo '<td>'.$json->topo.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['topo']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -702,6 +855,8 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -711,7 +866,7 @@
 										echo '<td>'.$json->oct.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['oct']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -727,6 +882,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -736,7 +892,7 @@
 										echo '<td>'.$json->me.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['me']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -752,6 +908,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -761,7 +918,7 @@
 										echo '<td>'.$json->rfg.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['rfg']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -777,6 +934,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -786,7 +944,7 @@
 										echo '<td>'.$json->rfgc.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['rfgc']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -802,6 +960,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -811,7 +970,7 @@
 										echo '<td>'.$json->paqui.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['paqui']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -827,6 +986,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -836,7 +996,7 @@
 										echo '<td>'.$json->obi.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['obi']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -852,6 +1012,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -861,7 +1022,7 @@
 										echo '<td>'.$json->hrt.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['hrt']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -877,6 +1038,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -886,7 +1048,7 @@
 										echo '<td>'.$json->laser.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['laser']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -902,6 +1064,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -911,7 +1074,7 @@
 										echo '<td>'.$json->yag.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['yag']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 									
@@ -927,6 +1090,7 @@
 										$paciente = "";
 										$medico = "";
 										$generar = "";
+										$modificar = "";
 										echo '<tr style = "border:none">';
 									}
 										echo '<td style = "border-left:none">'.$fecha.'</td>';
@@ -936,14 +1100,14 @@
 										echo '<td>'.$json->consulta.'</td>';
 										echo '<td>'.$medico.'</td>';
 										echo '<td>'.$array_paciente['consulta']->coseg.'</td>';
-										echo '<td>'.$generar.'</td>';
+										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
 									echo '</tr>';
 								}
 							}
 								echo '</table>';
 							echo '</div>';
 						echo '</div>';
-						echo '<div style = "float:left;margin-left:20px;margin-top:5px;width:37%;">';
+						echo '<div style = "float:left;margin-left:20px;margin-top:5px;width:20%;">';
 							echo '<div style = "float:left;width:100%;background-color:#1e3e53;color:white;margin-bottom:2px;text-align:center">';
 								echo "Resumen";
 							echo '</div>';
@@ -952,154 +1116,503 @@
 									echo '<tr>';
 			  							echo '<th style = "text-align:left">Práctica</th>';
 			  							echo '<th style = "border-left:1px solid">Cantidad Total</th>';
-			  							echo '<th style = "border-left:1px solid">Importe Práctica</th>';
-			  							echo '<th style = "border-left:1px solid">Subtotal</th>';
-			  							echo '<th style = "border-left:1px solid">Subtotal Coseg.</th>';
+			  							//echo '<th style = "border-left:1px solid">Importe Práctica</th>';
+			  							//echo '<th style = "border-left:1px solid">Subtotal</th>';
+			  							echo '<th style = "border-left:1px solid">Coseguro</th>';
 									echo '</tr>';
 										echo '<td>CVC</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_cvc" value = "'.$array['cvc']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_cvc" name = "valor_cvc"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_cvc" name = "subtotal_cvc" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_cvc" name = "valor_cvc"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_cvc" name = "subtotal_cvc" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['cvc']->coseg.'</td>';
 										$total_coseguro += intval($array['cvc']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>IOL</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_iol" value = "'.$array['iol']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_iol" name = "valor_iol"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_iol" name = "subtotal_iol" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_iol" name = "valor_iol"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_iol" name = "subtotal_iol" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['iol']->coseg.'</td>';
 										$total_coseguro += intval($array['iol']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>TOPO</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_topo" value = "'.$array['topo']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_topo" name = "valor_topo"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_topo" name = "subtotal_topo" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_topo" name = "valor_topo"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_topo" name = "subtotal_topo" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['topo']->coseg.'</td>';
 										$total_coseguro += intval($array['topo']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>OCT</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_oct" value = "'.$array['oct']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_oct" name = "valor_oct"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_oct" name = "subtotal_oct" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_oct" name = "valor_oct"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_oct" name = "subtotal_oct" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['oct']->coseg.'</td>';
 										$total_coseguro += intval($array['oct']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>ME</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_me" value = "'.$array['me']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_me" name = "valor_me"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_me" name = "subtotal_me" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_me" name = "valor_me"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_me" name = "subtotal_me" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['me']->coseg.'</td>';
 										$total_coseguro += intval($array['me']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>RFG Color</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_rfgc" value = "'.$array['rfgc']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_rfgc" name = "valor_rfgc"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_rfgc" name = "subtotal_rfgc" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_rfgc" name = "valor_rfgc"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_rfgc" name = "subtotal_rfgc" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['rfgc']->coseg.'</td>';
 										$total_coseguro += intval($array['rfgc']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>RFG</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_rfg" value = "'.$array['rfg']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_rfg" name = "valor_rfg"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_rfg" name = "subtotal_rfg" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_rfg" name = "valor_rfg"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_rfg" name = "subtotal_rfg" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['rfg']->coseg.'</td>';
 										$total_coseguro += intval($array['rfg']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>HRT</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_hrt" value = "'.$array['hrt']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_hrt" name = "valor_hrt"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_hrt" name = "subtotal_hrt" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_hrt" name = "valor_hrt"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_hrt" name = "subtotal_hrt" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['hrt']->coseg.'</td>';
 										$total_coseguro += intval($array['hrt']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>Laser</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_laser" value = "'.$array['laser']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_laser" name = "valor_laser"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_laser" name = "subtotal_laser" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_laser" name = "valor_laser"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_laser" name = "subtotal_laser" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['laser']->coseg.'</td>';
 										$total_coseguro += intval($array['laser']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>YAG</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_yag" value = "'.$array['yag']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_yag" name = "valor_yag"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_yag" name = "subtotal_yag" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_yag" name = "valor_yag"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_yag" name = "subtotal_yag" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['yag']->coseg.'</td>';
 										$total_coseguro += intval($array['yag']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>OBI</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_obi" value = "'.$array['obi']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_obi" name = "valor_obi"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_obi" name = "subtotal_obi" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_obi" name = "valor_obi"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_obi" name = "subtotal_obi" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['obi']->coseg.'</td>';
 										$total_coseguro += intval($array['obi']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>PAQUI</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_paqui" value = "'.$array['paqui']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_paqui" name = "valor_paqui"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_paqui" name = "subtotal_paqui" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_paqui" name = "valor_paqui"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_paqui" name = "subtotal_paqui" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['paqui']->coseg.'</td>';
 										$total_coseguro += intval($array['paqui']->coseg);
 									echo '</tr>';
 									echo '<tr>';
 										echo '<td>Consulta</td>';
 										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_consulta" value = "'.$array['consulta']->cant.'" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_consulta" name = "valor_consulta"/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_consulta" name = "subtotal_consulta" disabled/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_consulta" name = "valor_consulta"/></td>';
+										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_consulta" name = "subtotal_consulta" disabled/></td>';
 										echo '<td style = "border-left:1px solid;text-align:center">'.$array['consulta']->coseg.'</td>';
 										$total_coseguro += intval($array['consulta']->coseg);
 									echo '</tr>';
 								echo '</table>';
 								echo '<div class = "totales">';
-									echo '<div style = "margin-left:10px;float:left">';
-										echo '<div style = "float:left;width:50px">Total: </div><input style = "width:70px;font-size:12pt;background-color: #63C2D8" class = "invisible" id = "total" disabled/>';
-									echo '</div>';
-									echo '<div style = "float:left">';
+									//echo '<div style = "margin-left:10px;float:left">';
+									//	echo '<div style = "float:left;width:50px">Total: </div><input style = "width:70px;font-size:12pt;background-color: #63C2D8" class = "invisible" id = "total" disabled/>';
+									//echo '</div>';
+									echo '<div style = "float:left;margin-left:110px">';
 										echo "Coseguro Total: $ ".$total_coseguro;
 									echo '</div>';
 								echo '</div>';
 							echo '</div>';
 						echo '</div>';
-						echo '<div style = "float:left;width:61%">';
+						echo '<div style = "float:left;width:78%">';
 							echo '<div style = "float:left;background-color:#1e3e53;width:100%;margin-top:10px;margin-bottom:2px;color:white;text-align:center">';
-								echo "Pacientes que deben ordenes";
+								echo "Pacientes que deben órdenes";
 							echo '</div>';
 								if (count($pacientes) == 0)
-										echo "No hay pacientes que deban ordenes para los datos seleccionados";
+										echo "No hay pacientes que deban órdenes para los datos seleccionados";
 									else {
+										echo '<table class = "listado" style = "font-size:11pt;border-bottom:1px solid;width:100%">';
+											echo '<tr>';
+					  							echo '<th style = "text-align:left;width:100px">Fecha</th>';
+					  							echo '<th style = "text-align:left;border-left:1px solid;width:70px">Ficha</th>';
+					  							echo '<th style = "text-align:left;border-left:1px solid;">Paciente</th>';
+					  							echo '<th style = "text-align:left;border-left:1px solid;">Práctica</th>';
+					  							echo '<th style = "text-align:left;border-left:1px solid">Médico</th>';
+											echo '</tr>';
 										foreach ($pacientes as $value) {
-											echo '<table class = "listado" style = "font-size:11pt;border-bottom:1px solid">';
-												echo '<tr>';
-						  							echo '<th style = "text-align:left;width:100px">Fecha</th>';
-						  							echo '<th style = "text-align:left;border-left:1px solid;width:70px">Ficha</th>';
-						  							echo '<th style = "text-align:left;border-left:1px solid;">Paciente</th>';
-						  							echo '<th style = "text-align:left;border-left:1px solid;">Práctica</th>';
-						  							echo '<th style = "text-align:left;border-left:1px solid">Médico</th>';
-												echo '</tr>';
-												echo '<tr>';
-													echo '<td style = "border-left:none;">'.date('d-m-Y',strtotime($value->paciente->fecha)).'</td>';
-													echo '<td>'.$value->paciente->ficha.'</td>';
-													echo '<td>'.$value->paciente->paciente.'</td>';
-													echo '<td>'.$value->practicas.'</td>';
-													echo '<td>'.$value->paciente->medico.'</td>';
-												echo '</tr>';
-											echo '</table>';
-										}	
+											echo '<tr>';
+												echo '<td style = "border-left:none;">'.date('d-m-Y',strtotime($value->paciente->fecha)).'</td>';
+												echo '<td>'.$value->paciente->ficha.'</td>';
+												echo '<td>'.$value->paciente->paciente.'</td>';
+												echo '<td>'.$value->practicas.'</td>';
+												echo '<td>'.$value->paciente->medico.'</td>';
+											echo '</tr>';
+										}
+										echo '</table>';	
 									}
 						echo '</div>';
 					}	
 				}
 			?>
 		</div>
-	</body>
+
+
+
+	<div id="confirmar_datos" title="Actualizar datos turno" style = "display:none">
+		<form id = "form_facturacion_edit" action="<?php echo base_url('index.php/main/update_facturacion_turno/1')?>" method="post">
+			<div style = "float:left;font-weight:bold;margin-right:10px">Paciente:</div><input id = "apellido_fact" name = "apellido_fact" style = "width:150px;float:left;margin-right:20px" required autocomplete="off"/><input id = "nombre_fact" name = "nombre_fact" style = "width:150px;float:left" required autocomplete="off"/>
+			<div style = "float:left;font-weight:bold;margin-right:10px;margin-left: 50px">Ficha: </div><input id = "ficha_fact" name = "ficha_fact" style = "width:100px;float:left" required autocomplete="off"/>
+			<div style = "float:left;font-weight:bold;margin-right:10px;margin-left: 50px">Fecha: </div><input type = "date" id = "fecha_fact" name = "fecha_fact" style = "width:150px;float:left" required autocomplete="off"/>
+			<div style = "float:left;width:100%">
+				<div style = "float:left;width:50%">
+					<table class= "confirm_tabla" style = "margin-top:40px">
+						<tr>
+							<td>
+								<input id = "cvc_chk" name = "chk_turno[]" value = "CVC" type = "checkbox"/> CVC 			
+							</td>
+							<td>
+								<select id = "sel_cvc" name="sel_cvc">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "cvc_ord_chk" name = "chk_ord[]" value = "ord_cvc" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_cvc" name = "coseguro_cvc" style = "width:40px" autocomplete="off"/>
+							</td>
+						<tr>
+						</tr>	
+							<td>
+								<input id = "iol_chk" name = "chk_turno[]" value = "IOL" type = "checkbox"/> IOL 			
+							</td>
+							<td>
+								<select id = "sel_iol" name="sel_iol">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "iol_ord_chk" name = "chk_ord[]" value = "ord_iol" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_iol" name = "coseguro_iol" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "oct_chk" name = "chk_turno[]" value = "OCT" type = "checkbox"/> OCT			
+							</td>
+							<td>
+								<select id = "sel_oct" name="sel_oct">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "oct_ord_chk" name = "chk_ord[]" value = "ord_oct" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_oct" name = "coseguro_oct" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "me_chk" name = "chk_turno[]" value = "ME" type = "checkbox"/> ME			
+							</td>
+							<td>
+								<select id = "sel_me" name="sel_me">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "me_ord_chk" name = "chk_ord[]" value = "ord_me" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_me" name = "coseguro_me" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "rfg_chk" name = "chk_turno[]" value = "RFG" type = "checkbox"/> RFG 			
+							</td>
+							<td>
+								<select id = "sel_rfg" name="sel_rfg">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "rfg_ord_chk" name = "chk_ord[]" value = "ord_rfg" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_rfg" name = "coseguro_rfg" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "rfgc_chk" name = "chk_turno[]" value = "RFG Color" type = "checkbox"/> RFG Color 			
+							</td>
+							<td>
+								<select id = "sel_rfgc" name="sel_rfgc">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "rfgc_ord_chk" name = "chk_ord[]" value = "ord_rfgc" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_rfgc" name = "coseguro_rfgc" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "consulta_chk" name = "chk_turno[]" value = "CONSULTA" type = "checkbox"/> Consulta
+							</td>
+							<td>
+								<select id = "sel_consulta" name="sel_consulta">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "consulta_ord_chk" name = "chk_ord[]" value = "ord_consulta" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_consulta" name = "coseguro_consulta" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div style = "float:left;">	
+					<table class= "confirm_tabla" style = "margin-top:40px">
+						<tr>
+							<td>
+								<input id = "hrt_chk" name = "chk_turno[]" value = "HRT" type = "checkbox"/> HRT			
+							</td>
+							<td>
+								<select id = "sel_hrt" name="sel_hrt">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "hrt_ord_chk" name = "chk_ord[]" value = "ord_hrt" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_hrt" name = "coseguro_hrt" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "obi_chk" name = "chk_turno[]" value = "OBI" type = "checkbox"/> OBI			
+							</td>
+							<td>
+								<select id = "sel_obi" name="sel_obi">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "obi_ord_chk" name = "chk_ord[]" value = "ord_obi" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_obi" name = "coseguro_obi" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "paqui_chk" name = "chk_turno[]" value = "PAQUI" type = "checkbox"/> PAQUI 			
+							</td>
+							<td>
+								<select id = "sel_paqui" name="sel_paqui">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "paqui_ord_chk" name = "chk_ord[]" value = "ord_paqui" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_paqui" name = "coseguro_paqui" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "laser_chk" name = "chk_turno[]" value = "Laser" type = "checkbox"/> Laser			
+							</td>
+							<td>
+								<select id = "sel_laser" name="sel_laser">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "laser_ord_chk" name = "chk_ord[]" value = "ord_laser" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_laser" name = "coseguro_laser" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "yag_chk" name = "chk_turno[]" value = "YAG" type = "checkbox"/> YAG
+							</td>
+							<td>
+								<select id = "sel_yag" name="sel_yag">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "yag_ord_chk" name = "chk_ord[]" value = "ord_yag" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_yag" name = "coseguro_yag" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "topo_chk" name = "chk_turno[]" value = "TOPO" type = "checkbox"/> TOPO
+							</td>
+							<td>
+								<select id = "sel_topo" name="sel_topo">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "topo_ord_chk" name = "chk_ord[]" value = "ord_topo" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_topo" name = "coseguro_topo" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input id = "sincargo_chk" name = "chk_turno[]" value = "S/CARGO" type = "checkbox"/> Sin Cargo
+							</td>	
+						</tr>	
+					</table>
+				</div>
+			</div>
+			<div style = "float:left;margin-top:20px;">
+				Medico:
+				<select id = "sel_medico" name="sel_medico" style = "width:180px">
+					<?php
+						foreach ($medicos as $med) {	
+							echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
+						}
+					?>
+				</select>
+			</div>
+			<div style = "float:left;margin-top:20px;margin-left:20px">
+				Localidad:
+				<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
+					<option value = "Rosario"> Rosario </option>
+					<option value = "Villa_Constitucion"> Villa Constitución </option>
+				</select>
+			</div>
+			<input id = "id_turno" name = "id_turno" type = "hidden"/>
+			<input id = "sel_estado" name = "sel_estado" type = "hidden"/>
+			<!--
+			<input id = "sel_obra" name = "sel_obra" type = "hidden"/>
+			<input id = "sel_medico" name = "sel_medico" type = "hidden"/>
+			<input id = "sel_localidad" name = "sel_localidad" type = "hidden"/>
+			<input id = "fecha_desde" name = "fecha_hasta" type = "hidden"/>
+			<input id = "fecha_hasta" name = "fecha_desde" type = "hidden"/>-->
+		</form>
+	</div>
+</body>
 </html>	

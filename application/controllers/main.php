@@ -93,6 +93,8 @@ class Main extends CI_Controller
 		$calendar_mes = $aux[1];
 		$data['fecha'] = $dia;
 		$data['filas'] = $this->main_model->turnos_del_dia($dia,$medico);
+		$data['datos_paciente'] = $this->get_datos_pacientes($data['filas']);
+		
 		//$data['filas'] = $this->main_model->get_turnos($dia,$medico);
 		$data['horario'] = $this->main_model->get_horarios();
 		$data['notas'] = $this->main_model->get_notas($dia);
@@ -111,6 +113,19 @@ class Main extends CI_Controller
 		$data['obras'] = $this->main_model->get_obras();
 		$data['bloqueado'] = $this->main_model->is_bloqueado($dia);
 		$this->load->view('main_view', $data);
+	}
+
+	function get_datos_pacientes($array) {
+
+		$pacientes = [];
+
+		if ($array != null)
+			foreach ($array as $key) {
+				if ($key->id_paciente > 0)
+					$pacientes[$key->id_paciente] = $this->main_model->buscar_id_paciente($key->id_paciente);
+			}
+
+		return $pacientes;
 	}
 	
 	function nuevo_paciente()
@@ -149,6 +164,7 @@ class Main extends CI_Controller
 		$data['apellido'] = $filas[0]->apellido;
 		$data['obra'] = $filas[0]->obra_social;
 		$data['obras'] = $this->main_model->get_obras();
+		$data['id_turno'] = $id;
 
 		$aux_tel = explode ('-',$filas[0]->tel1);
 		$data['tel1_1'] = $aux_tel[0]; 
@@ -180,7 +196,12 @@ class Main extends CI_Controller
 		$data['direccion'] = $resultado[0]->direccion;
 		$data['localidad'] = $resultado[0]->localidad;
 		$data['obs'] = $resultado[0]->observaciones;
+		if (!isset($_POST['fecha_turno']))
+			$fecha_turno = "";
+		else
+			$fecha_turno = $_POST['fecha_turno'];
 
+		$data['fecha'] = $fecha_turno;
 		$data['obras'] = $this->main_model->get_obras();
 		
 		$repetidos = $this->main_model->check_ficha($data['ficha']); // NUEVO! Para saber si una ficha esta repetida al actualizar los datos de un paciente
@@ -536,14 +557,19 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		if ($data['paciente'] == 0) {
 			if ($data['ficha'] == 0	) {
 				
-				$this->main_model->ingresar_paciente($_POST);
+				$utlimo = $this->main_model->ingresar_paciente($_POST);
 
-				$url = $_POST['callback_url'];
+				//$url = $_POST['callback_url'];
 
+				if ($_POST['id_turno'] != "") {
+					$this->main_model->asignar_ficha($_POST['id_turno'],$_POST['ficha'], $utlimo->id); // para asignar la nueva ficha al paciente.
+					redirect('main/cambiar_dia/'.$_POST['fecha_turno'], 'location');
+				}
+				/*
 				if (strrpos($url,'cambiar_dia') !== FALSE) {
+					$this->main_model->asignar_ficha($_POST['id_turno'],$_POST['ficha'], $utlimo->id); // para asignar la nueva ficha al paciente.
 					redirect($url);
-					
-				}	
+				}*/	
 				else	
 					redirect('main/pacientes/', 'location');
 
@@ -566,10 +592,12 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$this->main_model->actualizar_paciente($_POST);
 		
 		//$url = str_replace('_id', '', $_SERVER['HTTP_REFERER']);
-		$url = $_POST['callback_url'];
+		//$url = $_POST['callback_url'];
 		
-		redirect($url);
-		//redirect('main/buscar_paciente/'.$_POST['id_paciente'], 'location');
+		if ($_POST['fecha_turno'] != "")
+			redirect('main/cambiar_dia/'.$_POST['fecha_turno'], 'location');
+		else	
+			redirect('main/buscar_paciente/'.$_POST['id_paciente'], 'location');
 	}
 
 	function asignar_ficha($id_turno, $ficha, $id, $nombre, $apellido){

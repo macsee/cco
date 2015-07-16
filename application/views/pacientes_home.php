@@ -294,32 +294,49 @@
 	            	<label for="obs">Observaciones:</label>
 	            	<textarea name="obs" cols="40" rows="6"><?php echo $obs ?></textarea>
 		</div>
-			<input type="hidden" name="callback_url" value="<?php echo str_replace('_id', '', $_SERVER['HTTP_REFERER'])?>"/>
+			
 		<?php
 
+			if (!isset($id_turno)) {
+				$id_turno = "";
+			}
+
+			if (!isset($fecha)) {
+				$fecha = "";
+			}
+
+			if (!isset($id_paciente)) {
+				$id_paciente = "";
+			}
+
 			if (!isset($id)) {
+				$id = "";
+			}
 
+		?>
+
+		<input type="hidden" name="id_turno" value="<?php echo $id_turno?>"/>
+		<input type="hidden" name="fecha_turno" value="<?php echo $fecha?>"/>
+		<input type="hidden" name="id_paciente" value="<?php echo $id?>"/>
+
+		<?php
+			if ($id == "") { // Si no esta seteado el id es porque voy a crear un un paciente.
 		?>		
-				<!--<input type="hidden" name="id_paciente" value="0"/>-->
-				<input type="hidden" name="id_turno" value="<?php echo $id_turno?>"/>
-
 				<div id = "guardar_paciente">
 					<button class="submit" type="submit">Nuevo Paciente</button>
 				</div>
 
-		<?php	if (isset($fecha)) { ?>	
+		<?php	
+			if ($fecha != "") { 
+		?>	
 				<div id = "guardar_paciente">
 					<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/cambiar_dia/$fecha")?>';">Cancelar</button>
 				</div>	
 		<?php
-				}
-				
+				}	
 			}
 			else {
 		?>		
-				<input type="hidden" name="id_paciente" value="<?php echo $id?>"/>
-				
-				
 				<div id = "guardar_paciente">
 					<button class="submit" type="submit">Actualizar Paciente</button>
 				</div>	
@@ -337,7 +354,7 @@
 	<div id = "msg_repetido">
 		<?php
 
-			if (isset($id)) {
+			if ($id != "") {
 
 				if (count($repetidos) > 1) {
 		?>					

@@ -194,7 +194,7 @@
 		}
 
 		#estudios_titulo{
-			height: 30px;
+			height: 35px;
 			//background-color: #97BFD9;
 			background-color: #454545;
 			margin-bottom: 2px;
@@ -213,7 +213,7 @@
 		#barra_titulo{
 			//background-color: #97BFD9;
 			background-color: #454545;
-			height: 30px;
+			height: 35px;
 			font-size: 20px;
 			color: white;
 			padding-left: 10px;
@@ -313,6 +313,7 @@
 			color: #97BFD9;
 			float:left;
 			width: 580px;
+			margin-top: 5px;
 		}
 
 		#info2{
@@ -330,6 +331,7 @@
 		#hist{
 			float: left;
 			margin-right: 10px;
+			margin-top: 5px;
 		}
 
 		.jsPanel-hdr.jsPanel-theme-default{
@@ -555,7 +557,7 @@
 						<div id = "principal">
 							<?php
 							echo '<a href="'.base_url('index.php').'">'; 
-								echo '<img src = "'.base_url('css/images/home_24x24.png').'" style = "margin-top:2px"/>';
+								echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>';
 							echo '</a>';
 							?>
 						</div>

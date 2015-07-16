@@ -51,6 +51,15 @@
 		font-size: 10pt;
 	}
 
+	.detalles_izq {
+		width: 150px;
+		font-weight: bold;
+	}
+
+	.detalles_der {
+		width: 200px;
+	}
+
 	</style>
 	<script>
 
@@ -282,6 +291,10 @@
 								$("#"+val+"_ord_chk").prop('disabled', true);
 							}
 						});
+
+						if (response["tipo"].toLowerCase().indexOf('s/cargo') >= 0)
+							$("#sincargo_chk").prop('checked',true);
+						
 					}
 
 				},
@@ -510,6 +523,37 @@
 	<div id = "horarios">
 	<?php
 
+	class datosPaciente {
+		public $nombre;
+		public $apellido;
+		public $id;
+		public $dni;
+		public $nroficha;
+		public $fecha_nacimiento;
+		public $direccion;
+		public $localidad;
+		public $tel1;
+		public $tel2;
+		public $obra_social;
+		public $nro_obra;
+
+
+		function  __construct() {
+			$this->nombre="";
+			$this->apellido="";
+			$this->id="";
+			$this->dni="";
+			$this->nroficha="";
+			$this->fecha_nacimiento="";
+			$this->direccion="";
+			$this->localidad="";
+			$this->tel1="";
+			$this->tel2="";
+			$this->obra_social="";
+			$this->nro_obra="";
+		}
+	}
+
 	if ($bloqueado == null) {
 
 		if ($filas <> 0) {
@@ -664,9 +708,10 @@
 								echo '<input type="hidden" name="tel2" value="'.$fila->tel2.'">';
 								echo '<input type="hidden" name="fecha_turno" value="'.$fecha.'">';
 								echo '<input type="hidden" name="id_turno" value="'.$fila->id.'">';
-							?>
-								<a href="#" onclick="$(this).closest('form').submit(); return false;">Nuevo Paciente</a>
-							<?php	
+
+								echo '<a href="#" onclick="$(this).closest(\'form\').submit(); return false;">Nuevo Paciente</a>';
+							
+								//<a href="#" onclick="$(this).closest('form').submit(); return false;">Nuevo Paciente</a>
 							echo '</form>';
 							
 							}	
@@ -677,8 +722,14 @@
 							else {
 								if ($this->session->userdata('grupo') == "Medico")
 									echo anchor('main/historia_clinica/'.$fila->id_paciente, $fila->ficha);
-								else	
-									echo anchor('main/editar_paciente/'.$fila->id_paciente, $fila->ficha);
+								else {
+									echo '<form action="'.base_url('index.php/main/editar_paciente/'.$fila->id_paciente).'" method="post" name="form_editar" id="form_editar">';
+										echo '<input type="hidden" name="fecha_turno" value="'.$fecha.'">';
+									echo '<a href="#" onclick="$(this).closest(\'form\').submit(); return false;">'.$fila->ficha.'</a>';
+									echo '</form>';
+								}	
+
+									//echo anchor('main/editar_paciente/'.$fila->id_paciente, $fila->ficha);
 							}		
 						echo '</div>';
 
@@ -717,8 +768,55 @@
 					echo '</div>';
 					
 				echo '</div>';
-				echo '<div id = "detalles_'.$fila->id.'" class="detalles" style = "display:none;">';
 
+				// Genero un objeto vacio para los pacientes que todavía no tienen ficha.
+				if ($fila->id_paciente > 0)
+					$paciente = $datos_paciente[$fila->id_paciente][0];
+				else
+					$paciente = new datosPaciente();
+
+				echo '<div id = "detalles_'.$fila->id.'" class="detalles" style = "display:none;">';
+					echo '<div style = "float:left;width:40%">';
+						echo '<table class = "detalle_1">';
+							echo '<tr>';
+								echo '<td class = "detalles_izq">Fecha de Nacimiento:</td>';
+								echo '<td class = "detalles_der">'.$paciente->fecha_nacimiento.'</td>';
+							echo '</tr>';
+							echo '<tr>';
+								echo '<td class = "detalles_izq">Dirección</td>';
+								echo '<td class = "detalles_der">'.$paciente->direccion.'</td>';
+							echo '</tr>';
+							echo '<tr>';
+								echo '<td class = "detalles_izq">Localidad:</td>';
+								echo '<td class = "detalles_der">'.$paciente->localidad.'</td>';
+							echo '</tr>';
+							echo '<tr>';
+								echo '<td class = "detalles_izq">DNI:</td>';
+								echo '<td class = "detalles_der">'.$paciente->dni.'</td>';
+							echo '</tr>';
+						echo '</table>';
+					echo '</div>';
+					echo '<div style = "float:left;width:40%">';	
+						echo '<table class = "detalle_1">';	
+							echo '<tr>';
+								echo '<td class = "detalles_izq">Teléfono 1:</td>';
+								echo '<td class = "detalles_der">'.$fila->tel1.'</td>';
+							echo '</tr>';
+							echo '<tr>';
+								echo '<td class = "detalles_izq">Teléfono 2:</td>';
+								echo '<td class = "detalles_der">'.$fila->tel2.'</td>';
+							echo '</tr>';
+							echo '<tr>';
+								echo '<td class = "detalles_izq">Obra Social:</td>';
+								echo '<td class = "detalles_der">'.$fila->obra_social.'</td>';
+							echo '</tr>';
+							echo '<tr>';
+								echo '<td class = "detalles_izq">Nro. Afiliado:</td>';
+								echo '<td class = "detalles_der">'.$paciente->nro_obra.'</td>';
+							echo '</tr>';
+						echo '</table>';
+					echo '</div>';
+					/*
 					echo '<div id = "detalle_1">';
 						echo "<b>Obra social :</b>  ".$fila->obra_social;
 					echo '</div>';
@@ -728,6 +826,7 @@
 					echo '<div id = "detalle_1">';
 							echo "<b>Teléfono 2 :</b>  ".$fila->tel2; 				
 					echo '</div>';
+					*/
 					echo '<div id = "detalle_nota">';
 						if ($fila->notas == "") {
 							echo "<b>Notas :  </b> <i>No hay notas para mostrar</i>"; 
@@ -736,6 +835,7 @@
 							echo "<b>Notas: </b>".$fila->notas;
 						}
 					echo '</div>';
+
 					if ($this->session->userdata('grupo') == "Secretaria") {
 						echo '<div id = "botones">';
 							if ($fila->ya_facturado == 0) {

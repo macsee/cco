@@ -320,8 +320,11 @@ class Main_model extends CI_Model
 		$data['hora'] = $array['hora'];
 		$data['citado'] = $array['hora_citado'].':'.$array['minutos_citado'];
 		$data['tipo'] = $cadena;
-		$data['ficha'] = 0;
-		
+		if ($array['ficha'] < 0)
+			$data['ficha'] = 0;
+		else
+			$data['ficha'] = $array['ficha'];
+
 		if ( ($array['medico'] == "Otro") & ($array['otro'] <> "")) {
 			$medico_1 = ucwords($array['otro']);
 			$medico_1 = ucwords(strtolower($medico_1));
@@ -581,6 +584,8 @@ class Main_model extends CI_Model
 		$this->set_ficha($data['nombre'], $data['apellido'], $data['nroficha']);
 		$str = $this->db->insert_string('pacientes', $data);
 		$this->db->query($str);
+
+		return $this->obtener_ultimo_idpaciente();
 	}
 
 	function facturar($array)
@@ -625,6 +630,14 @@ class Main_model extends CI_Model
 		return $resultado[0];
 	}
 
+	function obtener_ultimo_idpaciente() {
+
+		$query = $this->db->query("SELECT id FROM pacientes ORDER by id DESC LIMIT 1");
+		return $query->row();
+		//$resultado = $query->result();
+		//return $resultado[0];
+	}
+
 	function buscar_paciente($apellido) {
 
 		if ($apellido == "") {
@@ -652,20 +665,9 @@ class Main_model extends CI_Model
 	}
 
 
-	function asignar_ficha($id_turno, $ficha, $id_paciente, $mynombre, $myapellido) {
-
-		$nombre = urldecode($mynombre);
-		$nombre = ucwords($nombre);
-		$nombre = ucwords(strtolower($nombre));
-		
-		$apellido = urldecode($myapellido);
-		$apellido = ucwords($apellido);
-		$apellido = ucwords(strtolower($apellido));
-			
+	function asignar_ficha($id_turno, $ficha, $id_paciente) {
 
 		$data['ficha'] = $ficha;
-		$data['nombre'] = $nombre;
-		$data['apellido'] = $apellido;
 		$data['id_paciente'] = $id_paciente;
 
 		$where = "id = '".$id_turno."'";

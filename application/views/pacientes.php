@@ -21,10 +21,26 @@
 		.head_mensaje_izq {margin-left: 20px; float: left;}
 		.head_mensaje_der {margin-left: 150px; float: left;}
 		.head_botones {margin-right: 20px; float: right;}
+		.ui-widget {
+			font-size: 14px;
+		}
+		
+		.ui-dialog {
+			//position: relative;
+			margin: auto;
+			font-size: 14px;
+			text-align: center;
+		}
+		.ui-dialog .ui-dialog-buttonpane { 
+		    text-align: center;
+		}
+		.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset { 
+		    float: none;
+		}
 	</style>
 	<script type="text/javascript">
 
-		function borrar(url,data) {
+		function borrar(data) {
 	        $( "#borrar_paciente" ).dialog({
 				autoOpen: true,
 	            resizable: false,
@@ -33,6 +49,7 @@
 	            modal: true,
 	            buttons: {
 	                "Si": function() {
+	                	var url = '<?php echo base_url("/index.php/main/")?>';
 						var x = url+"/borrar_paciente/"+data;
 						location.href = x;
 	                },
@@ -41,7 +58,28 @@
 					}
 	            }
 	        });
-	   }; 
+	   };
+
+	   function admitir(id) {
+	        $( "#admitir_paciente" ).dialog({
+				autoOpen: true,
+	            resizable: false,
+				width: 300,
+	            height: 190,
+	            modal: true,
+	            buttons: {
+	                "Si": function() {
+	                	var url = '<?php echo base_url("/index.php/main/")?>';
+	                	var x = url+"/historia_clinica/"+id;
+						$('#form_admitir_'+id).submit();
+						parent.location.href = x;
+	                },
+					"No": function() {
+	                    $( this ).dialog( "close" );
+					}
+	            }
+	        });
+	   };  
 
 	</script>
 </head>
@@ -51,12 +89,50 @@
 
 		foreach ($resultado as $key) {
 
-			
 			$nombre = ucwords($key->nombre);
 			$nombre = ucwords(strtolower($nombre));
 
 			$apellido = ucwords($key->apellido);
 			$apellido = ucwords(strtolower($apellido));
+
+		echo '<div id = "admitir_paciente" title= "Admitir Paciente?" style = "display:none">';
+			echo '<form action="'.base_url('index.php/main/paciente_sinturno').'" method="post" name="form" id="form_admitir_'.$key->id.'">';
+				echo '<input name = "nombre" value = "'.$nombre.'"  type = "hidden"/>';
+				echo '<input name = "apellido" value = "'.$apellido.'"  type = "hidden"/>';
+				echo '<input name = "ficha" value = "'.$key->nroficha.'"  type = "hidden"/>';
+				echo '<input name = "id_paciente" value = "'.$key->id.'"  type = "hidden"/>';
+				echo '<input name = "tel1_1" value = "'.explode('-',$key->tel1)[0].'"  type = "hidden"/>';
+				echo '<input name = "tel1_2" value = "'.explode('-',$key->tel1)[1].'"  type = "hidden"/>';
+				echo '<input name = "tel2_1" value = ""  type = "hidden"/>';
+				echo '<input name = "obra" value = "'.$key->obra_social.'"  type = "hidden"/>';
+
+				$med = $this->session->userdata('id_user');
+				echo '<div style = "float:left;width:80px;text-align:left;margin-top:10px">Medico:</div>';
+				echo '<select id = "sel_medico" name = "sel_medico" style="margin-left:20px;float:left;margin-right:30px;margin-bottom:20px;margin-top:10px">';
+					foreach ($medicos as $medico) {
+						if ($med == $medico->id_medico)
+							if ($medico->nombre == "Otro")
+								echo '<option value ="'.$medico->nombre.'" selected>'.$medico->nombre.'</option>';
+							else
+								echo '<option value ="'.$medico->nombre.'" selected>Dr. '.$medico->nombre.'</option>';
+						else
+							if ($medico->nombre == "Otro")
+								echo '<option value ="'.$medico->nombre.'">'.$medico->nombre.'</option>';
+							else
+								echo '<option value ="'.$medico->nombre.'">Dr. '.$medico->nombre.'</option>';
+					}
+				echo '</select>';
+
+				echo '<div style = "float:left;width:80px;text-align:left;margin-top:5px">Localidad:</div>';
+				echo '<select id = "sel_localidad" name = "sel_localidad" style="margin-left:20px;float:left;margin-right:30px;margin-top:5px">';
+					echo '<option value = "Alcorta">Alcorta</option>';
+					echo '<option value = "Villa Constitucion">Villa Constitución</option>';
+					echo '<option value = "Rosario">Rosario</option>';
+				echo '</select>';
+				//echo '<input name = "sel_localidad" value = "Alcorta"  type = "hidden"/>';
+			echo '</form>';
+		echo '</div>';		
+		
 ?>
 			<div class = "tabla_mensaje">
 				<div class = "head_mensaje">
@@ -69,7 +145,7 @@
 					<div class = "head_botones">
 					<?php
 						echo '<div style = "float: left; cursor: pointer; margin-right:15px">';
-							echo '<a onclick = "return borrar(\''.base_url("/index.php/main/").'\', \''.$key->id.'\');">'; 
+							echo '<a onclick = "return borrar(\''.$key->id.'\');">'; 
 								echo '<img src = "'.base_url('css/images/xw_14x14.png').'"/>';  
 							echo '</a>';
 						echo '</div>';
@@ -88,7 +164,14 @@
 								echo '<img src = "'.base_url('css/images/info_8x16.png').'"/>';  
 							echo '</a>';
 
-						echo '</div>';	
+						echo '</div>';
+
+						echo '<div style = "float: left; margin-left: 15px; cursor: pointer">';
+								echo '<a onclick = "return admitir(\''.$key->id.'\');">'; 
+								echo '<img src = "'.base_url('css/images/xw_14x14.png').'"/>';  
+							echo '</a>';
+						echo '</div>';
+							
 					?>	
 						
 					</div>

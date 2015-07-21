@@ -34,6 +34,7 @@ class Login extends CI_Controller
 				'nombre' => $query->nombre,
 				'apellido' => $query->apellido,
 				'grupo' => $query->grupo,
+				'id_user' => $query->id_user,
 				'is_logged_in' => true
 			);
 			

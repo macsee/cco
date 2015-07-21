@@ -251,6 +251,7 @@
 					<input type="text" size = "8" maxlength = "10" name="tel2_2" id="tel2_2" value="<?php echo $tel2_2?>" autocomplete="off" pattern=".{6,}"/>
 					<input type="hidden" name="id" value="<?php echo $id?>"/>
 	        		<input type="hidden" name="fecha" value="<?php echo $filas[0]->fecha?>"/>
+	        		<input type="hidden" name="ficha" value="<?php echo $filas[0]->ficha?>"/>
 	        		<input type="hidden" name="hora" value="<?php echo $hora?>"/>
 	        	</li>
 
@@ -271,26 +272,29 @@
 					<label for="medico"><font color = "red">* </font> Médico:</label>
 						<select id = "medico" name = "medico">
 							<?php
-								foreach ($medicos as $medico) {
-									
-									if ($med == $medico->nombre) {
-										echo '<option value="'.$medico->nombre.'" selected="selected">'.$medico->nombre.'</option>';
-									}
-									else {
-										echo '<option>'.$medico->nombre.'</option>';	
-									}									
+								foreach ($medicos as $medico) {		
+									if ($med == $medico->nombre)
+										if ($medico->nombre == "Otro")
+											echo '<option value ="'.$medico->nombre.'" selected>'.$medico->nombre.'</option>';
+										else
+											echo '<option value ="'.$medico->nombre.'" selected>Dr. '.$medico->nombre.'</option>';
+									else
+										if ($medico->nombre == "Otro")
+											echo '<option value ="'.$medico->nombre.'">'.$medico->nombre.'</option>';
+										else
+											echo '<option value ="'.$medico->nombre.'">Dr. '.$medico->nombre.'</option>';
 								}
 							?>	
 						</select>
 						<?php if ($med == "Otro") {
 							echo '<div id = "test">';
-								$var = explode('Dr.', $aux[1]);
-								echo 'Dr. <input type="text" value = "'.$var[1].'" size = "14" name="otro" id="otro" style="text-transform:capitalize" autocomplete="off"/>';
+								//$var = explode($aux[1]);
+								echo 'Dr. <input type="text" value = "'.$aux[1].'" size = "14" name="otro" id="otro" style="text-transform:capitalize" autocomplete="off"/>';
 							echo '</div>'; 
 						} 
 						else { ?>	
 							<div id = "test" style = "display: none">
-								<input type="text" size = "14" name="otro" id = "otro" style="text-transform:capitalize" autocomplete="off"/>
+								Dr. <input type="text" size = "14" name="otro" id = "otro" style="text-transform:capitalize" autocomplete="off"/>
 							</div>
 						<?php }
 

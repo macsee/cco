@@ -319,10 +319,16 @@ $obra = "";
 						<select id = "medico" name = "medico">
 							<?php
 								foreach ($medicos as $medico) {
-									if ($medico->nombre == $medico_seleccionado)
-										echo '<option selected>'.$medico->nombre.'</option>';
+									if ($med == $medico->nombre)
+										if ($medico->nombre == "Otro")
+											echo '<option value ="'.$medico->nombre.'" selected>'.$medico->nombre.'</option>';
+										else
+											echo '<option value ="'.$medico->nombre.'" selected>Dr. '.$medico->nombre.'</option>';
 									else
-										echo '<option>'.$medico->nombre.'</option>';
+										if ($medico->nombre == "Otro")
+											echo '<option value ="'.$medico->nombre.'">'.$medico->nombre.'</option>';
+										else
+											echo '<option value ="'.$medico->nombre.'">Dr. '.$medico->nombre.'</option>';
 								}
 							?>
 						</select>

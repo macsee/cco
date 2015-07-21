@@ -124,8 +124,8 @@
 	    }
 		
 		.ui-widget {
-		font-size: 14px;
-	}
+			font-size: 14px;
+		}
 		
 		.ui-dialog {
 			//position: relative;

@@ -61,7 +61,7 @@ class Main_model extends CI_Model
 			//$row = 	$query->row();
 			//return $row->nroficha;
 			$objetoFicha->nroficha = $query->row()->nroficha;
-			$objetoFicha->id_paciente = $query->row()->id_paciente;
+			$objetoFicha->id_paciente = $query->row()->id;
 			//return $objetoFicha;
 			//return $query->row();
 
@@ -212,19 +212,27 @@ class Main_model extends CI_Model
 			$medico_1 = ucwords($array['otro']);
 			$medico_1 = ucwords(strtolower($medico_1));
 
-			if ( strpos($medico_1, 'Dr.') === false ) {
-				$medico_1 = 'Dr. '.$medico_1;
-			}		
+			//if ( strpos($medico_1, 'Dr.') === false ) {
+			//	$medico_1 = 'Dr. '.$medico_1;
+			//}		
 
 			$data['medico'] = $array['medico'].' - '.$medico_1;
 		}
 		else {
 			$data['medico'] = $array['medico'];
 		}
+
+		if (!isset($array['sel_estado']))
+			$data['estado'] = "";
+		else
+			$data['estado'] = $array['sel_estado'];
+				
 		$data['notas'] = $array['notas'];
 		$data['usuario'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 		$str = $this->db->insert_string('turnos', $data);
 		$this->db->query($str);
+
+		return $this->obtener_ultimo_idturno();
 	}
 	
 	function guardar_notas($array)
@@ -320,18 +328,19 @@ class Main_model extends CI_Model
 		$data['hora'] = $array['hora'];
 		$data['citado'] = $array['hora_citado'].':'.$array['minutos_citado'];
 		$data['tipo'] = $cadena;
-		if ($array['ficha'] < 0)
-			$data['ficha'] = 0;
-		else
-			$data['ficha'] = $array['ficha'];
+
+		$data['ficha'] = $this->get_ficha($nombre_1, $apellido_1)->nroficha;
+		$data['id_paciente'] = $this->get_ficha($nombre_1, $apellido_1)->id_paciente;
+
+			
 
 		if ( ($array['medico'] == "Otro") & ($array['otro'] <> "")) {
 			$medico_1 = ucwords($array['otro']);
 			$medico_1 = ucwords(strtolower($medico_1));
 
-			if ( strpos($medico_1, 'Dr.') === false ) {
-				$medico_1 = 'Dr. '.$medico_1;
-			}		
+			//if ( strpos($medico_1, 'Dr.') === false ) {
+			//	$medico_1 = 'Dr. '.$medico_1;
+			//}		
 
 			$data['medico'] = $array['medico'].' - '.$medico_1;
 		}
@@ -630,9 +639,17 @@ class Main_model extends CI_Model
 		return $resultado[0];
 	}
 
+	function obtener_ultimo_idturno() {
+
+		$query = $this->db->query("SELECT id FROM turnos ORDER by id DESC LIMIT 1");
+		return $query->row();
+		//$resultado = $query->result();
+		//return $resultado[0];
+	}
+
 	function obtener_ultimo_idpaciente() {
 
-		$query = $this->db->query("SELECT id FROM pacientes ORDER by id DESC LIMIT 1");
+		$query = $this->db->query("SELECT id, nroficha FROM pacientes ORDER by id DESC LIMIT 1");
 		return $query->row();
 		//$resultado = $query->result();
 		//return $resultado[0];
@@ -1146,7 +1163,14 @@ class Main_model extends CI_Model
 
 		//print_r($tipo_turno);
 		$id = $array['id_turno'];
-		$medico = $this->get_medico_by_id($array['sel_medico']);
+
+		if (strpos($array['sel_medico'], 'Otro') === false)
+			$medico = $this->main_model->get_medico_by_id($array['sel_medico']);
+		else
+			$medico = $array['sel_medico'];
+
+		//$medico = $this->get_medico_by_id($array['sel_medico']);
+
 		$estado = $array['sel_estado'];
 		$facturado = $array['facturado'];
 
@@ -1169,11 +1193,12 @@ class Main_model extends CI_Model
 		$estado = $array['estado'];
 		$medico = $array['medico'];
 		$localidad = $array['localidad'];
+		$obra_turno = $array['obra_turno'];
 
-		$query = $this->db->query("UPDATE facturacion SET usuario = '$usuario', medico = '$medico', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', localidad = '$localidad' WHERE id_turno = '$id'");
+		$query = $this->db->query("UPDATE facturacion SET usuario = '$usuario', medico = '$medico', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', localidad = '$localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
 
 		if ($this->db->affected_rows() == 0)
-			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,localidad) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$localidad') ");
+			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,localidad,obra_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$localidad','$obra_turno') ");
 		
 	}
 

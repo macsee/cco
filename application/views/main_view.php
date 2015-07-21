@@ -241,16 +241,23 @@
 					$("#fecha_fact").val(response["fecha"]);
 					$("#apellido_fact").val(response["apellido"]);
 					$("#nombre_fact").val(response["nombre"]);
+					$("#obra_turno").val(response["obra_social"]);
 
 					$("#nombreApellido").html(response["apellido"]+", "+response["nombre"]);
 
 					//$("#nombreApellido").html(id);
-
 					$("#ficha").html(response["ficha"]);
 					$("#sel_estado").val(response["estado"]);
 					$("#sel_localidad").val(response["localidad"]);
+						
+					if (response["medico"].indexOf("Otro") >= 0) {
+						$('#sel_medico option[value="otro"]').remove();
+						$('#sel_medico').append($("<option></option>").attr("value",response["medico"]).text(response["medico"])); 
+					}	
+						
+					
 					$("#sel_medico option").filter(function() {
-					    return this.text == response["medico"]; 
+						return this.text == response["medico"];
 					}).attr('selected', true);
 					
 
@@ -389,9 +396,15 @@
 					echo '<option value = "todos" selected>TODOS</option>';
 					foreach ($medicos as $med) {	
 						if ($medico_selected == $med->id_medico)
-							echo '<option value ='.$med->id_medico.' selected>'.$med->nombre.'</option>';
+							if ($med->nombre == "Otro")
+								echo '<option value ='.$med->id_medico.' selected>'.$med->nombre.'</option>';
+							else
+								echo '<option value ='.$med->id_medico.' selected>Dr. '.$med->nombre.'</option>';
 						else
-							echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
+							if ($med->nombre == "Otro")
+								echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
+							else
+								echo '<option value ='.$med->id_medico.'>Dr. '.$med->nombre.'</option>';
 					}
 			?>
 		</select>	
@@ -639,7 +652,7 @@
 				$cita = date('H:i', strtotime($fila->citado));
 				$config = $this->main_model->get_config_medico($fila->medico);
 				if (empty($config))
-					$color = "#F5C7CE";//#FFCDCD";
+					$color = "#FFD9B5";//#FFCDCD";
 				else
 					$color = $config->config;
 				
@@ -683,12 +696,12 @@
 							$med = $auxi[0];
 							if ($med == "Otro") {
 								if (sizeof($auxi) > 1)
-									echo $auxi[1];
+									echo "Dr. ".$auxi[1];
 								else
 									echo "Otro";
 							}
 							else {
-								echo $fila->medico;	
+								echo "Dr. ".$fila->medico;	
 							}
 						echo '</div>';
 
@@ -780,7 +793,10 @@
 						echo '<table class = "detalle_1">';
 							echo '<tr>';
 								echo '<td class = "detalles_izq">Fecha de Nacimiento:</td>';
-								echo '<td class = "detalles_der">'.$paciente->fecha_nacimiento.'</td>';
+								if ($paciente->fecha_nacimiento != "" && $paciente->fecha_nacimiento <> "0000-00-00")
+									echo '<td class = "detalles_der">'.date('d-m-Y', strtotime($paciente->fecha_nacimiento)).'</td>';
+								else
+									echo '<td class = "detalles_der"></td>';
 							echo '</tr>';
 							echo '<tr>';
 								echo '<td class = "detalles_izq">Dirección</td>';
@@ -1272,7 +1288,7 @@
 		<select id = "sel_medico" name="sel_medico" style = "width:180px">
 			<?php
 				foreach ($medicos as $med) {	
-					echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
+					echo '<option value ="'.$med->nombre.'">'.$med->nombre.'</option>';
 				}
 			?>
 		</select>
@@ -1282,6 +1298,7 @@
 		<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
 			<option value = "Rosario"> Rosario </option>
 			<option value = "Villa_Constitucion"> Villa Constitución </option>
+			<option value = "Alcorta">Alcorta</option>
 		</select>
 	</div>
 	<input id = "id_turno" name = "id_turno" type = "hidden"/>
@@ -1289,6 +1306,7 @@
 	<input id = "fecha_fact" name = "fecha_fact" type = "hidden"/>
 	<input id = "apellido_fact" name = "apellido_fact" type = "hidden"/>
 	<input id = "nombre_fact" name = "nombre_fact" type = "hidden"/>
+	<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
 </form>
 </div>
 

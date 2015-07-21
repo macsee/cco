@@ -195,13 +195,18 @@
 			<div style = "width: 40%; float: left;padding-left:10px"> Ingreso de pacientes </div>
 		</div>
 -->
-<?php if (!isset($id)) { ?>
-			<form class="contact_form" action="<?php echo base_url('index.php/main/pro_nuevo_paciente')?>" method="post" name="contact_form" id="contact_form">
-<?php 	}
-	 	else {
-?>	 		<form class="contact_form" action="<?php echo base_url('index.php/main/pro_edit_paciente')?>" method="post" name="contact_form" id="contact_form">		
-<?php	 } ?>	
-
+<?php /*
+	if (!isset($id))
+		if ($this->session->userdata('grupo') == "Medico")
+			echo '<form class="contact_form" action="'.base_url("index.php/main/guardar_ingresar").'" method="post" name="contact_form" id="contact_form">';
+		else
+			echo '<form class="contact_form" action="'.base_url("index.php/main/pro_nuevo_paciente").'" method="post" name="contact_form" id="contact_form">';
+	else
+		echo '<form class="contact_form" action="'.base_url('index.php/main/pro_edit_paciente').'" method="post" name="contact_form" id="contact_form">';
+	*/
+?>		
+		<form class="contact_form" method="post" name="contact_form" id="contact_form">
+			
 		<div id = "ingreso_pacientes_izq">
 			
 				<ul>
@@ -321,32 +326,62 @@
 
 		<?php
 			if ($id == "") { // Si no esta seteado el id es porque voy a crear un un paciente.
-		?>		
-				<div id = "guardar_paciente">
-					<button class="submit" type="submit">Nuevo Paciente</button>
-				</div>
+				
+				echo '<div id = "guardar_paciente">';
+					echo '<button class="submit" type="submit" formaction="'.base_url("index.php/main/pro_nuevo_paciente").'">Nuevo Paciente</button>';
+				echo '</div>';
+		
+				if ($this->session->userdata('grupo') == "Medico") { 
+				
+					$med = $this->session->userdata('id_user');
 
-		<?php	
-			if ($fecha != "") { 
-		?>	
-				<div id = "guardar_paciente">
-					<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/cambiar_dia/$fecha")?>';">Cancelar</button>
-				</div>	
-		<?php
+					echo '<div style = "margin-top:-24px;float:left;margin-bottom:50px;border: 1px solid #EEE;background-color: #F7F7F7;width:64.5%;padding-left:20px;height:50px;padding-top:10px">';
+						
+						echo '<label for="medico" style = "width:180px;float:left">Ingresar nuevo paciente para :</label>';
+						echo '<select id = "sel_medico" name = "sel_medico" style = "float:left;margin-top:8px;margin-right:50px">';
+							foreach ($medicos as $medico) {
+								if ($med == $medico->id_medico)
+									if ($medico->nombre == "Otro")
+										echo '<option value ="'.$medico->nombre.'" selected>'.$medico->nombre.'</option>';
+									else
+										echo '<option value ="'.$medico->nombre.'" selected>Dr. '.$medico->nombre.'</option>';
+								else
+									if ($medico->nombre == "Otro")
+										echo '<option value ="'.$medico->nombre.'">'.$medico->nombre.'</option>';
+									else
+										echo '<option value ="'.$medico->nombre.'">Dr. '.$medico->nombre.'</option>';
+							}
+						echo '</select>';
+						echo '<label for="localidad" style = "width:80px">Localidad:</label>';
+						echo '<select id = "sel_localidad" name = "sel_localidad" style="margin-left:20px;float:left;margin-top:8px">';
+							echo '<option value = "Alcorta">Alcorta</option>';
+							echo '<option value = "Villa Constitucion">Villa Constitución</option>';
+							echo '<option value = "Rosario">Rosario</option>';
+						echo '</select>';
+						echo '<button class="submit" type="submit" formaction="'.base_url("index.php/main/nuevo_paciente_sinturno").'" style = "margin-left:60px">Ingresar</button>';
+						//echo '<button class="submit" style = "margin-left:20px" type="submit">Ingresar</button>';
+
+					echo '</div>';	
+
+				}
+
+				if ($fecha != "") { 
+
+					echo '<div id = "guardar_paciente">';
+						echo '<button class="cancel" type = "button" onclick = "location.href= \''.base_url("/index.php/main/cambiar_dia/$fecha").'\'">Cancelar</button>';
+					echo '</div>';
 				}	
 			}
-			else {
-		?>		
-				<div id = "guardar_paciente">
-					<button class="submit" type="submit">Actualizar Paciente</button>
-				</div>	
+			else {		
+				echo '<div id = "guardar_paciente">';
+					echo '<button class="submit" type="submit" formaction="'.base_url("index.php/main/pro_edit_paciente").'">Actualizar Paciente</button>';
+				echo '</div>';
 
-				<div id = "guardar_paciente">
-					<!--<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/buscar_paciente/$id")?>';">Cancelar</button>-->
-					<button class="cancel" type = "button" onclick = "location.href= '<?php echo str_replace('_id', '', $_SERVER['HTTP_REFERER']);?>';">Cancelar</button>
-				</div>	
-
-		<?php }	?>				
+				echo '<div id = "guardar_paciente">';
+					echo '<button class="cancel" type = "button" onclick = "location.href= \''.str_replace('_id', '', $_SERVER['HTTP_REFERER']).'\'">Cancelar</button>';
+				echo '</div>';
+			}	
+		?>				
 
 	</form>	
 	</div>

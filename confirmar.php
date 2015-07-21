@@ -46,6 +46,7 @@
 		$array['fecha'] = date('Y-m-d', strtotime($result['fecha']));
 		$array['estado'] = $result['estado'];
 		$array['localidad'] = $result['localidad'];
+		$array['obra_social'] = $result['obra_turno'];
 	}	
 	else {
 		$array = mysql_fetch_array ($result_turno);

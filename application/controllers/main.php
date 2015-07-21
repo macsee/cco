@@ -271,7 +271,7 @@ class Main extends CI_Controller
 	function buscar_id_paciente($id)
 	{	
 		//$id = $this->uri->segment(3);
-
+		$data['medicos'] = $this->main_model->get_medicos();
 		$data['resultado'] = $this->main_model->buscar_id_paciente($id);
 		$this->load->view('pacientes', $data);
 	}
@@ -537,6 +537,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$resultado = $this->main_model->obtener_ultima_ficha();
 		$data['ultima_ficha'] = ($resultado->nroficha) + 1;
 		$data['obras'] = $this->main_model->get_obras();
+		$data['medicos'] = $this->main_model->get_medicos();
 
 		$this->load->view('pacientes_home', $data);
 	}
@@ -557,19 +558,12 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		if ($data['paciente'] == 0) {
 			if ($data['ficha'] == 0	) {
 				
-				$utlimo = $this->main_model->ingresar_paciente($_POST);
-
-				//$url = $_POST['callback_url'];
+				$ultimo = $this->main_model->ingresar_paciente($_POST);
 
 				if ($_POST['id_turno'] != "") {
-					$this->main_model->asignar_ficha($_POST['id_turno'],$_POST['ficha'], $utlimo->id); // para asignar la nueva ficha al paciente.
+					$this->main_model->asignar_ficha($_POST['id_turno'],$_POST['ficha'], $ultimo->id); // para asignar la nueva ficha al paciente en el turno.
 					redirect('main/cambiar_dia/'.$_POST['fecha_turno'], 'location');
 				}
-				/*
-				if (strrpos($url,'cambiar_dia') !== FALSE) {
-					$this->main_model->asignar_ficha($_POST['id_turno'],$_POST['ficha'], $utlimo->id); // para asignar la nueva ficha al paciente.
-					redirect($url);
-				}*/	
 				else	
 					redirect('main/pacientes/', 'location');
 
@@ -584,6 +578,153 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$this->load->view('paciente_error',$data);
 		}
 		//$this->load->view('nuevo_turno_exito');
+	}
+
+	function nuevo_paciente_sinturno() {
+
+
+//		error_reporting(E_ALL);
+//		ini_set('display_errors', '1');
+
+
+		$data['ficha'] = $this->main_model->check_ficha($_POST['ficha']);
+		$data['nroficha'] = $_POST['ficha'];
+		$data['paciente'] = $this->main_model->check_nombre_apellido($_POST['nombre'], $_POST['apellido']);
+		//$tipo = array("Consulta");
+
+		$array = $_POST;
+
+		if ($data['paciente'] == 0) {
+			if ($data['ficha'] == 0	) {
+				
+				$ultimo = $this->main_model->ingresar_paciente($_POST);
+
+				$array['ficha'] = $ultimo->nroficha;
+				$array['id_paciente'] = $ultimo->id;
+
+				$this->sin_turno($array);
+			/*	
+				$array['tipo'] = $tipo;
+				$array['fecha'] = date('Y-m-d');
+				$array['hora'] = date('H');
+				$array['minutos'] = date('i');
+				$array['hora_citado'] = date('H');
+				$array['minutos_citado'] = date('i');
+				$array['notas'] = "";
+				$array['otro'] = "";
+				$array['medico'] = $_POST['sel_medico'];
+				$array['sel_localidad'] = $_POST['sel_localidad'];
+				$array['sel_estado'] = "medico";
+				$array['obra_turno'] = $_POST['obra'];
+			*/
+				//$this->main_model->guardar_turno($array);
+
+				//$array['id_turno'] = $ultimo_turno->id;
+				//$array['ficha_fact'] = $array['ficha'];
+				//$array['fecha_fact'] = $array['fecha'];
+				//$array['sel_localidad'] = $_POST['sel_localidad'];
+				//$array['apellido_fact'] = $_POST['nombre'];
+				//$array['nombre_fact'] = $_POST['apellido'];
+				//$array['chk_turno'] = $tipo;
+				//$array['sel_consulta'] = $_POST['obra'];
+				//$array['coseguro_consulta'] = ""; 	
+
+				//$this->facturar_sinturno($array);
+				//$this->edit_facturacion($array);
+
+				redirect('main/historia_clinica/'.$ultimo->id, 'location');
+				
+			}
+			else {
+				$data['value'] = 'error ficha';
+				$this->load->view('paciente_error',$data);
+			}
+		}
+		else {
+			$data['value'] = 'error paciente';
+			$this->load->view('paciente_error',$data);
+		}
+
+	}
+
+	function paciente_sinturno() {
+
+		$this->sin_turno($_POST);
+		/*
+		$tipo = array("Consulta");
+
+		$array = $_POST;
+		*/
+		/*
+		$array['nombre'] = $_POST['nombre'];
+		$array['apellido'] = $_POST['apellido'];
+		$array['obra'] = $_POST['obra'];
+		$array['ficha'] = $_POST['ficha'];
+		$array['id_paciente'] = $_POST['id_paciente'];
+		*/
+		/*
+		$array['tipo'] = $tipo;
+		$array['fecha'] = date('Y-m-d');
+		$array['hora'] = date('H');
+		$array['minutos'] = date('i');
+		$array['hora_citado'] = date('H');
+		$array['minutos_citado'] = date('i');
+		$array['notas'] = "";
+		$array['otro'] = "";
+		$array['medico'] = $_POST['sel_medico'];
+		//$array['sel_localidad'] = $_POST['sel_localidad'];
+		$array['sel_estado'] = "medico";
+		$array['obra_turno'] = $_POST['obra'];
+
+		$this->main_model->guardar_turno($array);
+		$this->main_model->facturar_sinturno($array);
+		*/
+	}
+
+	function sin_turno($post) {
+
+		$tipo = array("Consulta");
+
+		$array = $post;
+
+		$array['tipo'] = $tipo;
+		$array['fecha'] = date('Y-m-d');
+		$array['hora'] = date('H');
+		$array['minutos'] = date('i');
+		$array['hora_citado'] = date('H');
+		$array['minutos_citado'] = date('i');
+		$array['notas'] = "";
+		$array['otro'] = "";
+		$array['medico'] = $post['sel_medico'];
+		//$array['sel_localidad'] = $_POST['sel_localidad'];
+		$array['sel_estado'] = "medico";
+		$array['obra_turno'] = $post['obra'];
+
+		$this->main_model->guardar_turno($array);
+		$this->facturar_sinturno($array);
+
+	}
+
+	function facturar_sinturno($post) {
+
+		$array = $post;
+
+		$tipo = array("Consulta");
+		$array['chk_turno'] = $tipo;
+		$array['coseguro_consulta'] = "";
+		$array['id_turno'] = 0;
+
+		$array['sel_consulta'] = $post['obra'];
+		$array['sel_medico'] = $post['medico'];
+		$array['ficha_fact'] = $post['ficha'];
+		$array['sel_estado'] = "medico";
+		$array['fecha_fact'] = $post['fecha'];;
+		$array['sel_localidad'] = $post['sel_localidad'];
+		$array['apellido_fact'] = $post['nombre'];
+		$array['nombre_fact'] = $post['apellido'];	
+
+		$this->edit_facturacion($array);
+
 	}
 
 	function pro_edit_paciente() {
@@ -864,14 +1005,32 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	function edit_facturacion($array) {
 
 		$array_info['id_turno'] = $array['id_turno'];
-		$array_info['medico'] = $this->main_model->get_medico_by_id($array['sel_medico']); 
+		$array_info['medico'] = $array['sel_medico'];
+
+/*
+		if (strpos($array['sel_medico'], 'Otro') === false)
+			$array_info['medico'] = $this->main_model->get_medico_by_id($array['sel_medico']);
+		else
+			$array_info['medico'] = $array['sel_medico'];
+*/
 		$array_info['ficha'] = $array['ficha_fact'];
 		$array_info['estado'] = $array['sel_estado'];
 		$array_info['fecha'] = $array['fecha_fact'];
 		$array_info['localidad'] = $array['sel_localidad'];
-		$array_info['paciente'] = $array['apellido_fact'].', '.$array['nombre_fact'];
+		$array_info['obra_turno'] = $array['obra_turno'];
 
-		$obra_social = $this->main_model->get_turno_by($array_info['id_turno'])[0]->obra_social;
+		$nombre_1 = ucwords($array['apellido_fact']);
+		$nombre_1 = ucwords(strtolower($nombre_1));
+
+		$apellido_1 = ucwords($array['nombre_fact']);
+		$apellido_1 = ucwords(strtolower($apellido_1));
+
+
+
+		$array_info['paciente'] = $apellido_1.', '.$nombre_1;
+
+		// Esto lo hago para obtener la obra social por defecto del turno. Cuando ya fue facturado al menos una vez, pierdo la referencia a la obra social del turno.
+		//$obra_social = $this->main_model->get_turno_by($array_info['id_turno'])[0]->obra_social;
 
 		$array_fact = null;
 		$array_ordenes = null;
@@ -884,7 +1043,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 			foreach ($checks as $key) {
 
-				$array_['sel_'.$key] = $obra_social;
+				$array_['sel_'.$key] = $array_info['obra_turno'];
 
 				if (isset($array['sel_'.$key]))
 					if ($array['sel_'.$key] != "")

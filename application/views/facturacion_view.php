@@ -1592,7 +1592,7 @@
 				<select id = "sel_medico" name="sel_medico" style = "width:180px">
 					<?php
 						foreach ($medicos as $med) {	
-							echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
+							echo '<option value ="'.$med->nombre.'">'.$med->nombre.'</option>';
 						}
 					?>
 				</select>
@@ -1602,6 +1602,7 @@
 				<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
 					<option value = "Rosario"> Rosario </option>
 					<option value = "Villa_Constitucion"> Villa Constitución </option>
+					<option value = "Alcorta">Alcorta</option>
 				</select>
 			</div>
 			<input id = "id_turno" name = "id_turno" type = "hidden"/>

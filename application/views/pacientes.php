@@ -125,9 +125,14 @@
 
 				echo '<div style = "float:left;width:80px;text-align:left;margin-top:5px">Localidad:</div>';
 				echo '<select id = "sel_localidad" name = "sel_localidad" style="margin-left:20px;float:left;margin-right:30px;margin-top:5px">';
+					foreach ($localidades as $loc) {	
+						echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+					}
+				/*
 					echo '<option value = "Alcorta">Alcorta</option>';
-					echo '<option value = "Villa Constitucion">Villa Constitución</option>';
+					echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
 					echo '<option value = "Rosario">Rosario</option>';
+				*/	
 				echo '</select>';
 				//echo '<input name = "sel_localidad" value = "Alcorta"  type = "hidden"/>';
 			echo '</form>';
@@ -146,13 +151,13 @@
 					<?php
 						echo '<div style = "float: left; cursor: pointer; margin-right:15px">';
 							echo '<a onclick = "return borrar(\''.$key->id.'\');">'; 
-								echo '<img src = "'.base_url('css/images/xw_14x14.png').'"/>';  
+								echo '<img src = "'.base_url('css/images/xw_14x14.png').'" title = "Borrar Paciente"/>'; 
 							echo '</a>';
 						echo '</div>';
 						echo '<div style = "float: left; cursor: pointer">';
 
 							echo '<a onclick = "parent.location.href=\''.base_url("/index.php/main/editar_paciente/").'/'.$key->id.'\';">';
-								echo '<img src = "'.base_url('css/images/pen_alt_fill_16x16_w.png').'"/>';  
+								echo '<img src = "'.base_url('css/images/pen_alt_fill_16x16_w.png').'" title = "Editar Paciente"/>';
 							echo '</a>';
 
 						echo '</div>';
@@ -161,17 +166,18 @@
 
 							echo '<a onclick = "parent.location.href=\''.base_url("/index.php/main/historia_clinica/").'/'.$key->id.'\';">';
 							//echo '<a onclick = "parent.location.href="'.base_url('index.php/main/nuevo_turno/').'">';
-								echo '<img src = "'.base_url('css/images/info_8x16.png').'"/>';  
+								echo '<img src = "'.base_url('css/images/info_8x16.png').'" title = "Ver Historia Clínica"/>';  
 							echo '</a>';
 
 						echo '</div>';
 
-						echo '<div style = "float: left; margin-left: 15px; cursor: pointer">';
-								echo '<a onclick = "return admitir(\''.$key->id.'\');">'; 
-								echo '<img src = "'.base_url('css/images/xw_14x14.png').'"/>';  
-							echo '</a>';
-						echo '</div>';
-							
+						if ($this->session->userdata('grupo') == "Medico") {
+							echo '<div style = "float: left; margin-left: 15px; cursor: pointer">';
+									echo '<a onclick = "return admitir(\''.$key->id.'\');">'; 
+									echo '<img title = "Admitir Paciente" src = "'.base_url('css/images/admitir.png').'" title = "Admitir Paciente"/>';  
+								echo '</a>';
+							echo '</div>';
+						}						
 					?>	
 						
 					</div>

@@ -150,6 +150,20 @@
 			.boton:hover {
 				background-color: #1E91A3;
 			}
+
+			.myboton {
+				background-repeat:no-repeat;
+				border:none;
+				background-color: transparent;
+				width: 40px;
+				height: 40px;
+				float: right;
+			}
+
+			.myboton:hover {
+				cursor: pointer;
+			}
+
 		</style>
 		<script type="text/javascript">
 			$(document).ready( function() {
@@ -280,10 +294,18 @@
             			$("#os_k1_eje_krt").val("");
     			});
 
+    			var json = $('#varDiag').val();
+				var borrador = json.split(',');
+				var lista = [];
 
+				$.each(borrador, function( index, value ) {
+  					lista.push(value);
+				});
+				
     			$('#txt_diag')
 				.textext({
-	            	plugins : 'tags autocomplete'
+	            	plugins : 'tags autocomplete',
+	            	tagsItems : lista
 	        	})
 	        	.bind('getSuggestions', function(e, data)
 	        	{
@@ -625,13 +647,6 @@
   					
 				});
 
-				var json = $('#varDiag').val();
-				var lista = json.split(',');
-
-				$('#txt_diag').textext({
-			        plugins: 'tags',
-			        tagsItems: lista
-			    });
 			});
 			
 		</script>
@@ -1546,9 +1561,13 @@
 			</div>
 			<input type="hidden" name="paciente" value = <?php echo $paciente ?> />
 			<div class = "separador" style = "margin-bottom:0px">
-				<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit">Guardar</button>
-				<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>">Guardar Borrador</button>
-				<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>">Eliminar</button>
+				<!--<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit">Guardar</button>-->
+				<button style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Registro"></button>
+				<button style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>"></button>
+				<button style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>"></button>
+				<!--<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>">Guardar Borrador</button>-->
+				<!--<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>">Eliminar</button>-->
+				
 			</div>
 			<!--formaction = "<?php echo base_url('/index.php/main/submit_data/')?>" target = "_parent"-->
 			

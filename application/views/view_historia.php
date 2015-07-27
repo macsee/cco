@@ -312,7 +312,7 @@
 			//color: #cfe1ed;
 			color: #97BFD9;
 			float:left;
-			width: 580px;
+			width: 500px;
 			margin-top: 5px;
 		}
 
@@ -511,6 +511,18 @@
 			margin-top: 20px;
 		}
 
+		.myboton {
+			background-repeat:no-repeat;
+			border:none;
+			background-color: transparent;
+			width: 40px;
+			height: 40px;
+			float: right;
+		}
+
+		.myboton:hover {
+			cursor: pointer;
+		}
   		</style>
 	</head>
 	<body>
@@ -554,10 +566,33 @@
 				<div style = "width:800px;position:fixed"> <!-- 72.9%-->
 					<div id = "barra_titulo" class = "texto_oswald">
 						<div id = "hist"> Historia Clínica Nº </div> <div id = "info"> <?php echo $datos_paciente[0]->nroficha.' - '.$datos_paciente[0]->apellido.', '.$datos_paciente[0]->nombre ?> </div>
-						<div id = "principal">
+						<div style = "float:left">
 							<?php
 							echo '<a href="'.base_url('index.php').'">'; 
 								echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>';
+							echo '</a>';
+							?>
+						</div>
+						<div style = "float:left">
+							<?php
+							echo '<a target= "_blank" href="'.base_url('index.php/main/buscar_paciente').'">';
+								echo '<img src = "'.base_url('css/images/user_18x24.png').'"/>'; 
+							echo '</a>';
+							?>
+						</div>
+						<div style = "float:left">
+							<?php
+							if ($this->session->userdata('grupo') == "Medico") {
+								echo '<a target= "_blank" href="'.base_url('index.php/main/pacientes_admitidos/'.date('Y-m-d')).'">';
+									echo '<img src = "'.base_url('css/images/admitidos.png').'"/>'; 
+								echo '</a>';
+							}
+							?>
+						</div>
+						<div style = "float:left;margin-left:5px">
+							<?php
+							echo '<a href="'.base_url('index.php/login/desconectar').'">';
+								echo '<img src = "'.base_url('css/images/logout.png').'"/>'; 
 							echo '</a>';
 							?>
 						</div>
@@ -626,9 +661,12 @@
 							<form method="post">
 								<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
 								<textarea style ="font-size:15px;width:95%;height:200px;margin-left:20px;margin-top:20px" name = "antecedente" required><?php echo $borrador_antecedente ?></textarea>
-								<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit" formaction="<?php echo base_url('index.php/main/submit_data/antecedente')?>">Guardar</button>
-								<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>">Guardar Borrador</button>
-								<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>">Eliminar</button>
+								<button style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Antecedente" formaction="<?php echo base_url('index.php/main/submit_data/antecedente')?>"></button>
+								<button style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>"></button>
+								<button style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>"></button>
+								<!--<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit" formaction="<?php echo base_url('index.php/main/submit_data/antecedente')?>">Guardar</button>-->
+								<!--<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>">Guardar Borrador</button>-->
+								<!--<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>">Eliminar</button>-->
 							</form>
 						</div>
 					<?php } ?>

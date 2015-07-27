@@ -152,6 +152,7 @@
 
             if ($(this).attr('src') === img1) {
              	$(this).attr('src', img2);
+             	$(this).attr('title', "Paciente atendido");
              	if (tipo_user == "Medico")
              		status = "ok";
              	else
@@ -160,6 +161,7 @@
             }	
          	else {
           		$(this).attr('src', img1);
+          		$(this).attr('title', "Paciente en espera");
           		if (tipo_user == "Medico")
           			status = "medico";
           		else
@@ -193,6 +195,21 @@
   		});
 
 	});
+
+	function error() {
+        $( "#error" ).dialog({
+			autoOpen: true,
+            resizable: false,
+			width: 300,
+            height: 150,
+            modal: true,
+            buttons: {
+				"Aceptar": function() {
+                    $( this ).dialog( "close" );
+				}
+            }
+        });
+   	};
 
 /*
 	function get_historia(data) {
@@ -234,6 +251,7 @@
 	</script>	
 </head>
 <body>
+	<div id="error" title="Atención" style = "display:none"> Este turno no puede modificarse.</div>
 	<div id = "content">
 		<div id = "main_header">
 		<div id = "menu" style = "width:100%">
@@ -287,32 +305,40 @@
 			</div>
 
 		<?php 
+
 			if ($tipo_user == "Medico")
 				echo '<div class="count">';
 			else 
 				echo '<div class="count" style = "background-color:white; color: #D83C3C; margin-right: 9%">';
 
-				echo ($filas == 0)?"0":sizeof($filas);
+				echo ($filas == null)?"0":sizeof($filas);
 		?>
 			</div>
-			<div id = "principal">
+			<div style = "float:left;margin-left:28%;margin-top:5px">
 				<?php
 				echo '<a href="'.base_url('index.php').'">'; 
 					echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>';
 				echo '</a>';
 				?>
 			</div>
-			<div id = "calendario">
+			<div style = "float:left;margin-left:5px;margin-top:5px">
 				<?php
 				echo '<a target= "_blank" href="'.base_url('index.php/main/buscar_paciente').'">';
 					echo '<img src = "'.base_url('css/images/user_18x24.png').'"/>'; 
 				echo '</a>';
 				?>
 			</div>
-			<div style = "float:left;margin-top:8px;margin-left:20px">
+			<div style = "float:left;margin-left:5px;margin-top:5px">
 				<?php
 				echo '<a target= "_blank" href="'.base_url('index.php/main/cambiar_dia'."/".$fecha).'">';
 					echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 
+				echo '</a>';
+				?>
+			</div>
+			<div style = "float:left;margin-left:5px;margin-top:5px">
+				<?php
+				echo '<a href="'.base_url('index.php/login/desconectar').'">';
+					echo '<img src = "'.base_url('css/images/logout.png').'"/>'; 
 				echo '</a>';
 				?>
 			</div>
@@ -345,8 +371,15 @@
 				foreach ($filas as $turno) {
 					if ($turno->estado != "medico" && $turno->estado != "ok" && $turno->estado != "")
 						$array_pacientes_dia[] = $turno;
-					else if ($turno->estado == "medico" || $turno->estado == "ok")
-						$array_pacientes_ok[] = $turno;
+
+					if ($tipo_user == "Medico"){
+						if ($turno->estado == "medico" || $turno->estado == "ok")
+							$array_pacientes_ok[] = $turno;
+					}	
+					else {
+						if ($turno->estado == "estudios" || $turno->estado == "estudios_ok")
+							$array_pacientes_ok[] = $turno;
+					}	
 				}
 		?>		
 		<div id = "turnos_dia" style = "width:100%">
@@ -406,15 +439,15 @@
 									echo '<div class = "estado" id = "'.$turno->id.'" style="cursor: pointer;margin-left:15px">';
 										
 									if ($turno->estado == "estudios")	
-										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/estudios.png').'"/>'; 
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/estudios.png').'" title = "Paciente realizando estudios"/>'; 
 									else if ($turno->estado == "estudios_ok")	
-										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/estudios_ok.png').'"/>';
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/estudios_ok.png').'" title = "Paciente con estudios finalizados"/>';
 									else if ($turno->estado == "medico")	
-										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/medico.png').'"/>';
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/medico.png').'" title = "Paciente listo para ser atendido"/>';
 									else if ($turno->estado == "dilatacion")	
-										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/dilatacion.png').'"/>';
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/dilatacion.png').'" title = "Paciente dilatando"/>';
 									else
-										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'"/>';
+										echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'" title = "Paciente atendido"/>';
 
 									echo '</div>';
 								
@@ -483,11 +516,26 @@
 									echo '</div>';
 
 									echo '<div class = "estado" id = "'.$turno->id.'" style="cursor: pointer;margin-left:15px">';
-								
-										if ($turno->estado != "ok")
-											echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/espera.png').'"/>';  
-										else
-											echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'"/>';
+									
+										if ($turno->estado != "ok" && $turno->estado != "estudios_ok") {
+											if ($turno->ya_facturado == 0)
+												echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/espera.png').'" title = "Paciente en espera"/>';
+											else {
+												echo '<a onclick = "return error()">';
+													echo '<img src = "'.base_url('css/images/espera.png').'" title = "Paciente en espera"/>';
+												echo '</a>';
+											}	
+										}	
+										else {
+											if ($turno->ya_facturado == 0)
+												echo '<img class = "check" id = "'.$turno->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'" title = "Paciente atendido"/>';
+											else {
+												echo '<a onclick = "return error()">';
+													echo '<img src = "'.base_url('css/images/check_alt_24x24.png').'" title = "Paciente atendido"/>';
+												echo '</a>';
+											}	
+										}
+
 									echo '</div>';
 								
 							echo '</div>';

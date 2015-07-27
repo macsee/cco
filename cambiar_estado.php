@@ -13,7 +13,7 @@
 	mysql_select_db("cco")
 	or die("Error en la selección de la base de datos");
 
-	$query = sprintf("UPDATE turnos SET estado = '%s', ya_facturado = '1' WHERE id = '%d' ", $estado, $id);
+	$query = sprintf("UPDATE turnos SET estado = '%s' WHERE id = '%d' ", $estado, $id);
 
 	/*
 	if ($estado == "1")
@@ -22,6 +22,11 @@
 		$query = sprintf("UPDATE turnos SET estado = '' WHERE id = '%d' ", $id);
 	*/	
 	// Perform Query
+	$result = mysql_query($query)
+	or die("Error en la consulta SQL");
+
+	$query = sprintf("UPDATE facturacion SET estado = '%s' WHERE id_turno = '%d' ", $estado, $id);
+
 	$result = mysql_query($query)
 	or die("Error en la consulta SQL");
 

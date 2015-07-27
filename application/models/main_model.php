@@ -127,6 +127,15 @@ class Main_model extends CI_Model
 		
 	}
 	*/
+	function get_localidades() {
+		$query = $this->db->query("SELECT * FROM localidades ORDER by id ASC");
+		
+		foreach ($query->result() as $resultado)
+		{
+			$data[] = $resultado;
+		}
+		return $data;	
+	}
 	
 	function get_obras()
 	{
@@ -921,7 +930,9 @@ class Main_model extends CI_Model
    			$fecha = $mesano.'-'.$dia;
    			$cant_turnos_manana = $this->cantidad_turnos_man($fecha);
    			$cant_turnos_tarde = $this->cantidad_turnos_tarde($fecha);
-   			$doble_jornada = 0;	
+   			$doble_jornada = 0;
+
+   			$medico_seleccionado = $this->session->userdata('medico_seleccionado');
 
    			if ( date("l", strtotime($fecha)) == "Tuesday" )
    			{
@@ -930,7 +941,7 @@ class Main_model extends CI_Model
    			
    			//if ($doble_jornada == 1)
    			//{
-   				if ($this->is_bloqueado($fecha) != null)
+   				if ($this->is_bloqueado($fecha,$medico_seleccionado) != null)
    					$cal_data[$dia] = '<div class = "celda bloqueada" onclick = "parent.location.href=\''.base_url("/index.php/main/cambiar_dia/".$fecha).'\';" style="cursor: pointer;">'.$dia.'</a>';
    				else {
 
@@ -1117,9 +1128,10 @@ class Main_model extends CI_Model
 		$tipo_user = $this->session->userdata('grupo');
 
 		if ($tipo_user == "Tecnico")
-			$estado = "estado = 'estudios' OR estado = 'estudios_ok'";
+			$estado = "(estado = 'estudios' OR estado = 'estudios_ok')";
 		else if ($tipo_user == "Medico")
 			$estado = "estado != ''";
+
 			/*$tipo = " AND (	tipo LIKE '%CVC%' or 
 							tipo LIKE '%IOL%' or 
 							tipo LIKE '%OCT%' or 
@@ -1163,12 +1175,13 @@ class Main_model extends CI_Model
 
 		//print_r($tipo_turno);
 		$id = $array['id_turno'];
-
+		$medico = $array['sel_medico'];
+/*
 		if (strpos($array['sel_medico'], 'Otro') === false)
 			$medico = $this->main_model->get_medico_by_id($array['sel_medico']);
 		else
 			$medico = $array['sel_medico'];
-
+*/
 		//$medico = $this->get_medico_by_id($array['sel_medico']);
 
 		$estado = $array['sel_estado'];
@@ -1214,6 +1227,8 @@ class Main_model extends CI_Model
 			$obra = "";
 		if ( $medico == "")
 			$medico = "%%";
+		else if ($medico == "Otro")
+			$medico = "Otro%";
 
 		$string = "SELECT id_turno, paciente, ficha, medico, datos, ordenes_pendientes, fecha FROM facturacion WHERE datos LIKE '%$obra%' AND medico LIKE '$medico' AND localidad LIKE '$localidad' AND (fecha BETWEEN '$date_from' AND '$date_to') ORDER BY fecha DESC";
 		
@@ -1239,21 +1254,61 @@ class Main_model extends CI_Model
 		$data['motivo'] = $array['motivo'];
 		$data['fecha'] = $array['fecha'];
 
-		$str = $this->db->insert_string('bloqueado', $data);
-		$this->db->query($str);		
+		$medicos = $this->get_medicos();
+		//echo $medicos[0]->id_medico;
+		if ($array['medico'] == "todos") {
+			foreach ($medicos as $key => $value) {
+				if ($this->is_bloqueado($data['fecha'], $value->id_medico) == null) {
+					$data['medico'] = $value->id_medico;
+					$str = $this->db->insert_string('bloqueado', $data);
+					$this->db->query($str);	
+				}
+			}
+		}	
+		else {
+			$data['medico'] = $array['medico'];
+			$str = $this->db->insert_string('bloqueado', $data);
+			$this->db->query($str);		
+		}
 	}
 
-	function desbloquear_dia($fecha) {
+	function desbloquear_dia($array) {
 		//echo $fecha;
-		$this->db->delete('bloqueado', array('fecha' => $fecha));
+		$fecha = $array['fecha'];
+
+		$medicos = $this->get_medicos();
+		//echo $medicos[0]->id_medico;
+		if ($array['medico'] == "todos") {
+			foreach ($medicos as $key => $value) {
+				$medico = $value->id_medico;
+				$this->db->delete('bloqueado', array('fecha' => $fecha, 'medico' => $medico));
+			}
+		}	
+		else {
+			$medico = $array['medico'];
+			$this->db->delete('bloqueado', array('fecha' => $fecha, 'medico' => $medico));
+		}
+
 		//$this->db->query($str);
 	}
 
-	function is_bloqueado($fecha) {
+	function is_bloqueado($fecha, $medico) {
 
-		$query = $this->db->get_where('bloqueado', array('fecha' => $fecha));
+		$medicos = $this->get_medicos();
+		$count = 1;
 
-		if ($query->num_rows()>0)
+		if ($medico == "todos")
+			foreach ($medicos as $key => $value) {
+				$medico = $value->id_medico;
+				$query = $this->db->get_where('bloqueado', array('fecha' => $fecha, 'medico' => $medico));
+				$count *= $query->num_rows();
+			}			
+		else {
+			$query = $this->db->get_where('bloqueado', array('fecha' => $fecha, 'medico' => $medico));
+			$count *= $query->num_rows();
+		}	
+
+		if ($count>0)
 			return $query->row();
 
 		return null;
@@ -1439,6 +1494,60 @@ class Main_model extends CI_Model
 						WHERE id = '$id'";
 				
 		$this->db->query($string);				
+	}
+
+	function crear_usuario($array) {
+
+		$key = $this->config->item('encryption_key');
+
+
+		$user = $array['user'];
+		$password = $array['user'];
+		$nombre = $array['nombre'];
+		$apellido = $array['apellido'];
+		$grupo = $array['grupo'];
+		$iduser = $array['iduser'];
+
+		$str = "INSERT INTO usuarios (user,password,nombre,apellido,grupo,id_user) VALUES (
+								AES_ENCRYPT('$user','$key'),
+								AES_ENCRYPT('$password','$key'),
+								AES_ENCRYPT('$nombre','$key'),
+								AES_ENCRYPT('$apellido','$key'),
+								AES_ENCRYPT('$grupo','$key'),
+								'$iduser'
+							)";
+		
+		$this->db->query($str);
+
+	}
+
+	function get_usuarios() {
+
+		$key = $this->config->item('encryption_key');
+
+		//$string2 = "SELECT * FROM usuarios";
+
+		$string = 	"SELECT 
+						CONVERT(AES_DECRYPT(user, '$key') USING 'utf8')  user,
+						CONVERT(AES_DECRYPT(nombre, '$key') USING 'utf8')  nombre,
+						CONVERT(AES_DECRYPT(apellido, '$key') USING 'utf8')  apellido,
+						id_user,
+						CONVERT(AES_DECRYPT(grupo, '$key') USING 'utf8')  grupo					
+						FROM usuarios";
+	
+
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0) {
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+			return $data;
+		}	
+		else
+			return null;
+
 	}
 }
 

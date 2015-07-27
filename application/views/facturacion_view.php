@@ -36,14 +36,14 @@
 				background-color: #454545;
 				color: white;
 				font-family: 'OSWALD';
-				height: 25px;
+				height: 35px;
 				margin-bottom: 10px;
 				padding-left: 10px;
 			}
 
 			.titulo a {
 				text-decoration: none;
-				font-size: 14pt;
+				font-size: 17pt;
 			}
 
 			.titulo a:visited {
@@ -336,6 +336,7 @@
 							$("#fecha_fact").val(response["fecha"]);
 							$("#apellido_fact").val(response["apellido"]);
 							$("#nombre_fact").val(response["nombre"]);
+							$("#obra_turno").val(response["obra_social"]);
 							//$("#nombreApellido").html(response["apellido"]+", "+response["nombre"]);
 
 							//$("#nombreApellido").html(id);
@@ -616,7 +617,7 @@
 
 			if ($json['laser_orden'] == "SI") {
 				$paciente = $value;
-				$cadena .= "LASER,";
+				$cadena .= "Laser,";
 			}
 
 			if ($json['yag_orden'] == "SI") {
@@ -626,7 +627,7 @@
 
 			if ($json['consulta_orden'] == "SI") {
 				$paciente = $value;
-				$cadena .= "CONSULTA,";
+				$cadena .= "Consulta,";
 			}
 
 			$cadena = rtrim($cadena, ",");
@@ -640,7 +641,13 @@
 
 	?>	
 		<div class = "titulo">
-			<a href = "<?php echo base_url('index.php')?>">Volver</a>
+			<?php
+				echo '<a href = "'.base_url('index.php').'">';
+					echo '<img src = "'.base_url('css/images/arrow_left_24x24.png').'" style = "margin-right:10px;margin-top:5px"/>';
+					echo "Volver";
+				echo '</a>';	
+			?>
+			
 		</div>
 		<div> 
 			<form id = "form_facturacion" name = "form_facturacion" action="<?php echo base_url('index.php/main/facturacion')?>" method="post">
@@ -654,9 +661,9 @@
 
 							foreach ($obras as $obra)
 								if ($obra->obra == $obra_selected)									
-									echo '<option value ='.$obra->obra.' selected>'.$obra->obra.'</option>';
+									echo '<option value ="'.$obra->obra.'" selected>'.$obra->obra.'</option>';
 								else
-									echo '<option value ='.$obra->obra.'>'.$obra->obra.'</option>';
+									echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
 						?>
 					</select>
 				</div>
@@ -678,20 +685,42 @@
 				</div>
 				<div style ="float:left;margin-left:20px">
 					Localidad:
-					<select style = "font-size: 12pt" id = "sel_localidad" name="sel_localidad">
-						<?php 	if (!isset($localidad_selected)) {
+					<select style = "font-size: 12pt" id = "sel_localidad_barra" name="sel_localidad_barra">
+						<?php 	
+								if (!isset($localidad_selected))
+									$localidad_selected = "";
+
+								foreach ($localidades as $loc) {
+									if ($loc->id_localidad == $localidad_selected)
+										echo '<option value = "'.$loc->id_localidad.'" selected>'.$loc->nombre.'</option>';
+									else
+										echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+
+								}
+
+								/*
+								if (!isset($localidad_selected)) {
 									echo '<option value = "Rosario" selected>Rosario</option>';
-									echo '<option value = "Villa Constitucion">Villa Constitución</option>';
+									echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
+									echo '<option value = "Alcorta">Alcorta</option>';
 								}	
 								else
 									if ($localidad_selected == "Rosario") {
 										echo '<option value = "Rosario" selected>Rosario</option>';
-										echo '<option value = "Villa Constitucion">Villa Constitución</option>';
+										echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
+										echo '<option value = "Alcorta">Alcorta</option>';
 									}	
+									else if ($localidad_selected == "Villa Constitucion"){
+										echo '<option value = "Rosario">Rosario</option>';
+										echo '<option value = "Villa_Constitucion" selected>Villa Constitución</option>';
+										echo '<option value = "Alcorta">Alcorta</option>';
+									}
 									else {
 										echo '<option value = "Rosario">Rosario</option>';
-										echo '<option value = "Villa Constitucion" selected>Villa Constitución</option>';
+										echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
+										echo '<option value = "Alcorta" selected>Alcorta</option>';
 									}	
+								*/	
 						?>
 					</select>
 				</div>
@@ -739,7 +768,7 @@
 			  							echo '<th style = "text-align:left;border-left:1px solid;width:250px">Obra Social</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid">Médico</th>';
 			  							echo '<th style = "text-align:left;border-left:1px solid;width:50px">Coseguro</th>';
-			  							echo '<th style = "text-align:left;border-left:1px solid;width:120px">Informe</th>';
+			  							echo '<th style = "text-align:left;border-left:1px solid;width:120px">Acción</th>';
 									echo '</tr>';
 
 							foreach ($resultado as $value) {
@@ -757,7 +786,7 @@
 								$medico = $value->medico;
 								$fecha = date('d-m-Y',strtotime($value->fecha));
 								$generar = '<a href = "#">Generar</a>';
-								$modificar = '<a href = "#" onclick = "return confirmar(\''.$value->id_turno.'\')">Modificar</a>';
+								$modificar = '<a href = "#" onclick = "return confirmar(\''.$value->id_turno.'\')">Editar</a>';
 
 								$chk_ord = "";
 
@@ -1248,6 +1277,7 @@
 					  							echo '<th style = "text-align:left;border-left:1px solid;">Paciente</th>';
 					  							echo '<th style = "text-align:left;border-left:1px solid;">Práctica</th>';
 					  							echo '<th style = "text-align:left;border-left:1px solid">Médico</th>';
+					  							echo '<th style = "text-align:left;border-left:1px solid">Acción</th>';
 											echo '</tr>';
 										foreach ($pacientes as $value) {
 											echo '<tr>';
@@ -1256,6 +1286,7 @@
 												echo '<td>'.$value->paciente->paciente.'</td>';
 												echo '<td>'.$value->practicas.'</td>';
 												echo '<td>'.$value->paciente->medico.'</td>';
+												echo '<td><a href = "#" onclick = "return confirmar(\''.$value->paciente->id_turno.'\')">Editar</a>';
 											echo '</tr>';
 										}
 										echo '</table>';	
@@ -1416,7 +1447,7 @@
 						</tr>
 						<tr>	
 							<td>
-								<input id = "consulta_chk" name = "chk_turno[]" value = "CONSULTA" type = "checkbox"/> Consulta
+								<input id = "consulta_chk" name = "chk_turno[]" value = "Consulta" type = "checkbox"/> Consulta
 							</td>
 							<td>
 								<select id = "sel_consulta" name="sel_consulta">
@@ -1581,7 +1612,7 @@
 						</tr>
 						<tr>
 							<td>
-								<input id = "sincargo_chk" name = "chk_turno[]" value = "S/CARGO" type = "checkbox"/> Sin Cargo
+								<input id = "sincargo_chk" name = "chk_turno[]" value = "S/Cargo" type = "checkbox"/> Sin Cargo
 							</td>	
 						</tr>	
 					</table>
@@ -1600,13 +1631,21 @@
 			<div style = "float:left;margin-top:20px;margin-left:20px">
 				Localidad:
 				<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
+					<?php
+					foreach ($localidades as $loc) {	
+						echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+					}
+					?>
+					<!--
 					<option value = "Rosario"> Rosario </option>
 					<option value = "Villa_Constitucion"> Villa Constitución </option>
-					<option value = "Alcorta">Alcorta</option>
+					<option value = "Alcorta">Alcorta</option>-->
 				</select>
 			</div>
 			<input id = "id_turno" name = "id_turno" type = "hidden"/>
 			<input id = "sel_estado" name = "sel_estado" type = "hidden"/>
+			<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
+			<input id = "facturado" name = "facturado" value = 1 type = "hidden"/>
 			<!--
 			<input id = "sel_obra" name = "sel_obra" type = "hidden"/>
 			<input id = "sel_medico" name = "sel_medico" type = "hidden"/>

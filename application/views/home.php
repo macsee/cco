@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -53,16 +52,22 @@
 			padding-bottom: 10px;
 	}
 	.boton_home{
-			float: left;
-			margin-left: 20px;
+			//float: left;
+			margin: 10px;
+			display: inline-block;
 	}
 	
 	#portada_inf{
 		float: left;
-		position: absolute;
-		left: 50%;
-		margin-left: -390px;
-		margin-top: 545px
+		//position: absolute;
+		//left: 50%;
+		//margin-left: -390px;
+		//margin-top: 545px;
+		//margin-left: 50%;
+		width: 100%;
+		margin-top: 20px;
+		//display: inline-block;
+		text-align: center;
 	}
 
 	#portada_sup{
@@ -111,25 +116,37 @@
 		</div>
 	</div>	
 	<div id = "portada_inf">
-<?php 
+
+<?php 	
+		$grupo = $this->session->userdata('grupo');
+
 		echo '<div class = "boton_home">';
 			echo '<a class = "button_example clase1" href="'.base_url('index.php/main/cambiar_dia/'.date("Y-m-d")).'">Turnos</a>';
 		echo '</div>';
 		echo '<div class = "boton_home">';
 			echo '<a class = "button_example clase2" href="'.base_url('index.php/main/pacientes/').'">Pacientes</a>';
 		echo '</div>';
-		echo '<div class = "boton_home">';
-		if ($this->session->userdata('grupo') != "Secretaria")
-			echo '<a class = "button_example clase3" href="'.base_url('index.php/main/pacientes_admitidos/'.date("Y-m-d")).'">Pacientes Admitidos</a>';
-		else	
-			echo '<a class = "button_example clase3" href="'.base_url('index.php/main/facturacion/').'">Facturación</a>';
-		echo '</div>';
-		echo '<div class = "boton_home">';
-			echo '<a class = "button_example clase5" href="'.base_url('index.php/main/agenda_cirugias/').'">Cirugías</a>';
-		echo '</div>';
+		//if (strpos($this->session->userdata('grupo'),"Secretaria") === false)
+		if ($grupo == "Medico" || $grupo == "Tecnico") {
+			echo '<div class = "boton_home">';
+				echo '<a class = "button_example clase3" href="'.base_url('index.php/main/pacientes_admitidos/'.date("Y-m-d")).'">Pacientes Admitidos</a>';
+			echo '</div>';
+		}
+
+		if ($grupo == "Secretaria_1") {
+			echo '<div class = "boton_home">';
+				echo '<a class = "button_example clase3" href="'.base_url('index.php/main/facturacion/').'">Facturación</a>';
+			echo '</div>';
+			echo '<div class = "boton_home">';
+				echo '<a class = "button_example clase5" href="'.base_url('index.php/main/agenda_cirugias/').'">Cirugías</a>';
+			echo '</div>';
+		}	
+		/*
 		echo '<div class = "boton_home">';
 			echo '<a class = "button_example clase4" href="'.base_url('index.php/main/agendas/').'">Agendas</a>';
 		echo '</div>';
+		*/
+
 ?>		
 	</div>
 	</div>

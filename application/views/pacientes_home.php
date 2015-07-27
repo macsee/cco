@@ -172,7 +172,7 @@
 				?>
 			</div>
 
-			<div style = "float:left; margin-left:2%;">
+			<div style = "float:left; margin-left:5px;">
 				<?php
 				echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date("Y-m-d")).'">';
 					echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 
@@ -239,16 +239,16 @@
 	            		<input type="text" size = "15" name="dni" value = "<?php echo $dni ?>" autocomplete="off" style="text-transform:capitalize"/>
 					</li>
 					<li>
-						<label for="nombre"> Fecha de nacimiento:</label>
-	            		<input type="date" style = "width:141px" min = "01-01-1900" name="fecha" value = "<?php echo $fecha_nac ?>" autocomplete="off" style="text-transform:capitalize"/>
+						<label for="nombre"><font color = "red">* </font> Fecha de nacimiento:</label>
+	            		<input type="date" style = "width:141px" min = "01-01-1900" name="fecha" value = "<?php echo $fecha_nac ?>" autocomplete="off" style="text-transform:capitalize" required/>
 					</li>
 					<li>
-						<label for="apellido"> Localidad:</label>
-	            		<input type="text" size = "15" name="localidad" value = "<?php echo $localidad ?>" autocomplete="off" style="text-transform:capitalize"/>
+						<label for="apellido"><font color = "red">* </font> Localidad:</label>
+	            		<input type="text" size = "15" name="localidad" value = "<?php echo $localidad ?>" autocomplete="off" style="text-transform:capitalize" required/>
 					</li>
 					<li>
-						<label for="ficha"> Dirección:</label>
-	            		<input type="text" size = "15" name="direccion" value = "<?php echo $direccion ?>" autocomplete="off" style="text-transform:capitalize"/>
+						<label for="ficha"><font color = "red">* </font> Dirección:</label>
+	            		<input type="text" size = "15" name="direccion" value = "<?php echo $direccion ?>" autocomplete="off" style="text-transform:capitalize" required/>
 					</li>
 				</ul>	
 			
@@ -258,9 +258,9 @@
 			
 				<ul>
 					<li>	
-		            	<label for="tel1_1"> Teléfono 1:</label>
-		            	<input type="text" size="3" maxlength = "5" name="tel1_1" id="tel1_1" value= "<?php echo $tel1_1 ?>" autocomplete="off" onFocus="if (this.value=='0341') this.value='';" pattern="[0-9].{2,}"/>
-				    	<input type="text" size = "8" maxlength = "10" name="tel1_2" id="tel1_2" value = "<?php echo $tel1_2 ?>" autocomplete="off" pattern="[0-9].{5,}"/>
+		            	<label for="tel1_1"><font color = "red">* </font> Teléfono 1:</label>
+		            	<input type="text" size="3" maxlength = "5" name="tel1_1" id="tel1_1" value= "<?php echo $tel1_1 ?>" autocomplete="off" onFocus="if (this.value=='0341') this.value='';" pattern="[0-9].{2,}" required/>
+				    	<input type="text" size = "8" maxlength = "10" name="tel1_2" id="tel1_2" value = "<?php echo $tel1_2 ?>" autocomplete="off" pattern="[0-9].{5,}" required/>
 	        		</li>
 					<li>
 		            	<label for="tel2_1">Teléfono 2:</label>
@@ -268,7 +268,7 @@
 						<input type="text" size = "8" maxlength = "10" name="tel2_2" id ="tel2_2" value= "<?php echo $tel2_2 ?>" autocomplete="off" pattern="[0-9].{5,}"/>
 					</li>	
 					<li>
-						<label for="obra"> Obra social:</label>
+						<label for="obra"><font color = "red">* </font> Obra social:</label>
 							<select id ="obra" name = "obra" required>
 								<option value = ""></option>';
 							<?php
@@ -354,11 +354,16 @@
 						echo '</select>';
 						echo '<label for="localidad" style = "width:80px">Localidad:</label>';
 						echo '<select id = "sel_localidad" name = "sel_localidad" style="margin-left:20px;float:left;margin-top:8px">';
+						foreach ($localidades as $loc) {
+							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+						}	
+						/*
 							echo '<option value = "Alcorta">Alcorta</option>';
-							echo '<option value = "Villa Constitucion">Villa Constitución</option>';
+							echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
 							echo '<option value = "Rosario">Rosario</option>';
+						*/	
 						echo '</select>';
-						echo '<button class="submit" type="submit" formaction="'.base_url("index.php/main/nuevo_paciente_sinturno").'" style = "margin-left:60px">Ingresar</button>';
+						echo '<button class="submit_ingresar" type="submit" formaction="'.base_url("index.php/main/nuevo_paciente_sinturno").'" style = "margin-left:60px">Ingresar</button>';
 						//echo '<button class="submit" style = "margin-left:20px" type="submit">Ingresar</button>';
 
 					echo '</div>';	
@@ -388,7 +393,7 @@
 	<span class="required_notification" style = "margin-top: 0px;float: left">* Campos obligatorios</span>
 	<div id = "msg_repetido">
 		<?php
-
+			
 			if ($id != "") {
 
 				if (count($repetidos) > 1) {

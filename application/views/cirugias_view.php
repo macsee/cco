@@ -84,7 +84,7 @@
 			background-color: #454545;
 			color: white;
 			font-family: 'OSWALD';
-			height: 23px;
+			height: 35px;
 			font-size:12pt;
 			margin-bottom: 2px;
 			padding-left: 10px;
@@ -92,7 +92,7 @@
 
 		.titulo a {
 			text-decoration: none;
-			font-size: 14pt;
+			font-size: 17pt;
 		}
 
 		.titulo a:visited {
@@ -179,7 +179,12 @@
 	<body>
 
 		<div class = "titulo">
-			<a href = "<?php echo base_url('index.php')?>">Volver</a>
+			<?php
+				echo '<a href = "'.base_url('index.php').'">';
+					echo '<img src = "'.base_url('css/images/arrow_left_24x24.png').'" style = "margin-right:10px;margin-top:5px"/>';
+					echo "Volver";
+				echo '</a>';	
+			?>
 		</div>
 		<div style = "border-bottom:1px solid;height:80px;margin-bottom:5px">
 			<form id = "form_cirugia" name = "form_cirugia" action="<?php echo base_url('index.php/main/agenda_cirugias')?>" method="post">

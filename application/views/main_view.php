@@ -105,7 +105,7 @@
     		var str = "";
     		var segment = $(location).attr('href').split("/");
     		$( "#seleccion_medico option:selected" ).each(function() {
-    			str += base_url+"index.php/main/cambiar_medico/"+$(this).val()+"/"+segment[7]+"/turnos";
+    			str += base_url+"index.php/main/cambiar_medico/"+$(this).val()+"/"+segment[7].replace("#","")+"/turnos";
     		});
     		//alert( segment[7] );
     		location.href = str;
@@ -137,7 +137,7 @@
 			autoOpen: true,
             resizable: false,
 			width: 350,
-            height: 200,
+            height: 220,
             modal: true,
             buttons: {
                 "Si": function() {
@@ -158,7 +158,7 @@
 			autoOpen: true,
             resizable: false,
 			width: 300,
-            height: 100,
+            height: 150,
             modal: true,
             buttons: {
                 "Si": function() {
@@ -442,27 +442,27 @@
 					}
 			?>
 	</div>
-	<div class="count" style = "background-color:white; color: #D83C3C; margin-right: 9%">
+	<div class="count" style = "background-color:white; color: #D83C3C;">
 			<?php 	
 				echo $cantidad_estudios;
 			?>
 	</div>
-	<div id = "principal">
+	<div style = "float:left;margin-top:8px;margin-left:50px;">
 		<?php
 		echo '<a href="'.base_url('index.php').'">'; 
 			echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>';
 		echo '</a>';
 		?>
 	</div>
-	<div id = "calendario">
+	<div style = "float:left;margin-top:8px;margin-left:5px">
 		<?php
 		echo '<a target= "_blank" href="'.base_url('index.php/main/buscar_paciente').'">';
 			echo '<img src = "'.base_url('css/images/user_18x24.png').'"/>'; 
 		echo '</a>';
 		?>
 	</div>
-	<?php if ($this->session->userdata('grupo') == "Secretaria") {
-		echo '<div id = "bloquear" style="float:left;margin-top:11px;margin-left:10px">';
+	<?php if ($this->session->userdata('grupo') == "Secretaria_1") {
+		echo '<div id = "bloquear" style="float:left;margin-top:11px;margin-left:5px">';
 			if ($bloqueado != null) {
 				echo '<a href="#" onclick = "return desbloquear()">';
 					echo '<img src = "'.base_url('css/images/lock.png').'"/>'; 
@@ -473,9 +473,17 @@
 					echo '<img src = "'.base_url('css/images/unlock.png').'"/>'; 
 				echo '</a>';	
 			}
+		echo '</div>';	
 		}			
 	?>
-		</div>
+	<div style = "float:left;margin-left:5px;margin-top:8px">
+	<?php
+		echo '<a href="'.base_url('index.php/login/desconectar').'">';
+			echo '<img src = "'.base_url('css/images/logout.png').'"/>'; 
+		echo '</a>';
+	?>
+	</div>
+		
 </div>
 
 <div id = "busqueda">
@@ -496,15 +504,29 @@
 
 </div>
 <div id="borrar_turno" title="¿Borrar turno?"></div>
-<div id="desbloquear_dia" title="¿Desbloquear dia?" style = "display:none">
+<div id="desbloquear_dia" title="¿Desbloquear agenda?" style = "display:none">
 	<form id = "form_desbloquear" action="<?php echo base_url('index.php/main/desbloquear_dia/')?>" method="post">
+		<?php if ($medico_selected_name == "") {?>
+			<div style = "margin-bottom:15px;margin-top:5px">Desbloquear agenda para <b>Todos</b>?</div>
+		<?php }
+			else {?>
+			<div style = "margin-bottom:15px;margin-top:5px">Desbloquear agenda para <b>Dr. <?php echo $medico_selected_name?></b>?</div>
+		<?php }?>
 		<input name = "fecha" type = "hidden" value = "<?php echo $fecha?>"/>
+		<input name = "medico" type = "hidden" value = "<?php echo $medico_selected?>"/>
 	</form>
 </div>	
-<div id="bloquear_dia" title="¿Bloquear dia?" style = "display:none">
+<div id="bloquear_dia" title="¿Bloquear agenda?" style = "display:none">
 	<form id = "form_bloquear" action="<?php echo base_url('index.php/main/bloquear_dia/')?>" method="post">
 		<input name = "fecha" type = "hidden" value = "<?php echo $fecha?>"/>
-		Motivo: <textarea id = "motivo" name = "motivo" style = "width:250px;height:70px;float:right" required/></textarea>
+		<input name = "medico" type = "hidden" value = "<?php echo $medico_selected?>"/>
+		<?php if ($medico_selected_name == "") {?>
+			<div style = "margin-bottom:15px;margin-top:5px">Bloquear agenda para <b>Todos</b>?</div>
+		<?php }
+			else {?>
+			<div style = "margin-bottom:15px;margin-top:5px">Bloquear agenda para <b>Dr. <?php echo $medico_selected_name?></b>?</div>
+		<?php }?>	
+		Motivo: <textarea id = "motivo" name = "motivo" style = "width:250px;height:50px;float:right" required/></textarea>
 		<div id = "error_motivo" style ="color:red;float:left;width:100%"></div>
 	</form>
 </div>
@@ -669,7 +691,7 @@
 
 						echo '<div class = "hora_ocupada">';
 							echo '<div class = "horario">';
-								if ($this->session->userdata('grupo') == "Secretaria")
+								if ($this->session->userdata('grupo') == "Secretaria_1")
 									echo '<a href="'.base_url("/index.php/main/nuevo_turno/".$fila->fecha.'/'.$hora.'/'.$minutos).'" name="'.$hora_completa.'">'.$hora_completa.'</a>';
 								else
 									echo '<a href="#" name="'.$hora_completa.'">'.$hora_completa.'</a>';
@@ -747,7 +769,7 @@
 						echo '</div>';
 
 						echo '<div class = "estado" id = "'.$fila->id.'" style="cursor: pointer;">';
-							if ($this->session->userdata('grupo') == "Secretaria") {
+							if ($this->session->userdata('grupo') == "Secretaria_1") {
 
 								if ($fila->ficha < 0)
 									echo '<a onclick = "return error_ficha()">';
@@ -764,17 +786,17 @@
 								echo '<a>';
 
 							if ($fila->estado == "")
-								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_16x13.png').'"/></a>';
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_16x13.png').'" title = "Paciente Ausente"/></a>';
 							else if ($fila->estado == "estudios")	
-								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios.png').'"/></a>'; 
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios.png').'" title = "Paciente realizando estudios"/></a>'; 
 							else if ($fila->estado == "estudios_ok")	
-								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios_ok.png').'"/></a>';
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios_ok.png').'" title = "Paciente con estudios finalizados"/></a>';
 							else if ($fila->estado == "medico")	
-								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/medico.png').'"/></a>';
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/medico.png').'" title = "Paciente listo para ser atendido"/></a>';
 							else if ($fila->estado == "dilatacion")	
-								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/dilatacion.png').'"/></a>';
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/dilatacion.png').'" title = "Paciente dilatando"/></a>';
 							else
-								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'"/></a>';								
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'" title = "Paciente atendido"/></a>';								
 									
 						echo '</div>';
 
@@ -852,7 +874,7 @@
 						}
 					echo '</div>';
 
-					if ($this->session->userdata('grupo') == "Secretaria") {
+					if ($this->session->userdata('grupo') == "Secretaria_1") {
 						echo '<div id = "botones">';
 							if ($fila->ya_facturado == 0) {
 								echo '<a href="'.base_url('index.php/main/editar_turno/'.$fila->id).'">';
@@ -879,7 +901,7 @@
 				$hora = date('H', strtotime($fila));
 				$minutos = date('i', strtotime($fila));
 				$data = $fecha.'/'.$hora.'/'.$minutos;
-				if ($this->session->userdata('grupo') == "Secretaria") {
+				if ($this->session->userdata('grupo') == "Secretaria_1") {
 				
 					if ($id_turno <> NULL)
 					{	
@@ -908,7 +930,10 @@
 			$motivo = "Sin Especificar";
 
 		echo '<div style = "height:486px">';
-			echo "<p style = 'text-align:center;font-size:25px;font-family:Oswald'>Agenda bloqueada para esta fecha.</p>";
+			if ($medico_selected_name == "")
+				echo "<p style = 'text-align:center;font-size:25px;font-family:Oswald'>Agenda bloqueada para <b style = 'margin-left:5px;margin-right:5px;font-size:30px'>Todos</b> en esta fecha.</p>";
+			else
+				echo "<p style = 'text-align:center;font-size:25px;font-family:Oswald'>Agenda de  <b style = 'margin-left:5px;margin-right:5px;font-size:30px'>Dr. ".$medico_selected_name."</b>  bloqueada para esta fecha.</p>";
 			echo "<p style = 'text-align:center;font-size:25px;font-family:Oswald'>Motivo: <i>".$motivo."</i></p>";
 			echo "<p style = 'text-align:center;font-size:15px;font-family:Oswald'>Última edición: <i>".date('d-m-Y',strtotime($bloqueado->last_update))." - ".$bloqueado->usuario."</i></p>";
 		echo '</div>';
@@ -1296,9 +1321,15 @@
 	<div style = "float:left;margin-top:20px;margin-left:20px">
 		Localidad:
 		<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
+			<?php 
+				foreach ($localidades as $loc) {	
+					echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+				}
+			?>
+			<!--
 			<option value = "Rosario"> Rosario </option>
 			<option value = "Villa_Constitucion"> Villa Constitución </option>
-			<option value = "Alcorta">Alcorta</option>
+			<option value = "Alcorta">Alcorta</option>-->
 		</select>
 	</div>
 	<input id = "id_turno" name = "id_turno" type = "hidden"/>

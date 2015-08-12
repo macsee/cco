@@ -40,7 +40,15 @@
 			font-size: 12pt;
 			font-weight: bold;
 		}
-*/	
+*/		
+		.ui-widget {
+			font-size: 14px;
+		}
+		.ui-dialog {
+			//position: relative;
+			margin: auto;
+		}
+
 		.detail {
 			display: none;
 		}
@@ -104,19 +112,20 @@
 		}
 
 		.detalle input{
-			font-size: 11pt;
-			width: 200px;
+			font-size: 12pt;
+			width: 261px;
 			font-family: 'Segoe';
 		}
 
 		.detalle select{
-			font-size: 11pt;
-			width: 200px;
+			font-size: 12pt;
+			width: 266px;
 		}
 
 		.paciente {
 			font-size:11pt;
 			float:left;
+			margin-top: 4px;
 		}
 
 		.pagos {
@@ -127,6 +136,11 @@
 
 		.izq {
 			width: 120px;
+		}
+
+		.izq_ {
+			width: 50px;
+			border-right:1px solid;
 		}
 
 		.data {
@@ -150,10 +164,19 @@
 			background-color: #1E91A3;
 		}
 
+		.cuadro {
+			border: 1px solid #E5E5E5;
+    		background-color: #F7F7F7;
+    		height:480px;
+		}
+
+		.fila_inf {
+			margin-top: 10px;
+		}
 		</style>
 		<script>
 			$(document).ready(function() {
-
+			/*	
 				$(".data").click(function() { 
 					var id = $(this).attr("id");
 
@@ -167,12 +190,34 @@
 						$("#detail_"+id).show();
 					}		
 				});
-
+			*/
 				$(".save").click(function() {
 					var id = $(this).attr("id");
 					//alert(id);
 					$("#myform_"+id).submit();
 				});
+
+				$(".data").click(function() {
+					var id = $(this).attr("id");
+
+			        $("#detail_"+id).dialog({
+						autoOpen: true,
+			            resizable: false,
+						width: 1000,
+			            height: 600,
+			            modal: true,
+			            buttons: {
+			                "Guardar": function() {
+								//var x = url+"/borrar_turno/"+data;
+								//location.href = x;
+								$("#myform_"+id).submit();
+			                },
+							"Cancelar": function() {
+			                    $( this ).dialog( "close" );
+							}
+			            }
+			        });
+			   	});
 			});
 		</script>
 	</head>
@@ -306,11 +351,17 @@
 					<th style = "width:200px">
 						Obra Social
 					</th>
-					<th style = "width:150px">
+					<th style = "width:30px">
+						Ojo
+					</th>
+					<th style = "width:250px">
 						Practica
 					</th>
-					<th style = "width:70px">
-						Ojo
+					<th style = "width:150px">
+						Detalle
+					</th>
+					<th style = "width:200px">
+						Anestesia
 					</th>
 					<th style = "width:100px">
 						Fecha Cirugia
@@ -323,22 +374,62 @@
 				</table>
 				<?php foreach ($resultado as $value) { ?>
 
-					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:40px;margin-top:2px;width:99.7%">
+					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">
 						<div style = "width:62px;margin-left:2px" class = "paciente">
 							<?php echo $value->id_paciente ?>
 						</div>
 						<div style = "width:205px;" class = "paciente">
 							<?php echo $value->paciente ?>
 						</div>
-						<div style = "width:202px" class = "paciente">
+						<div style = "width:200px" class = "paciente">
 							<?php echo $value->obra ?>
 						</div>
-						<div style = "width:153px" class = "paciente">
-							<?php echo $value->practica ?>
+						<div style = "width:30px" class = "paciente">
+						<?php 
+							if ($value->practica_od != "") {
+								echo "<div>";
+									echo "OD";
+								echo "</div>";
+							}	
+							if ($value->practica_os != "") {
+								echo "<div class = 'fila_inf'>";
+									echo "OS";
+								echo "</div>";
+							}	
+						?>
 						</div>
-						<div style = "width:75px" class = "paciente">
-							<?php echo $value->ojo ?>
+						<div style = "width:250px" class = "paciente">
+							<?php
+								echo "<div>";
+									echo $value->practica_od;
+								echo "</div>";	
+								echo "<div class = 'fila_inf'>";
+									echo $value->practica_os;
+								echo "</div>";
+							?>
 						</div>
+						<div style = "width:150px" class = "paciente">
+							<?php
+								echo "<div>";
+									echo $value->detalle_od;
+								echo "</div>";	
+								echo "<div class = 'fila_inf'>";
+									echo $value->detalle_os;
+								echo "</div>";
+							?>
+						</div>	
+						<div style = "width:200px" class = "paciente">
+							<?php
+								echo "<div>";
+									echo $value->anestesia_od;
+								echo "</div>";	
+								echo "<div class = 'fila_inf'>";
+									echo $value->anestesia_os;
+								echo "</div>";
+							?>
+						</div>
+						<div style = "width:105px" class = "paciente">
+						</div>	
 						<div style = "width:105px" class = "paciente">
 							<?php echo $fecha = date('d-m-Y',strtotime($value->fecha_prop)); ?>
 						</div>	
@@ -350,171 +441,217 @@
 				<?php } ?>	
 			</div>
 			<?php foreach ($resultado as $value) { ?>
-			<div class = "detail" id = "<?php echo 'detail_'.$value->id ?>" style = "float:left;margin-left:10px;width:372px">
-				<div class = "titulo" style = "text-align:center;">
+			<div class = "detail" title = "Detalles" id = "<?php echo 'detail_'.$value->id ?>" style = "float:left;margin-left:10px;display:none;">
+				<!--<div class = "titulo" style = "text-align:center;">
 					Detalles
-				</div>
-				<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;float:left">
+				</div>-->
+				<div>
 					<form id = "<?php echo 'myform_'.$value->id?>" action="<?php echo base_url('index.php/main/modificar_cirugia')?>" method="post">
-						<table class = "detalle" style = "width:100%">	
-							<tr>
-								<td class = "izq">Ficha:</td>
-								<td><?php echo $value->id_paciente?></td>
-							</tr>
-							<tr>
-								<td class = "izq">Paciente:</td>
-								<td><?php echo $value->paciente?></td>
-							</tr>
-							<tr>
-								<td class = "izq">Obra Social:</td>
-								<td>
-									<select style = "font-size: 12pt" id = "sel_obra" name="sel_obra" required>
-										<option value = "todos">Todas</option>
-										<?php
-											if (!isset($obra_selected))
-												$obra_selected = "";
+						<div style = "float:left;width:45%;margin-top:10px" class = "cuadro">
+							<div>
+								<table class = "detalle">	
+									<tr>
+										<td class = "izq">Ficha:</td>
+										<td><?php echo $value->id_paciente?></td>
+									</tr>
+									<tr>
+										<td class = "izq">Paciente:</td>
+										<td><?php echo $value->paciente?></td>
+									</tr>
+									<tr>
+										<td class = "izq">Obra Social:</td>
+										<td>
+											<select style = "font-size: 12pt" id = "sel_obra" name="sel_obra" required>
+												<option value = "todos">Todas</option>
+												<?php
+													if (!isset($obra_selected))
+														$obra_selected = "";
 
-											foreach ($obras as $obra)
-												if ($obra->obra == $value->obra)									
-													echo '<option selected>'.$obra->obra.'</option>';
+													foreach ($obras as $obra)
+														if ($obra->obra == $value->obra)									
+															echo '<option selected>'.$obra->obra.'</option>';
+														else
+															echo '<option>'.$obra->obra.'</option>';
+												?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class = "izq">Nro. Afiliado:</td>
+										<td><input id = "nro_afiliado" name = "nro_afiliado" value = "<?php echo $value->id_obra ?>"/></td>
+									</tr>
+									<tr>
+										<td class = "izq">Derivado por:</td>
+										<td>
+											<select style = "font-size: 12pt" id = "sel_medico" name="sel_medico">
+												<?php
+													foreach ($medicos as $medico)
+														if ($medico->nombre == $value->medico)
+															echo '<option selected>'.$medico->nombre.'</option>';
+														else
+															echo '<option>'.$medico->nombre.'</option>';
+												?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class = "izq">Cirujano:</td>
+										<td>
+											<select style = "font-size: 12pt" id = "sel_cirujano" name="sel_cirujano">
+												<?php
+													foreach ($medicos as $medico)
+														if ($medico->cirujano == 1)
+															if ($medico->nombre == $value->cirujano)
+																echo '<option selected>'.$medico->nombre.'</option>';
+															else
+																echo '<option>'.$medico->nombre.'</option>';
+												?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class = "izq">Presupuesto:</td>
+										<td><input id = "presupuesto" name = "presupuesto" value = "<?php echo $value->presupuesto ?>"/></td>
+									</tr>
+								</table>
+							</div>
+							<div>	
+								<div style = "float:left;margin-left:5px;margin-top:5px">
+									<div style = "float:left">Plus:</div>
+									<div style = "float:left;margin-left:144px"><input id = "plus_paciente" name = "plus_paciente" value = "<?php echo $value->plus_paciente ?>" class = "pagos"/></div>
+								</div>
+								<div style = "margin-left:15px;float:left;margin-top:5px;font-size:11pt">
+									<div style = "float:left">Pagado:</div>
+									<div style = "float:left;margin-left:8px"><input id = "pagado_paciente" name = "pagado_paciente" value = "<?php echo $value->pagado_paciente ?>" class = "pagos"/></div>
+								</div>
+								<div style = "float:left;margin-left:5px;margin-top:5px;font-size:11pt">
+									<div style = "float:left">Imp. Obra Social:</div>
+									<div style = "float:left;margin-left:48px"><input id = "paga_obra" name = "paga_obra" value = "<?php echo $value->paga_obra ?>" class = "pagos"/></div>
+								</div>
+								<div style = "margin-left:16px;float:left;margin-top:5px;font-size:11pt">
+									<div style = "float:left">Copago:</div>
+									<div style = "float:left;margin-left:5px"><input id = "coseguro_paciente" name = "coseguro_paciente" value = "<?php echo $value->coseguro_paciente ?>" class = "pagos"/></div>
+								</div>
+							</div>
+							<div>	
+								<table class = "detalle" style = "margin-top:5px;float:left">
+									<tr>
+										<td class = "izq">Fecha cirugía:</td>
+										<td><input id = "fecha" name = "fecha" type = "date" value = "<?php echo $value->fecha_prop?>" required/></td>
+									</tr>
+									<tr>
+										<td class = "izq">Debe orden:</td>
+										<?php 	if($value->debe_orden == "Si")
+													$checked = "checked";
 												else
-													echo '<option>'.$obra->obra.'</option>';
+													$checked = "";
 										?>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td class = "izq">Nro. Afiliado:</td>
-								<td><input id = "nro_afiliado" name = "nro_afiliado" value = "<?php echo $value->id_obra ?>"/></td>
-							</tr>
-							<tr>
-								<td class = "izq">Práctica:</td>
-								<td>
-									<select name = "sel_practica" required>
-										<?php
-											foreach ($tipo_cirugia as $cirugia)
-												if ($cirugia->nombre == $value->practica)
-													echo '<option selected>'.$cirugia->nombre.'</option>';
-												else	
-													echo '<option>'.$cirugia->nombre.'</option>';
-										?>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td class = "izq">Ojo:</td>
-								<td>
-									<select id = "ojo" name = "ojo" required>
-										<?php
-											if ($value->ojo == "AMBOS")
-												echo '<option selected>AMBOS</option>';
-											else
-												echo '<option>AMBOS</option>';
-
-											if ($value->ojo == "OD")
-												echo '<option selected>OD</option>';
-											else
-												echo '<option>OD</option>';
-
-											if ($value->ojo == "OS")
-												echo '<option selected>OS</option>';
-											else
-												echo '<option>OS</option>';
-										?>
-										<?php 	/*if ($value->selected != "AMBOS")
-													echo '<option>AMBOS</option>';
-												if ($value->selected != "OD")
-													echo '<option>OD</option>';
-												if ($value->selected != "OS")
-													echo '<option>OS</option>';
-												*/	
-										?>		
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td class = "izq">Derivado por:</td>
-								<td>
-									<select style = "font-size: 12pt" id = "sel_medico" name="sel_medico">
-										<?php
-											foreach ($medicos as $medico)
-												if ($medico->nombre == $value->medico)
-													echo '<option selected>'.$medico->nombre.'</option>';
+											<td><input id = "orden" name = "orden" type = "checkbox" <?php echo $checked ?>/></td>
+									</tr>
+									<tr>
+										<td class = "izq">Confirmada:</td>
+										<?php 	if($value->confirmado == "Si")
+													$checked = "checked";
 												else
-													echo '<option>'.$medico->nombre.'</option>';
+													$checked = "";
 										?>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td class = "izq">Cirujano:</td>
-								<td>
-									<select style = "font-size: 12pt" id = "sel_cirujano" name="sel_cirujano">
-										<?php
-											foreach ($medicos as $medico)
-												if ($medico->cirujano == 1)
-													if ($medico->nombre == $value->cirujano)
-														echo '<option selected>'.$medico->nombre.'</option>';
-													else
-														echo '<option>'.$medico->nombre.'</option>';
-										?>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td class = "izq">Presupuesto:</td>
-								<td><input id = "presupuesto" name = "presupuesto" value = "<?php echo $value->presupuesto ?>"/></td>
-							</tr>
-						</table>
-							<div style = "float:left;margin-left:5px;margin-top:5px">
-								<div style = "float:left">Plus:</div>
-								<div style = "float:left;margin-left:106px"><input id = "plus_paciente" name = "plus_paciente" value = "<?php echo $value->plus_paciente ?>" class = "pagos"/></div>
+										<td><input id = "confirmado" name = "confirmado" <?php echo $checked ?> type = "checkbox"/></td>
+									</tr>
+								</table>
 							</div>
-							<div style = "margin-left:15px;float:left;margin-top:5px;font-size:11pt">
-								<div style = "float:left">Pagado:</div>
-								<div style = "float:left;margin-left:8px"><input id = "pagado_paciente" name = "pagado_paciente" value = "<?php echo $value->pagado_paciente ?>" class = "pagos"/></div>
+						</div>	
+						<div style = "float:left;margin-top:10px;margin-left:10px;width:53%" class = "cuadro">
+							<div>
+								<table>
+									<tr>
+										<td class = "izq_" rowspan = "3">OD</td>
+										<td class = "izq">Práctica:</td>
+										<td>
+											<select name = "sel_practica_od" required>
+												<option></option>
+												<?php
+													foreach ($tipo_cirugia as $cirugia)
+														if ($cirugia->nombre == $value->practica_od)
+															echo '<option selected>'.$cirugia->nombre.'</option>';
+														else	
+															echo '<option>'.$cirugia->nombre.'</option>';
+												?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class = "izq">Anestesia:</td>
+										<td>
+											<select name = "sel_anestesia_od" required>
+												<option></option>
+												<?php
+													foreach ($anestesias as $anestesia)
+														if ($anestesia->nombre == $value->anestesia_od)
+															echo '<option selected>'.$anestesia->nombre.'</option>';
+														else	
+															echo '<option>'.$anestesia->nombre.'</option>';
+												?>
+											</select>
+										</td>
+									</tr>	
+									<tr>
+										<td class = "izq">Detalle:</td>
+										<td><input id = "detalle_od" name = "detalle_od" value = "<?php echo $value->detalle_od ?>"/></td>
+									</tr>
+								</table>
 							</div>
-							<div style = "float:left;margin-left:5px;margin-top:5px;font-size:11pt">
-								<div style = "float:left">Imp. Obra Social:</div>
-								<div style = "float:left;margin-left:29px"><input id = "paga_obra" name = "paga_obra" value = "<?php echo $value->paga_obra ?>" class = "pagos"/></div>
+							<div style = "margin-top:20px"> 
+								<table>
+
+									<tr>
+										<td class = "izq_" rowspan = "3">OS</td>
+										<td class = "izq">Práctica:</td>
+										<td>
+											<select name = "sel_practica_os" required>
+												<option></option>
+												<?php
+													foreach ($tipo_cirugia as $cirugia)
+														if ($cirugia->nombre == $value->practica_os)
+															echo '<option selected>'.$cirugia->nombre.'</option>';
+														else	
+															echo '<option>'.$cirugia->nombre.'</option>';
+												?>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class = "izq">Anestesia:</td>
+										<td>
+											<select name = "sel_anestesia_os" required>
+												<option></option>
+												<?php
+													foreach ($anestesias as $anestesia)
+														if ($anestesia->nombre == $value->anestesia_os)
+															echo '<option selected>'.$anestesia->nombre.'</option>';
+														else	
+															echo '<option>'.$anestesia->nombre.'</option>';
+												?>
+											</select>
+										</td>
+									</tr>	
+									<tr>
+										<td class = "izq">Detalle:</td>
+										<td><input id = "detalle_os" name = "detalle_os" value = "<?php echo $value->detalle_os ?>"/></td>
+									</tr>
+								</table>
 							</div>
-							<div style = "margin-left:15px;float:left;margin-top:5px;font-size:11pt">
-								<div style = "float:left">Copago:</div>
-								<div style = "float:left;margin-left:5px"><input id = "coseguro_paciente" name = "coseguro_paciente" value = "<?php echo $value->coseguro_paciente ?>" class = "pagos"/></div>
-							</div>
-						<table class = "detalle" style = "width:100%;margin-top:5px;float:left">
-							<tr>
-								<td class = "izq">Fecha cirugía</td>
-								<td><input id = "fecha" name = "fecha" type = "date" value = "<?php echo $value->fecha_prop?>" required/></td>
-							</tr>
-							<tr>
-								<td class = "izq">Debe orden:</td>
-								<?php 	if($value->debe_orden == "Si")
-											$checked = "checked";
-										else
-											$checked = "";
-								?>
-									<td><input id = "orden" name = "orden" type = "checkbox" <?php echo $checked ?>/></td>
-							</tr>
-							<tr>
-								<td class = "izq">Confirmada:</td>
-								<?php 	if($value->confirmado == "Si")
-											$checked = "checked";
-										else
-											$checked = "";
-								?>
-								<td><input id = "confirmado" name = "confirmado" <?php echo $checked ?> type = "checkbox"/></td>
-							</tr>
-						</table>
-						<div style = "margin-left:5px;margin-top:5px;float:left;font-size:11pt">
-							<div style = "float:left">Observaciones:</div>
-							<div style = "float:left;margin-left:38px">
-								<textarea id = "obs" name = "obs" style = "width:200px;height:100px;margin-top:7px;font-size:12pt"><?php echo $value->obs ?></textarea>
+							<div style = "margin-left:5px;margin-top:70px;float:left;font-size:11pt;width:100%">
+								<div style = "float:left">Observaciones:</div>
+								<div style = "float:left;margin-left:38px">
+									<textarea id = "obs" name = "obs" style = "width:315px;height:80px;margin-top:7px;font-size:12pt"><?php echo $value->obs ?></textarea>
+								</div>
 							</div>
 						</div>
+						
+						<!--
 						<div style = "float:left;width:100%;text-align:center;margin-top:20px;margin-bottom:10px">
 							<a id = "<?php echo $value->id ?>" class = "save" href = "#">Guardar Cambios</a>
-						</div>
+						</div>-->
 						<input type = "hidden" name = "id" id = "id" value = "<?php echo $value->id?>" />
 						<input type = "hidden" name = "sel_obra_panel" id = "sel_obra_panel" value = "<?php echo $sel_obra_?>" />
 						<input type = "hidden" name = "sel_practica_panel" id = "sel_practica_panel" value = "<?php echo $sel_practica_?>" />

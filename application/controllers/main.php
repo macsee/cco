@@ -107,7 +107,7 @@ class Main extends CI_Controller
 		$data['nuevo_turno'] = $this->get('nuevo_turno');
 		$data['nombre_turno'] = $this->get('nombre');
 		$data['apellido_turno'] = $this->get('apellido');
-		$data['calendario'] = $this->main_model->create_calendar($calendar_anio, $calendar_mes);
+		$data['calendario'] = $this->main_model->create_calendar(date('Y',strtotime($dia)), date('m',strtotime($dia)));
 		$data['medicos'] = $this->main_model->get_medicos();
 		$data['medico_selected'] = $medico_seleccionado;
 		$data['medico_selected_name'] = $this->main_model->get_medico_by_id($medico_seleccionado);
@@ -1196,6 +1196,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['paciente'] = $this->main_model->buscar_id_paciente($id);
 		$data['medico_seleccionado'] = $this->session->userdata('medico_seleccionado');
 		$data['tipo_cirugias'] = $this->main_model->get_tipo_cirugias();
+		$data['anestesias'] = $this->main_model->get_anestesias();
 		//print_r($this->session->userdata);
 		$this->load->view('coordinar_view',$data);
 	}
@@ -1217,6 +1218,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['obras'] = $this->main_model->get_obras();
 		$data['medicos'] = $this->main_model->get_medicos();
 		$data['tipo_cirugia'] = $this->main_model->get_tipo_cirugias();
+		$data['anestesias'] = $this->main_model->get_anestesias();
 		//$data['medico_selected'] = $this->main_model->get_medico_by_id($_POST['sel_medico']);
 		
 		if ( isset($_POST['fecha_desde']) && isset($_POST['fecha_hasta']) ) {

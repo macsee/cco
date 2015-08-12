@@ -15,10 +15,10 @@
 		}
 
 		input {
-			border:none;
+			//border:none;
 			font-size: 12pt;
 			font-family: 'Segoe';
-			width: 330px;
+			width: 150px;
 		}
 
 		table {
@@ -41,14 +41,14 @@
 		}
 
 		.izq {
-			width: 150px;
+			width: 80px;
 			font-family: 'OSWALD';
 			font-size: 12pt;
 			font-weight: bold;
 		}
 
 		.der {
-			width: 340px;
+			width: 320px;
 		}
 
 		.impar {
@@ -107,42 +107,71 @@
 				echo '<form id = "myform" method = "post" action = "'.base_url('index.php/main/proc_coordinacion').'">';
 					echo '<table>';
 						echo '<tr>';
-							echo '<td class = "izq impar">Ficha:</td>';
+							echo '<td class = "izq impar" colspan="2">Ficha:</td>';
 							echo '<td class = "der impar">'.$paciente->nroficha.'</td>';
 						echo '</tr>';
 						echo '<tr>';
-							echo '<td class = "izq par">Paciente:</td>';
-							echo '<td class = "par" style = "width:250px">'.$paciente->apellido.', '.$paciente->nombre.'</td>';
+							echo '<td class = "izq par" colspan="2">Paciente:</td>';
+							echo '<td class = "par" style = "width:200px">'.$paciente->apellido.', '.$paciente->nombre.'</td>';
 						echo '</tr>';
 						echo '<tr>';
-							echo '<td class = "izq impar">Obra Social:</td>';
+							echo '<td class = "izq impar" colspan="2">Obra Social:</td>';
 							echo '<td class = "der impar" style = "width:200px">'.$paciente->obra_social.'</td>';
 						echo '</tr>';
 						echo '<tr>';
-							echo '<td class = "izq par">Nro Afiliado:</td>';
+							echo '<td class = "izq par" colspan="2">Nro Afiliado:</td>';
 							echo '<td class = "der par" style = "width:150px">'.$paciente->nro_obra.'</td>';
 						echo '</tr>';
 						echo '<tr>';
-							echo '<td class = "izq impar">Práctica:</td>';
-							echo '<td class ="der impar">';
-								echo '<select name = "practica">';
+							echo '<td class = "izq impar" rowspan="3">OD:</td>';
+							echo '<td class ="izq impar font">Práctica:</td>';
+							echo '<td class ="der impar font">';
+								echo '<select name = "practica_od">';
 									foreach ($tipo_cirugias as $practica)
 										echo '<option>'.$practica->nombre.'</option>';
 								echo '</select>';
 							echo '</td>';	
 						echo '</tr>';
 						echo '<tr>';
-							echo '<td class = "izq par">Ojo:</td>';
-							echo '<td class = "der par">';
-								echo '<select name = "ojo">';
-									echo '<option>AMBOS</option>';
-									echo '<option>OD</option>';
-									echo '<option>OS</option>';
+							echo '<td class = "izq impar font">Anestesia:</td>';
+							echo '<td class ="der impar font">';
+								echo '<select name = "anestesia_od">';
+									echo '<option></option>';
+									foreach ($anestesias as $anestesia)
+										echo '<option>'.$anestesia->nombre.'</option>';
 								echo '</select>';
 							echo '</td>';
 						echo '</tr>';
 						echo '<tr>';
-							echo '<td class = "izq impar">Derivado por:</td>';
+							echo '<td class = "izq impar font">Detalles:</td>';
+							echo '<td class = "der impar"><input type = "text" name = "detalle_od"/></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo '<td class = "izq par" rowspan="3">OS:</td>';
+							echo '<td class ="izq par">Práctica:</td>';
+							echo '<td class ="der par">';	
+								echo '<select name = "practica_os">';
+									foreach ($tipo_cirugias as $practica)
+										echo '<option>'.$practica->nombre.'</option>';
+								echo '</select>';
+							echo '</td>';	
+						echo '</tr>';
+						echo '<tr>';
+							echo '<td class = "izq par font">Anestesia:</td>';
+							echo '<td class ="der impar font">';
+								echo '<select name = "anestesia_os">';
+									echo '<option></option>';
+									foreach ($anestesias as $anestesia)
+										echo '<option>'.$anestesia->nombre.'</option>';
+								echo '</select>';
+							echo '</td>';	
+						echo '</tr>';
+						echo '<tr>';
+							echo '<td class = "izq par font">Detalles:</td>';
+							echo '<td class = "der par"><input type = "text" name = "detalle_os"/></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo '<td class = "izq impar" colspan="2">Derivado por:</td>';
 							echo '<td class = "der impar">';
 								echo '<select name = "medico" required>';
 									foreach ($medicos as $medico) {
@@ -155,7 +184,7 @@
 							echo '</td>';
 						echo '</tr>';
 						echo '<tr>';
-							echo '<td class = "izq par">Cirujano:</td>';
+							echo '<td class = "izq par" colspan="2">Cirujano:</td>';
 							echo '<td class = "der par">';
 								echo '<select required name = "cirujano">';
 									foreach ($medicos as $medico) {
@@ -166,9 +195,9 @@
 							echo '</td>';
 						echo '</tr>';
 					echo '</table>';					
-					echo '<div class = "impar" style ="height:120px;width:504px;margin-left:2px">';
+					echo '<div class = "impar" style ="height:120px;width:502px;margin-left:2px">';
 						echo '<div class = "izq" style = "float:left;padding-left:5px">Observaciones:</div>';
-						echo '<div style = "float:left"><textarea style = "width:300px;height:100px;margin-left:4px;margin-top:5px" name = "obs" id = "obs"> </textarea></div>';
+						echo '<div style = "float:left"><textarea style = "width:300px;height:100px;margin-left:90px;margin-top:5px" name = "obs" id = "obs"> </textarea></div>';
 					echo '</div>';
 					echo '<div style ="width:500px;margin-top:10px">';	
 						echo '<a id = "submit" style = "float:right;margin-right:2px" class = "boton" href = "#">Pasar a coordinación</a>';

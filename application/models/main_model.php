@@ -419,9 +419,9 @@ class Main_model extends CI_Model
 		}
 	}
 
-	function cantidad_turnos_man($fecha) 
+	function cantidad_turnos_man($fecha,$medico_seleccionado) 
 	{
-		$medico_seleccionado = $this->session->userdata('medico_seleccionado');
+		//$medico_seleccionado = $this->session->userdata('medico_seleccionado');
 		$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
 
 		if ($medico == null)
@@ -433,9 +433,9 @@ class Main_model extends CI_Model
 		return $query->num_rows();
 	}
 
-	function cantidad_turnos_tarde($fecha) 
+	function cantidad_turnos_tarde($fecha, $medico_seleccionado) 
 	{
-		$medico_seleccionado = $this->session->userdata('medico_seleccionado');
+		//$medico_seleccionado = $this->session->userdata('medico_seleccionado');
 		$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
 
 		if ($medico == null)
@@ -928,8 +928,11 @@ class Main_model extends CI_Model
    		{
 
    			$fecha = $mesano.'-'.$dia;
-   			$cant_turnos_manana = $this->cantidad_turnos_man($fecha);
-   			$cant_turnos_tarde = $this->cantidad_turnos_tarde($fecha);
+
+   			$medico_seleccionado = $this->session->userdata('medico_seleccionado');
+
+   			$cant_turnos_manana = $this->cantidad_turnos_man($fecha, $medico_seleccionado);
+   			$cant_turnos_tarde = $this->cantidad_turnos_tarde($fecha, $medico_seleccionado);
    			$doble_jornada = 0;
 
    			$medico_seleccionado = $this->session->userdata('medico_seleccionado');
@@ -1322,20 +1325,24 @@ class Main_model extends CI_Model
 		$paciente = $data['paciente'];
 		$obra = $data['obra'];
 		$nro_obra = $data['nro_obra'];
-		$practica = $data['practica'];
-		$ojo = $data['ojo'];
+		$practica_od = $data['practica_od'];
+		$detalle_od = $data['detalle_od'];
+		$practica_os = $data['practica_os'];
+		$detalle_os = $data['detalle_os'];
 		$obs = $data['obs'];
 		$medico = $data['medico'];
 		$fecha = date('Y-m-d');
 		$cirujano = $data['cirujano'];
 
-		$str = "INSERT INTO cirugias (id_paciente,paciente,obra,id_obra,practica,ojo,obs,medico,cirujano,confirmado,debe_orden,fecha_prop) VALUES (
+		$str = "INSERT INTO cirugias (id_paciente,paciente,obra,id_obra,practica_od,detalle_od,practica_os,detalle_os,obs,medico,cirujano,confirmado,debe_orden,fecha_prop) VALUES (
 								AES_ENCRYPT('$ficha','$key'),
 								AES_ENCRYPT('$paciente','$key'),
 								AES_ENCRYPT('$obra','$key'),
 								AES_ENCRYPT('$nro_obra','$key'),
-								AES_ENCRYPT('$practica','$key'),
-								AES_ENCRYPT('$ojo','$key'),
+								AES_ENCRYPT('$practica_od','$key'),
+								AES_ENCRYPT('$detalle_od','$key'),
+								AES_ENCRYPT('$practica_os','$key'),
+								AES_ENCRYPT('$detalle_os','$key'),
 								AES_ENCRYPT('$obs','$key'),
 								AES_ENCRYPT('$medico','$key'),
 								AES_ENCRYPT('$cirujano','$key'),
@@ -1350,6 +1357,27 @@ class Main_model extends CI_Model
 	function get_tipo_cirugias() {
 
 		$string = "SELECT * FROM tipo_cirugia ORDER BY id ASC";
+		
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+			return $data;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+
+	function get_anestesias() {
+
+		$string = "SELECT * FROM anestesias ORDER BY id ASC";
 		
 		$query = $this->db->query($string);
 
@@ -1407,8 +1435,12 @@ class Main_model extends CI_Model
 						CONVERT(AES_DECRYPT(paciente, '$key') USING 'utf8') paciente,
 						CONVERT(AES_DECRYPT(obra, '$key') USING 'utf8') obra,
 						CONVERT(AES_DECRYPT(id_obra, '$key') USING 'utf8') id_obra,
-						CONVERT(AES_DECRYPT(practica, '$key') USING 'utf8') practica,
-						CONVERT(AES_DECRYPT(ojo, '$key') USING 'utf8') ojo,
+						CONVERT(AES_DECRYPT(practica_od, '$key') USING 'utf8') practica_od,
+						CONVERT(AES_DECRYPT(practica_os, '$key') USING 'utf8') practica_os,
+						CONVERT(AES_DECRYPT(anestesia_od, '$key') USING 'utf8') anestesia_od,
+						CONVERT(AES_DECRYPT(anestesia_os, '$key') USING 'utf8') anestesia_os,
+						CONVERT(AES_DECRYPT(detalle_od, '$key') USING 'utf8') detalle_od,
+						CONVERT(AES_DECRYPT(detalle_os, '$key') USING 'utf8') detalle_os,
 						CONVERT(AES_DECRYPT(medico, '$key') USING 'utf8') medico,
 						CONVERT(AES_DECRYPT(cirujano, '$key') USING 'utf8') cirujano,
 						CONVERT(AES_DECRYPT(presupuesto, '$key') USING 'utf8') presupuesto,
@@ -1422,7 +1454,8 @@ class Main_model extends CI_Model
 						fecha_prop
 						FROM cirugias WHERE AES_DECRYPT(obra, '$key') LIKE '$obra'
 						AND AES_DECRYPT(medico, '$key') LIKE '$medico'
-						AND AES_DECRYPT(practica, '$key') LIKE '$practica'
+						AND (AES_DECRYPT(practica_od, '$key') LIKE '$practica'
+						OR AES_DECRYPT(practica_od, '$key') LIKE '$practica')
 						AND AES_DECRYPT(debe_orden, '$key') LIKE '$debe_orden'
 						AND AES_DECRYPT(confirmado, '$key') LIKE '$confirmado' ".$deuda. " AND (fecha_prop BETWEEN '$date_from' AND '$date_to')";
 
@@ -1449,8 +1482,12 @@ class Main_model extends CI_Model
 
 		$obra = $array['sel_obra'];
 		$nro_obra = $array['nro_afiliado'];
-		$practica = $array['sel_practica'];
-		$ojo = $array['ojo'];
+		$practica_od = $array['sel_practica_od'];
+		$practica_os = $array['sel_practica_os'];
+		$anestesia_od = $array['sel_anestesia_od'];
+		$anestesia_os = $array['sel_anestesia_os'];
+		$detalle_od = $array['detalle_od'];
+		$detalle_os = $array['detalle_os'];
 		$obs = $array['obs'];
 		$fecha = $array['fecha'];
 		$cirujano = $array['sel_cirujano'];
@@ -1478,8 +1515,14 @@ class Main_model extends CI_Model
 		$string = "UPDATE cirugias SET
 								obra = AES_ENCRYPT('$obra','$key'),
 								id_obra = AES_ENCRYPT('$nro_obra','$key'),
-								practica = AES_ENCRYPT('$practica','$key'),
-								ojo = AES_ENCRYPT('$ojo','$key'),
+								practica_od = AES_ENCRYPT('$practica_od','$key'),
+								practica_os = AES_ENCRYPT('$practica_os','$key'),
+								anestesia_od = AES_ENCRYPT('$anestesia_od','$key'),
+								anestesia_os = AES_ENCRYPT('$anestesia_os','$key'),
+								detalle_od = AES_ENCRYPT('$detalle_od','$key'),
+								detalle_os = AES_ENCRYPT('$detalle_os','$key'),
+								practica_od = AES_ENCRYPT('$practica_od','$key'),
+								practica_os = AES_ENCRYPT('$practica_os','$key'),
 								obs = AES_ENCRYPT('$obs','$key'),
 								fecha_prop = '$fecha',
 								cirujano = AES_ENCRYPT('$cirujano','$key'),

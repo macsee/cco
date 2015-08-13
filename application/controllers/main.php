@@ -1219,11 +1219,13 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['medicos'] = $this->main_model->get_medicos();
 		$data['tipo_cirugia'] = $this->main_model->get_tipo_cirugias();
 		$data['anestesias'] = $this->main_model->get_anestesias();
+
 		//$data['medico_selected'] = $this->main_model->get_medico_by_id($_POST['sel_medico']);
 		
 		if ( isset($_POST['fecha_desde']) && isset($_POST['fecha_hasta']) ) {
 
 			$data['resultado'] = $this->main_model->get_cirugias($data);
+			$data['print'] = $this->print_cirugias($data['resultado']);
 			/*$data['obra_selected'] = $_POST['sel_obra'];
 			$data['medico_selected'] = $_POST['sel_medico'];
 			$data['fecha_desde'] = $_POST['fecha_desde'];
@@ -1233,6 +1235,116 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 		//print_r($data);
 		$this->load->view('cirugias_view',$data);
+	}
+
+	function print_cirugias($resultado) {
+
+	$html = "
+	<style>
+		table {
+			font-size: 15px;
+			border: 2px solid;
+			border-collapse: collapse;
+		}
+
+		table td {
+			border: 2px solid;
+			text-align: center;
+		}
+
+		table th {
+			border: 2px solid;
+			font-weight: bold;
+			font-size: 18px;
+		}
+	</style>	
+			<div style = 'text-align:center;font-size:20px;margin-bottom:10px'>
+				Cirugías ".date('d-m-Y',strtotime($resultado[0]->fecha_prop)).
+			"</div>
+			<div style = 'float:left'>
+				<table>
+					<th style = 'width:60px'>
+						Hora
+					</th>
+					<th style = 'width:200px'>
+						Paciente
+					</th>
+					<th style = 'width:175px'>
+						Cirujano
+					</th>
+					<th style = 'width:30px'>
+						Ojo
+					</th>
+					<th style = 'width:285px'>
+						Practica
+					</th>
+					<th style = 'width:100px'>
+						Detalle
+					</th>
+					<th style = 'width:150px'>
+						Anestesia
+					</th>
+					<th style = 'width:300px'>
+						Observaciones
+					</th>";
+
+			foreach ($resultado as $value) {
+		$html .= "<tr>
+					<td rowspan = '2'></td>
+					<td rowspan = '2'>".
+						$value->paciente.
+					"</td>
+					<td rowspan = '2'>".
+						$value->cirujano.
+					"</td>";
+
+						if ($value->practica_od != "") {
+						$html .= "<td>OD</td>
+							<td>".
+								$value->practica_od.
+							"</td>
+							<td>".
+								$value->detalle_od.
+							"</td>
+							<td>".
+								$value->anestesia_od.
+							"</td>";
+						}
+						else {
+						$html .= "<td>OS</td>
+							<td>".
+								$value->practica_os.
+							"</td>
+							<td>".
+								$value->detalle_os.
+							"</td>
+							<td>".
+								$value->anestesia_os.
+							"</td>";
+						}
+					$html .= "<td rowspan = '2'>"
+						.$value->obs.
+					"</td>
+				</tr>
+				<tr>";
+					if ($value->practica_os != "" && $value->practica_od != "") {
+						$html .= "<td>OS</td>
+						<td>".
+							$value->practica_os.
+						"</td>
+						<td>".
+							$value->detalle_os.
+						"</td>
+						<td>".
+							$value->anestesia_os.
+						"</td>";
+					}
+				$html .= "</tr>";
+			}
+		$html .= "</table>
+	</div>";
+	
+	return $html;
 	}
 
 	function modificar_cirugia() {

@@ -33,6 +33,23 @@
 			background-color: #454545;
 			color: white;
 		}
+
+		.print table{
+			font-size: 15px;
+			border: 2px solid;
+			border-collapse: collapse;
+		}
+
+		.print table td {
+			border: 2px solid;
+			text-align: center;
+		}
+
+		.print table th {
+			border: 2px solid;
+			font-weight: bold;
+			font-size: 18px;
+		}
 /*
 		.izq {
 			width: 150px;
@@ -176,21 +193,14 @@
 		</style>
 		<script>
 			$(document).ready(function() {
-			/*	
-				$(".data").click(function() { 
-					var id = $(this).attr("id");
 
-					if ($("#detail_"+id).is(":hidden")) {
-						$('[id^="detail_"]').hide(); 
-						$("#detail_"+id).show();
-						
-						//$("#detalles_*").;
-					} 
-					else {
-						$("#detail_"+id).show();
-					}		
+				$("#print").click(function() { 
+					var w = window.open("", "_self");
+					var html = $("#html").val();
+					w.window.document.write(html);
+		        	w.window.print();
 				});
-			*/
+
 				$(".save").click(function() {
 					var id = $(this).attr("id");
 					//alert(id);
@@ -232,7 +242,7 @@
 			?>
 		</div>
 		<div style = "border-bottom:1px solid;height:80px;margin-bottom:5px">
-			<form id = "form_cirugia" name = "form_cirugia" action="<?php echo base_url('index.php/main/agenda_cirugias')?>" method="post">
+			<form id = "form_cirugia" name = "form_cirugia" method="post">
 				<div style ="float:left;margin-left:10px">
 					Práctica
 					<select style = "font-size: 12pt" id = "sel_practica_" name = "sel_practica_">
@@ -331,8 +341,16 @@
 					Hasta: <input style = "font-size: 11pt;width:150px" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" required/>
 				</div>	
 				<div style ="float:left;margin-left:20px;margin-top:15px">
-					<button style = "font-size: 12pt" type = "submit"> Buscar </button>
+					<button style = "font-size: 12pt" type = "submit" formaction = "<?php echo base_url('index.php/main/agenda_cirugias')?>"> Buscar </button>
+					<?php 
+						if (!isset($print))
+							$print = "";
+
+						if ($print != "") {?>
+							<button id = "print" style = "font-size: 12pt"> Imprimir </button>
+					<?php }?>	
 				</div>
+				<input id = "html" type = "hidden" value = "<?php echo $print ?>" />
 			</form>
 		</div>
 		<?php if (isset($resultado)) 
@@ -348,13 +366,13 @@
 					<th style = "width:200px">
 						Paciente
 					</th>
-					<th style = "width:200px">
+					<th style = "width:175px">
 						Obra Social
 					</th>
 					<th style = "width:30px">
 						Ojo
 					</th>
-					<th style = "width:250px">
+					<th style = "width:285px">
 						Practica
 					</th>
 					<th style = "width:150px">
@@ -378,13 +396,13 @@
 						<div style = "width:62px;margin-left:2px" class = "paciente">
 							<?php echo $value->id_paciente ?>
 						</div>
-						<div style = "width:205px;" class = "paciente">
+						<div style = "width:195px;" class = "paciente">
 							<?php echo $value->paciente ?>
 						</div>
-						<div style = "width:200px" class = "paciente">
+						<div style = "width:175px" class = "paciente">
 							<?php echo $value->obra ?>
 						</div>
-						<div style = "width:30px" class = "paciente">
+						<div style = "width:35px" class = "paciente">
 						<?php 
 							if ($value->practica_od != "") {
 								echo "<div>";
@@ -398,7 +416,7 @@
 							}	
 						?>
 						</div>
-						<div style = "width:250px" class = "paciente">
+						<div style = "width:285px" class = "paciente">
 							<?php
 								echo "<div>";
 									echo $value->practica_od;
@@ -511,26 +529,26 @@
 									</tr>
 									<tr>
 										<td class = "izq">Presupuesto:</td>
-										<td><input id = "presupuesto" name = "presupuesto" value = "<?php echo $value->presupuesto ?>"/></td>
+										<td><input id = "presupuesto" name = "presupuesto" value = "<?php echo $value->presupuesto ?>" autocomplete = "off"/></td>
 									</tr>
 								</table>
 							</div>
 							<div>	
 								<div style = "float:left;margin-left:5px;margin-top:5px">
 									<div style = "float:left">Plus:</div>
-									<div style = "float:left;margin-left:144px"><input id = "plus_paciente" name = "plus_paciente" value = "<?php echo $value->plus_paciente ?>" class = "pagos"/></div>
+									<div style = "float:left;margin-left:144px"><input id = "plus_paciente" name = "plus_paciente" value = "<?php echo $value->plus_paciente ?>" class = "pagos" autocomplete = "off"/></div>
 								</div>
 								<div style = "margin-left:15px;float:left;margin-top:5px;font-size:11pt">
 									<div style = "float:left">Pagado:</div>
-									<div style = "float:left;margin-left:8px"><input id = "pagado_paciente" name = "pagado_paciente" value = "<?php echo $value->pagado_paciente ?>" class = "pagos"/></div>
+									<div style = "float:left;margin-left:8px"><input id = "pagado_paciente" name = "pagado_paciente" value = "<?php echo $value->pagado_paciente ?>" class = "pagos" autocomplete = "off"/></div>
 								</div>
 								<div style = "float:left;margin-left:5px;margin-top:5px;font-size:11pt">
 									<div style = "float:left">Imp. Obra Social:</div>
-									<div style = "float:left;margin-left:48px"><input id = "paga_obra" name = "paga_obra" value = "<?php echo $value->paga_obra ?>" class = "pagos"/></div>
+									<div style = "float:left;margin-left:48px"><input id = "paga_obra" name = "paga_obra" value = "<?php echo $value->paga_obra ?>" class = "pagos" autocomplete = "off"/></div>
 								</div>
 								<div style = "margin-left:16px;float:left;margin-top:5px;font-size:11pt">
 									<div style = "float:left">Copago:</div>
-									<div style = "float:left;margin-left:5px"><input id = "coseguro_paciente" name = "coseguro_paciente" value = "<?php echo $value->coseguro_paciente ?>" class = "pagos"/></div>
+									<div style = "float:left;margin-left:5px"><input id = "coseguro_paciente" name = "coseguro_paciente" value = "<?php echo $value->coseguro_paciente ?>" class = "pagos" autocomplete = "off"/></div>
 								</div>
 							</div>
 							<div>	
@@ -596,7 +614,7 @@
 									</tr>	
 									<tr>
 										<td class = "izq">Detalle:</td>
-										<td><input id = "detalle_od" name = "detalle_od" value = "<?php echo $value->detalle_od ?>"/></td>
+										<td><input id = "detalle_od" name = "detalle_od" value = "<?php echo $value->detalle_od ?>" autocomplete = "off"/></td>
 									</tr>
 								</table>
 							</div>
@@ -636,7 +654,7 @@
 									</tr>	
 									<tr>
 										<td class = "izq">Detalle:</td>
-										<td><input id = "detalle_os" name = "detalle_os" value = "<?php echo $value->detalle_os ?>"/></td>
+										<td><input id = "detalle_os" name = "detalle_os" value = "<?php echo $value->detalle_os ?>" autocomplete = "off"/></td>
 									</tr>
 								</table>
 							</div>
@@ -647,11 +665,7 @@
 								</div>
 							</div>
 						</div>
-						
-						<!--
-						<div style = "float:left;width:100%;text-align:center;margin-top:20px;margin-bottom:10px">
-							<a id = "<?php echo $value->id ?>" class = "save" href = "#">Guardar Cambios</a>
-						</div>-->
+
 						<input type = "hidden" name = "id" id = "id" value = "<?php echo $value->id?>" />
 						<input type = "hidden" name = "sel_obra_panel" id = "sel_obra_panel" value = "<?php echo $sel_obra_?>" />
 						<input type = "hidden" name = "sel_practica_panel" id = "sel_practica_panel" value = "<?php echo $sel_practica_?>" />

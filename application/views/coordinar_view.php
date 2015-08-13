@@ -40,6 +40,15 @@
 			color: white;
 		}
 
+		.ui-widget {
+			font-size: 14px;
+			text-align: center;
+		}
+		.ui-dialog {
+			//position: relative;
+			margin: auto;
+		}
+
 		.izq {
 			width: 80px;
 			font-family: 'OSWALD';
@@ -86,13 +95,65 @@
 		</style>
 		<script>
 			$(document).ready(function() {
-				$("#submit").click(function() {
-					$("#myform").submit();
+				$("#submit").click(function(event) {
+
+					var msgOD = "";
+					var msgOS = "";
+					var pod = $("#practica_od").val();
+					var pos = $("#practica_os").val();
+					var aod = $("#anestesia_od").val();
+					var aos = $("#anestesia_os").val();
+
+					if ((pod == "") && (aod == "") & (pos == "") && (aos == "")) {
+						msgOD = "Debe completar la información de práctica para el OD";
+						msgOS = "Debe completar la información de práctica para el OS";
+					}
+					
+					if 	( ((pod == "") && (aod != "")) || ((pod != "") && (aod == "")) )
+						msgOD = "Debe completar la información de práctica para el OD";
+
+					if 	( ((pos == "") && (aos != "")) || ((pos != "") && (aos == "")) )
+						msgOS = "Debe completar la información de práctica para el OS";
+
+
+					if (msgOD != "" && msgOS != "")
+						$( "#error" ).html("Debe completar la información de práctica de al menos un ojo");
+					else if (msgOD != "")
+						$( "#error" ).html(msgOD);
+					else
+						$( "#error" ).html(msgOS);
+
+					if ((pod == "") && (aod == "") & (pos == "") && (aos == ""))
+						$( "#error" ).html("Debe completar la información de práctica de al menos un ojo");
+
+
+					if ( (msgOD == "" && msgOS != "") || (msgOD != "" && msgOS == "") || (msgOD != "" && msgOS != "") )
+					{
+					
+				        $( "#error" ).dialog({
+							autoOpen: true,
+				            resizable: false,
+							width: 300,
+				            height: 150,
+				            modal: true,
+				            buttons: {
+								"Aceptar": function() {
+				                    $( this ).dialog( "close" );
+								}
+				            }
+				        });
+
+					}
+					else
+						$("#myform").submit();
+
+						event.preventDefault();
 				});
 			});
 		</script>
 	</head>
 	<body>
+		<div id = "error" title = "Error" style = "display:none"></div>
 		<?php 
 			
 			if (isset($ok)) {
@@ -126,7 +187,8 @@
 							echo '<td class = "izq impar" rowspan="3">OD:</td>';
 							echo '<td class ="izq impar font">Práctica:</td>';
 							echo '<td class ="der impar font">';
-								echo '<select name = "practica_od">';
+								echo '<select id = "practica_od" name = "practica_od">';
+										echo '<option></option>';
 									foreach ($tipo_cirugias as $practica)
 										echo '<option>'.$practica->nombre.'</option>';
 								echo '</select>';
@@ -135,7 +197,7 @@
 						echo '<tr>';
 							echo '<td class = "izq impar font">Anestesia:</td>';
 							echo '<td class ="der impar font">';
-								echo '<select name = "anestesia_od">';
+								echo '<select id = "anestesia_od" name = "anestesia_od">';
 									echo '<option></option>';
 									foreach ($anestesias as $anestesia)
 										echo '<option>'.$anestesia->nombre.'</option>';
@@ -144,13 +206,14 @@
 						echo '</tr>';
 						echo '<tr>';
 							echo '<td class = "izq impar font">Detalles:</td>';
-							echo '<td class = "der impar"><input type = "text" name = "detalle_od"/></td>';
+							echo '<td class = "der impar"><input type = "text" name = "detalle_od" autocomplete = "off"/></td>';
 						echo '</tr>';
 						echo '<tr>';
 							echo '<td class = "izq par" rowspan="3">OS:</td>';
 							echo '<td class ="izq par">Práctica:</td>';
-							echo '<td class ="der par">';	
-								echo '<select name = "practica_os">';
+							echo '<td class ="der par">';
+								echo '<select id = "practica_os" name = "practica_os">';
+										echo '<option></option>';
 									foreach ($tipo_cirugias as $practica)
 										echo '<option>'.$practica->nombre.'</option>';
 								echo '</select>';
@@ -159,7 +222,7 @@
 						echo '<tr>';
 							echo '<td class = "izq par font">Anestesia:</td>';
 							echo '<td class ="der impar font">';
-								echo '<select name = "anestesia_os">';
+								echo '<select id = "anestesia_os" name = "anestesia_os">';
 									echo '<option></option>';
 									foreach ($anestesias as $anestesia)
 										echo '<option>'.$anestesia->nombre.'</option>';
@@ -168,7 +231,7 @@
 						echo '</tr>';
 						echo '<tr>';
 							echo '<td class = "izq par font">Detalles:</td>';
-							echo '<td class = "der par"><input type = "text" name = "detalle_os"/></td>';
+							echo '<td class = "der par"><input type = "text" name = "detalle_os" autocomplete = "off"/></td>';
 						echo '</tr>';
 						echo '<tr>';
 							echo '<td class = "izq impar" colspan="2">Derivado por:</td>';

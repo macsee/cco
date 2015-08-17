@@ -137,6 +137,9 @@
 			echo '<div class = "boton_home">';
 				echo '<a class = "button_example clase3" href="'.base_url('index.php/main/facturacion/').'">Facturación</a>';
 			echo '</div>';
+		}
+		
+		if ($grupo == "Secretaria_1" || $grupo == "Medico") {	
 			echo '<div class = "boton_home">';
 				echo '<a class = "button_example clase5" href="'.base_url('index.php/main/agenda_cirugias/').'">Cirugías</a>';
 			echo '</div>';

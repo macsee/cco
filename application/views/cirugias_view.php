@@ -390,9 +390,13 @@
 					<tr>
 					</tr>
 				</table>
-				<?php foreach ($resultado as $value) { ?>
-
+				<?php foreach ($resultado as $value) {
+					if ($this->session->userdata('grupo') == "Medico") {?>
+					<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">
+			<?php 	}
+			else {	?>	
 					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">
+			<?php }?>			
 						<div style = "width:62px;margin-left:2px" class = "paciente">
 							<?php echo $value->id_paciente ?>
 						</div>

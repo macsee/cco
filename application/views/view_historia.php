@@ -1453,6 +1453,7 @@
 		  				<option value="PAQUI">PAQUI</option>
 		  				<option value="HC">HC</option>
 		  				<option value="IMAGEN">IMAGEN</option>
+		  				<option value="INFORME">INFORME</option>
 					</select>
 				</div>
 				<div style = "float:left;margin-top:10px;font-size:14px">

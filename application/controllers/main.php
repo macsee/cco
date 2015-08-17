@@ -1064,7 +1064,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$array_fact['me'] 		= in_array("ME", $array['chk_turno']) 		? $array_['sel_me'] : "";
 			$array_fact['oct'] 		= in_array("OCT", $array['chk_turno']) 		? $array_['sel_oct'] : "";
 			$array_fact['topo'] 	= in_array("TOPO", $array['chk_turno']) 	? $array_['sel_topo'] : "";
-			$array_fact['rfgc'] 	= in_array("RFGC", $array['chk_turno']) 	? $array_['sel_rfgc'] : "";
+			$array_fact['rfgc'] 	= in_array("RFG Color", $array['chk_turno']) 	? $array_['sel_rfgc'] : "";
 			$array_fact['rfg'] 		= in_array("RFG", $array['chk_turno']) 		? $array_['sel_rfg'] : "";
 			$array_fact['yag'] 		= in_array("YAG", $array['chk_turno']) 		? $array_['sel_yag'] : "";
 			$array_fact['laser'] 	= in_array("Laser", $array['chk_turno']) 	? $array_['sel_laser'] : "";
@@ -1079,7 +1079,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$array_fact['me_coseguro'] 			= in_array("ME", $array['chk_turno']) 		? $array['coseguro_me'] : "";
 			$array_fact['oct_coseguro'] 		= in_array("OCT", $array['chk_turno']) 		? $array['coseguro_oct'] : "";
 			$array_fact['topo_coseguro'] 		= in_array("TOPO", $array['chk_turno']) 	? $array['coseguro_topo'] : "";
-			$array_fact['rfgc_coseguro'] 		= in_array("RFGC", $array['chk_turno']) 	? $array['coseguro_rfgc'] : "";
+			$array_fact['rfgc_coseguro'] 		= in_array("RFG Color", $array['chk_turno']) 	? $array['coseguro_rfgc'] : "";
 			$array_fact['rfg_coseguro'] 		= in_array("RFG", $array['chk_turno']) 		? $array['coseguro_rfg'] : "";
 			$array_fact['yag_coseguro'] 		= in_array("YAG", $array['chk_turno']) 		? $array['coseguro_yag'] : "";
 			$array_fact['laser_coseguro'] 		= in_array("Laser", $array['chk_turno']) 	? $array['coseguro_laser'] : "";
@@ -1122,7 +1122,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$array_fact['ME'] 		= in_array("ME", $array['chk_turno']);
 			$array_fact['OCT'] 		= in_array("OCT", $array['chk_turno']);
 			$array_fact['TOPO'] 	= in_array("TOPO", $array['chk_turno']);
-			$array_fact['RFG Color'] 	= in_array("RFGC", $array['chk_turno']);
+			$array_fact['RFG Color'] 	= in_array("RFG Color", $array['chk_turno']);
 			$array_fact['RFG'] 		= in_array("RFG", $array['chk_turno']);
 			$array_fact['YAG'] 		= in_array("YAG", $array['chk_turno']);
 			$array_fact['Laser'] 	= in_array("Laser", $array['chk_turno']);
@@ -1185,9 +1185,307 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$data['medico_selected'] = $_POST['sel_medico_'];
 			$data['fecha_desde'] = $_POST['fecha_desde'];
 			$data['fecha_hasta'] = $_POST['fecha_hasta'];
+			$data['print'] = $this->print_facturacion($data['obra_selected'], $data['medico_selected'], $data['localidad_selected'], $data['resultado'], $data['fecha_desde'], $data['fecha_hasta']);
 		}
 
 		$this->load->view('facturacion_view',$data);		
+	}
+
+	function borrar_facturacion($id) {
+		$this->main_model->borrar_facturacion($id);
+		redirect('main/facturacion/');
+	}
+
+	function print_facturacion($obra, $medico, $localidad, $resultado, $desde, $hasta) {
+
+		if ($medico == "todos")
+			$medico = "Todos";
+		else
+			$medico = "Dr. ".$this->main_model->get_medico_by_id($medico);
+
+		$html = "
+			<style>
+				table {
+					font-size: 15px;
+					border: 2px solid;
+					border-collapse: collapse;
+				}
+
+				table td {
+					border: 2px solid;
+					text-align: center;
+				}
+
+				table th {
+					border: 2px solid;
+					font-weight: bold;
+					font-size: 18px;
+				}
+
+				header table {
+					border: none;
+				}
+			</style>	
+			<div style = 'text-align:center;font-size:20px;font-weight:bold;margin-bottom:50px'>
+				Detalle de Prácticas
+			</div>
+			<div style = 'margin-bottom: 20px;width:100%;float:left;border-bottom:1px solid;padding-bottom:10px;font-size:18px'>
+				<div style = 'float:left;width:100%'>
+					<div style = 'float:left;width:100px;font-weight:bold'>Período:</div>
+					<div style = 'float:left'>".date('d-m-Y',strtotime($desde))." al ".date('d-m-Y',strtotime($hasta))."</div>
+				</div>
+				<div style = 'float:left;width:100%'>
+					<div style = 'float:left;width:100px;font-weight:bold'>Medico:</div>
+					<div style = 'float:left'>".$medico."</div>
+				</div>
+				<div style = 'float:left;width:100%'>
+					<div style = 'float:left;width:100px;font-weight:bold'>Localidad:</div>
+					<div style = 'float:left'>".$localidad."</div>
+				</div>
+			</div>
+			";
+	
+			$pacientesConOrdenPend = null;
+			$pacientesSinOrdenPend = null;
+
+			foreach ($resultado as $value) {
+
+				
+				$json = json_decode($value->datos);
+				$json_orden = json_decode($value->ordenes_pendientes);
+
+				if ($json_orden != null)
+					$pacientesConOrdenPend[] = (object) array('paciente' => $value, 'json' => $json,  'json_ord' => $json_orden);
+				else
+					$pacientesSinOrdenPend[] = (object) array('paciente' => $value, 'json' => $json);
+			}		
+
+			if ($pacientesSinOrdenPend != null) {
+
+				$html .= "<div style = 'float:left'>
+				<div style = 'margin-bottom:5px;font-size:18px;font-weight:bold'>
+					Detalle de pacientes con órdenes:
+				</div>
+				<div>
+				<table>
+					<th style = 'width:100px'>
+						Fecha
+					</th>
+					<th style = 'width:100px'>
+						Ficha
+					</th>
+					<th style = 'width:175px'>
+						Paciente
+					</th>
+					<th style = 'width:100px'>
+						Practica
+					</th>
+					<th style = 'width:300px'>
+						Obra Social
+					</th>
+					<th style = 'width:100px'>
+						Coseguro
+					</th>";
+
+				foreach ($pacientesSinOrdenPend as $val) {
+
+					$arrayPacientes = [];
+
+					$json = $val->json;
+					$value = $val->paciente;
+
+					$span = 0;
+					$flag = false;
+						
+					foreach ($json as $practica=>$valor ) {
+
+						if ($obra == "todos")
+							$obrasocial = $valor;
+						else
+							$obrasocial = $obra;
+
+						if ($valor != "" && strpos($practica, "coseguro") === false && $valor == $obrasocial) {
+
+							$coseguro = $practica."_coseguro";
+
+							$objetoPaciente = new stdClass;
+							$objetoPaciente->obrasocial = $valor;
+							$objetoPaciente->coseguro = $json->$coseguro != "" ? $json->$coseguro : 0;
+							$arrayPacientes[$practica] = $objetoPaciente;
+
+							if (!isset($resume[$practica]))
+								$resume[$practica] = (object) array('cantidad' => 0, 'subtot' => 0);
+
+							$resume[$practica]->cantidad++;
+							$resume[$practica]->subtot += $objetoPaciente->coseguro;
+
+							$span++;
+						}
+							
+					}
+
+				//Lo hago despues porque necesito saber el valor de $span
+
+					$html .= "<tr>
+								<td rowspan = '".$span."'>".
+									date('d-m-Y',strtotime($value->fecha)).
+								"</td>
+								<td rowspan = '".$span."'>".
+									$value->ficha.
+								"</td>
+								<td rowspan = '".$span."'>".
+									$value->paciente.
+								"</td>";
+
+								foreach ($arrayPacientes as $practica=>$valor) {
+									
+									if ($flag != false) {
+										$html .= "<tr>";
+										$flag = true;
+									}
+
+						
+									$html .= "<td>".$practica."</td>
+									<td>".$valor->obrasocial."</td>".
+									"<td>".$valor->coseguro."</td>
+									</tr>";
+					
+
+								}
+
+				}		
+
+				$html .= "</table>
+					</div>
+				</div>";
+
+				$html .= "<div style = 'float:left;width:100%;margin-top:10px'>";
+				$html .= "<div style = 'font-size:18px;font-weight:bold;margin-bottom:5px'>Resumen:</div>";
+				$html .= "<div>";
+				$html .= "<table>
+				<th>Práctica</th>
+				<th>Cantidad</th>
+				<th>Subtotal Coseg.</th>";
+				$suma = 0;
+
+				foreach ($resume as $key=>$valor) {
+					$html .= "<tr>".
+						"<td>".$key."</td>".
+						"<td>".$valor->cantidad."</td>".
+						"<td>".$valor->subtot."</td>".
+					"</tr>";
+					$suma += $valor->subtot;
+				}
+				$html .= "<tr>
+						<td colspan = '2'></td>
+						<td style = 'font-weight:bold;font-size:18px'>Total: ".$suma."</td>
+					</tr>
+				";
+				$html .= "</table>
+					</div>";
+				$html .= "</div>";
+			}	
+
+		if ($pacientesConOrdenPend != null) {
+
+			$html .= "<div style = 'float:left;width:100%;margin-top:50px'>
+		<div style = 'font-size:18px;font-weight:bold;margin-bottom:5px'>Detalle de pacientes que adeudan órdenes:</div>";
+
+	$html .= "<table>
+					<th style = 'width:100px'>
+						Fecha
+					</th>
+					<th style = 'width:100px'>
+						Ficha
+					</th>
+					<th style = 'width:175px'>
+						Paciente
+					</th>
+					<th style = 'width:100px'>
+						Practica
+					</th>
+					<th style = 'width:300px'>
+						Obra Social
+					</th>
+					<th style = 'width:100px'>
+						Coseguro
+					</th>";	
+
+			foreach ($pacientesConOrdenPend as $val) {
+
+				$arrayPacientes = [];
+
+				$json = $val->json;
+				$json_ord = $val->json_ord;
+
+				$value = $val->paciente;
+
+				$span = 0;
+				$flag = false;
+
+				foreach ($json_ord as $practica=>$valor ) {
+
+					$practica = str_replace("_orden","",$practica);
+					$coseguro = $practica."_coseguro";
+
+					if ($obra == "todos")
+						$obrasocial = $json->$practica;
+					else
+						$obrasocial = $obra;
+
+					if ($valor == "SI" && $json->$practica == $obrasocial) {
+
+						$objetoPaciente = new stdClass;
+						$objetoPaciente->obrasocial = $json->$practica;
+						$objetoPaciente->coseguro = $json->$coseguro != "" ? $json->$coseguro : 0;
+						$arrayPacientes[$practica] = $objetoPaciente;
+
+						$span++;
+					}
+									
+				}
+
+				if ($span > 0) {
+
+					$html .= "<tr>
+									<td rowspan = '".$span."'>".
+										date('d-m-Y',strtotime($value->fecha)).
+									"</td>
+									<td rowspan = '".$span."'>".
+										$value->ficha.
+									"</td>
+									<td rowspan = '".$span."'>".
+										$value->paciente.
+									"</td>";
+
+									foreach ($arrayPacientes as $practica=>$valor) {
+										
+										if ($flag != false) {
+											$html .= "<tr>";
+											$flag = true;
+										}
+
+							
+										$html .= "<td>".$practica."</td>
+										<td>".$valor->obrasocial."</td>".
+										"<td>".$valor->coseguro."</td>
+										</tr>";
+						
+
+									}
+				}					
+
+			}		
+
+			$html .= "</table>
+				</div>
+			</div>";	
+
+			$html .= "</div>";
+			
+		}
+
+		return $html;
 	}
 
 	function coordinacion($id) {
@@ -1294,7 +1592,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 					<td rowspan = '2'>".
 						$value->paciente.
 					"</td>
-					<td rowspan = '2'>".
+					<td rowspan = '2'>Dr. ".
 						$value->cirujano.
 					"</td>";
 

@@ -129,6 +129,30 @@
 		<script type="text/javascript">
 			$(document).ready( function() {
 
+					$('input[name="chk_turno[]"]').change(function(event) {
+			      		// State has changed to checked/unchecked.
+			      		var id = $(this).attr("id");
+			      		var tipo = id.substring(0, id.indexOf("_"));
+
+			      		if ($(this).prop("checked") == false) {
+							$("#sel_"+tipo).prop('disabled', true);
+							$("#coseguro_"+tipo).prop('disabled', true);
+							$("#"+tipo+"_ord_chk").prop('disabled', true);	
+						}
+						else {
+							$("#sel_"+tipo).removeAttr('disabled');
+							$("#coseguro_"+tipo).removeAttr('disabled');
+							$("#"+tipo+"_ord_chk").removeAttr('disabled');
+						}
+					});
+
+					$("#print").click(function() { 
+						var w = window.open();
+						var html = $("#html").val();
+						w.window.document.write(html);
+		        		w.window.print();
+					});
+
 					var total = 0;
 
 					$("#valor_cvc").keyup(function() {
@@ -382,7 +406,11 @@
 			        modal: true,
 			        buttons: {
 			        	"Eliminar": function() {
-			                $( this ).dialog( "close" );
+			        		var url = '<?php echo base_url("index.php/main"); ?>';
+			        		var id = $("#id_turno").val();
+			        		var x = url+"/borrar_facturacion/"+id;
+			        		location.href = x;
+			                //$( this ).dialog( "close" );
 						},
 			            "Confirmar": function() {
 							//var x = url+"/borrar_turno/"+data;
@@ -568,7 +596,6 @@
 			$cadena = "";
 
 			$json = json_decode(json_encode($json), true);
-			//print_r($json);
 
 			if ($json['cvc_orden'] == "SI") {
 				$paciente = $value;
@@ -739,7 +766,15 @@
 				</div>	
 				<div style ="float:left;margin-left:20px">
 					<button style = "font-size: 12pt" type = "submit"> Buscar </button>
+					<?php 
+						if (!isset($print))
+							$print = "";
+
+						if ($print != "") {?>
+							<button id = "print" style = "font-size: 12pt"> Imprimir </button>
+					<?php }?>
 				</div>
+				<input id = "html" type = "hidden" value = "<?php echo $print ?>" />
 			</form>
 		</div>
 		<!--RESULTADO DE PACIENTES CON ORDENES-->

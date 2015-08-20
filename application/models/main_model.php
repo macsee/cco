@@ -782,7 +782,7 @@ class Main_model extends CI_Model
 
 	function get_fechas_estudios($id) {
 
-		$query = $this->db->query("SELECT * FROM estudios where id_paciente = $id ORDER BY imagen");
+		$query = $this->db->query("SELECT * FROM estudios where id_paciente = $id ORDER BY tipo");
 		
 		if ($query->num_rows()>0)
 		{

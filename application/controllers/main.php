@@ -804,7 +804,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 		foreach ($_FILES['userfile']['name'] as $fieldName => $file) {
 
-			$contador_archivo = 1;
+			$contador_archivo = 0;
 
 			$extension = explode('.', $file);
 			$extension = ".".$extension[sizeof($extension)-1];
@@ -812,16 +812,24 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$name = $tipo.'_'.$id_paciente.'_'.$fecha;
 			$exist = $name;
 
-			while (file_exists($dir.'/'.$exist.$extension)) {
+			foreach (glob($dir.'/'.$exist."*") as $filename) {
+				//$exist = $name.'_'.$contador_archivo;
+				$contador_archivo++;
+
+			}
+
+			$exist = $name.'_'.$contador_archivo;
+/*			
+			while (file_exists($dir.'/'.$exist)) {
 
 				$exist = $name.'_'.$contador_archivo;
 				$contador_archivo++;
 
 			}
-
+*/
 			$name_extension = $exist.$extension;
 
-			if($contador_archivo > 1)
+			if($contador_archivo > 0)
 				$imagen = $contador_archivo.'_'.$fecha_sql;
 			else
 				$imagen = $fecha_sql;

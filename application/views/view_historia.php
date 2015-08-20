@@ -715,8 +715,10 @@
 						
 						else {
 							foreach ($historia as $value) {
+
 								$json = json_decode($value->data);
-								//echo $value->data;
+								//$json = json_decode(json_encode($value->data), true);
+								//print_r($json);
 					?>	
 								<div id = "historia_paciente">
 									<div id = "datos_historia" class = "texto_oswald">
@@ -1415,7 +1417,7 @@
 							echo '<div id = "detalles_'.$value->tipo.'" class="detalles" style = "display:none;">';
 							
 						}
-							echo '<a target = "_blank" href="'.$value->ruta.'">'.$value->imagen.'</a>';
+							echo '<a target = "_blank" href="'.base_url("/data/".$value->ruta).'">'.$value->imagen.'</a>';
 							echo '<a target = "_blank" style="float:right;cursor:pointer" onclick = "return borrar(\''.$value->id.'\', \''.$datos_paciente[0]->id.'\');">';
 								echo '<img src = "'.base_url('css/images/delete_icon&16.png').'"/>';
 							echo '</a>';

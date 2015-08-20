@@ -1021,6 +1021,7 @@ class Main_model extends CI_Model
 									CONVERT(AES_DECRYPT(medico, '$key') USING 'utf8')  medico,
 									CONVERT(AES_DECRYPT(fecha, '$key') USING 'utf8') fecha					
 									FROM historia_clinica WHERE AES_DECRYPT(id_paciente, '$key') = '$id' ORDER BY last_update DESC");
+
 		if ($query->num_rows()>0)
 		{
 			foreach ($query->result() as $fila)

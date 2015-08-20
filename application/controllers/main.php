@@ -833,7 +833,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$array['tipo'] = $tipo;
 			$array['fecha'] = date('Y-m-d', strtotime($fecha_sql));
 			$array['imagen'] = $imagen;
-			$array['ruta'] = base_url('data/'.$id_paciente.'/'.$tipo.'/'.$name_extension);
+			$array['ruta'] = $id_paciente.'/'.$tipo.'/'.$name_extension;
 			$this->main_model->ingresar_estudios($array);
 
 		}
@@ -908,13 +908,12 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['historia'] = $this->main_model->get_historia($id);
 		$data['antecedentes'] = $this->main_model->get_antecedentes($id);
 
-		
 		$borrador_antecedente = $this->main_model->get_borrador($id,"antecedente");
 	
 		if (empty($borrador_antecedente))
 			$data['borrador_antecedente'] = "";
 		else
-			$data['borrador_antecedente'] = json_decode($borrador_antecedente->data)->antecedente;
+			$data['borrador_antecedente'] = $this->unfixjson_ant(json_decode($borrador_antecedente->data)->antecedente);
 		
 		$data['paciente_id'] = $id;
 		$this->load->view('view_historia', $data);
@@ -928,11 +927,32 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		if (empty($borrador_registro))
 			$data['borrador_registro'] = "";
 		else
-			$data['borrador_registro'] = $borrador_registro->data;
+			$data['borrador_registro'] = $this->unfixjson_reg($borrador_registro->data);
 
 		//$data['diagnosticos'] = $this->main_model->get_diagnosticos();
 		$this->load->view('form_hc',$data);
 	}
+
+	function fixjson($value) {
+		$escapers = array('\\', '/', '\n', '\r', '\t', '\x08', '\x0c', '\'');
+    	$replacements = array('\\\\', '\\/', '<br>', '\\r', '\\t', '\\f', '\\b', "''");
+		$result = str_replace($escapers, $replacements, $value);
+   		return $result;
+	}
+
+	function unfixjson_reg($value) {
+		$escapers = array('\\\\', '\\/', '<br>', '\\r', '\\t', '\\f', '\\b', "''");
+		$replacements = array('\\', '/', '\n', '\r', '\t', '\x08', '\x0c', '\'');
+		$result = str_replace($escapers, $replacements, $value);
+   		return $result;
+	}
+
+	function unfixjson_ant($value) {
+		$escapers = array('\\\\', '\\/', '<br>', '\\r', '\\t', '\\f', '\\b', "''");
+		$replacements = array("\\", "/", "\n", "\r", "\t", "\x08", "\x0c", "\'");
+		$result = str_replace($escapers, $replacements, $value);
+   		return $result;
+	}		
 
 	function submit_data($tipo) { 
 		$data['fecha'] = date('Y-m-d H:i:s',time());
@@ -942,15 +962,15 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$test = str_replace(',', ', ', $test);
 			$_POST['txt_diag'] = $test;
 		}
-			
-		$data['text'] = json_encode($_POST,JSON_UNESCAPED_UNICODE);
+
+		$data['text'] = $this->fixjson(json_encode($_POST,JSON_UNESCAPED_UNICODE));
+
 		$data['tipo'] = $tipo;
 		$data['id_paciente'] = $_POST['paciente'];
 		$data['medico'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 
 		$this->main_model->insert_record($data);
 
-		
 		$this->main_model->delete_borrador($data);
 
 		redirect('main/historia_clinica/'.$_POST['paciente']);
@@ -964,7 +984,9 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$test = str_replace(',', ', ', $test);
 			$_POST['txt_diag'] = $test;
 		}
-		$data['text'] = json_encode($_POST,JSON_UNESCAPED_UNICODE);
+
+		$data['text'] = $this->fixjson(json_encode($_POST,JSON_UNESCAPED_UNICODE));
+
 		$data['tipo'] = $tipo;
 		$data['id_paciente'] = $_POST['paciente'];
 		$data['medico'] = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');

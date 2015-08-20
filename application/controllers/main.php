@@ -852,7 +852,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 		$result = $this->main_model->get_estudio($id);
 		$url = explode('/', $result->ruta);
-		$path_to_file = $url[5].'/'.$url[6].'/'.$url[7];
+		$path_to_file = $url[0].'/'.$url[1].'/'.$url[2];
 		
 		if (unlink($this->config->item('upload_dir').$path_to_file)) {
 			$this->main_model->borrar_estudio($id);

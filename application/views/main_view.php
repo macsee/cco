@@ -809,7 +809,7 @@
 					$paciente = $datos_paciente[$fila->id_paciente][0];
 				else
 					$paciente = new datosPaciente();
-
+				
 				echo '<div id = "detalles_'.$fila->id.'" class="detalles" style = "display:none;">';
 					echo '<div style = "float:left;width:40%">';
 						echo '<table class = "detalle_1">';

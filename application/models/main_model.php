@@ -1214,7 +1214,7 @@ class Main_model extends CI_Model
 
 		$query = $this->db->query("UPDATE facturacion SET usuario = '$usuario', medico = '$medico', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', localidad = '$localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
 
-		if ($this->db->affected_rows() == 0)
+		if ($query != true)
 			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,localidad,obra_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$localidad','$obra_turno') ");
 		
 	}

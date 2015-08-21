@@ -800,7 +800,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			mkdir($dir,0777,true);
 		}
 
-		//$count = 0;
+		$count = 0;
 
 		foreach ($_FILES['userfile']['name'] as $fieldName => $file) {
 
@@ -819,14 +819,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			}
 
 			$exist = $name.'_'.$contador_archivo;
-/*			
-			while (file_exists($dir.'/'.$exist)) {
 
-				$exist = $name.'_'.$contador_archivo;
-				$contador_archivo++;
-
-			}
-*/
 			$name_extension = $exist.$extension;
 
 			if($contador_archivo > 0)
@@ -834,8 +827,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			else
 				$imagen = $fecha_sql;
 
-    		move_uploaded_file($_FILES['userfile']['tmp_name'][0], "$dir/$name_extension");
-    		//$count++;
+    		move_uploaded_file($_FILES['userfile']['tmp_name'][$count], "$dir/$name_extension");
+    		$count++;
 
     		$array['id_paciente'] = $id_paciente;
 			$array['tipo'] = $tipo;
@@ -949,7 +942,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	}
 
 	function unfixjson_reg($value) {
-		$escapers = array('\\\\', '\\/', '<br>', '\\r', '\\t', '\\f', '\\b', "''");
+		$escapers = array('\\', '\\/', '<br>', '\\r', '\\t', '\\f', '\\b', "''");
 		$replacements = array('\\', '/', '\n', '\r', '\t', '\x08', '\x0c', '\'');
 		$result = str_replace($escapers, $replacements, $value);
    		return $result;
@@ -1278,17 +1271,20 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$pacientesConOrdenPend = null;
 			$pacientesSinOrdenPend = null;
 
-			foreach ($resultado as $value) {
+			if ($resultado != null) {
 
-				
-				$json = json_decode($value->datos);
-				$json_orden = json_decode($value->ordenes_pendientes);
+				foreach ($resultado as $value) {
 
-				if ($json_orden != null)
-					$pacientesConOrdenPend[] = (object) array('paciente' => $value, 'json' => $json,  'json_ord' => $json_orden);
-				else
-					$pacientesSinOrdenPend[] = (object) array('paciente' => $value, 'json' => $json);
-			}		
+					
+					$json = json_decode($value->datos);
+					$json_orden = json_decode($value->ordenes_pendientes);
+
+					if ($json_orden != null)
+						$pacientesConOrdenPend[] = (object) array('paciente' => $value, 'json' => $json,  'json_ord' => $json_orden);
+					else
+						$pacientesSinOrdenPend[] = (object) array('paciente' => $value, 'json' => $json);
+				}
+			}	
 
 			if ($pacientesSinOrdenPend != null) {
 
@@ -1340,7 +1336,11 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 							$objetoPaciente = new stdClass;
 							$objetoPaciente->obrasocial = $valor;
-							$objetoPaciente->coseguro = $json->$coseguro != "" ? $json->$coseguro : 0;
+							if ($practica != "sin_cargo")
+								$objetoPaciente->coseguro = $json->$coseguro != "" ? $json->$coseguro : 0;
+							else
+								$objetoPaciente->coseguro = 0;
+
 							$arrayPacientes[$practica] = $objetoPaciente;
 
 							if (!isset($resume[$practica]))
@@ -1373,7 +1373,6 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 										$html .= "<tr>";
 										$flag = true;
 									}
-
 						
 									$html .= "<td>".$practica."</td>
 									<td>".$valor->obrasocial."</td>".

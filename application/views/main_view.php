@@ -213,6 +213,8 @@
 			$("#sel_"+val).removeAttr('disabled');
 			$("#coseguro_"+val).removeAttr('disabled');
 			$("#"+val+"_ord_chk").removeAttr('disabled');
+			
+			$("#sel_estado").removeAttr('disabled');
 		});
 
 		$("#sincargo_chk").prop('checked',false);

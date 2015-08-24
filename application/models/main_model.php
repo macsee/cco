@@ -1183,10 +1183,16 @@ class Main_model extends CI_Model
 
 		$usuario = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 
+		$query = $this->db->query("SELECT id FROM facturacion WHERE id_turno = '$id'");
+
+		if ($query->num_rows()>0)
+			$this->db->query("UPDATE facturacion SET usuario = '$usuario', medico = '$medico', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', localidad = '$localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
+		else
+			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,localidad,obra_turno,medico_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$localidad','$obra_turno','$medico_turno') ");
 		//if ($facturado == 1)
 		//	$this->db->query("UPDATE turnos SET ya_facturado = 1 WHERE id = '$id'");
 		//else
-			$this->db->query("UPDATE turnos SET usuario = '$usuario', estado = '$estado', ya_facturado = 0 WHERE id = '$id'");
+		//	$this->db->query("UPDATE turnos SET usuario = '$usuario', estado = '$estado', ya_facturado = 0 WHERE id = '$id'");
 	}
 
 	function update_tipo_turno($tipo_turno, $array) {

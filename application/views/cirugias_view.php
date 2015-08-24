@@ -345,7 +345,7 @@
 					<?php 
 						if (!isset($print))
 							$print = "";
-
+						
 						if ($print != "") {?>
 							<button id = "print" style = "font-size: 12pt"> Imprimir </button>
 					<?php }?>	
@@ -356,7 +356,7 @@
 		<?php if (isset($resultado)) 
 			if ($resultado == null)
 					echo "No hay datos";
-			else {	
+			else {
 		?>
 			<div style = "float:left">
 				<table>

@@ -1175,6 +1175,20 @@ class Main_model extends CI_Model
 		
 	}
 
+	function update_estado_turno($array) {
+
+		$id = $array['id_turno'];
+		$estado = $array['sel_estado'];
+		//$facturado = $array['facturado'];
+
+		$usuario = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
+
+		//if ($facturado == 1)
+		//	$this->db->query("UPDATE turnos SET ya_facturado = 1 WHERE id = '$id'");
+		//else
+			$this->db->query("UPDATE turnos SET usuario = '$usuario', estado = '$estado', ya_facturado = 0 WHERE id = '$id'");
+	}
+
 	function update_tipo_turno($tipo_turno, $array) {
 
 		//print_r($tipo_turno);
@@ -1471,9 +1485,7 @@ class Main_model extends CI_Model
 			return $data;
 		}
 		else
-		{
-			return null;
-		}				
+			return 0;			
 
 	}
 

@@ -247,7 +247,15 @@
 
 					//$("#nombreApellido").html(id);
 					$("#ficha").html(response["ficha"]);
+
+					if (response["estado"] == "ok") {
+						$('#sel_estado').append($("<option></option>").attr("value","ok").text("OK"));
+						$("#sel_estado").prop('disabled', true);
+					}
+					
 					$("#sel_estado").val(response["estado"]);
+					
+						
 					$("#sel_localidad").val(response["localidad"]);
 						
 					if (response["medico"].indexOf("Otro") >= 0) {
@@ -876,7 +884,7 @@
 
 					if ($this->session->userdata('grupo') == "Secretaria_1") {
 						echo '<div id = "botones">';
-							if ($fila->ya_facturado == 0) {
+							if ($fila->estado == "") {
 								echo '<a href="'.base_url('index.php/main/editar_turno/'.$fila->id).'">';
 									echo '<img src = "'.base_url('css/images/pencil_icon&16.png').'"/>';  	
 								echo '</a>';
@@ -1306,6 +1314,7 @@
 			<option value = "estudios_ok"> Estudios terminados</option>
 			<option value = "dilatacion"> En dilatación </option>
 			<option value = "medico"> Espera para médico </option>
+			<!--<option value = "ok"> OK </option>-->
 		</select>
 	</div>
 	<div style = "float:left;margin-top:20px;margin-left:20px">

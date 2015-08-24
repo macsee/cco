@@ -1042,6 +1042,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		else
 			$array_info['medico'] = $array['sel_medico'];
 */
+		
 		$array_info['ficha'] = $array['ficha_fact'];
 		$array_info['estado'] = $array['sel_estado'];
 		$array_info['fecha'] = $array['fecha_fact'];
@@ -1170,16 +1171,24 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function update_facturacion_turno($from) {
 
-		$this->edit_turno($_POST,$from);
-		$this->edit_facturacion($_POST);
-
+		//$this->edit_turno($_POST,$from);
 		//$fecha = date('Y-m-d', strtotime($_POST['fecha_fact']));
-		$fecha = $_POST['fecha_fact'];
 
-		if($from == 0)
+		if (!isset($_POST['sel_estado']))
+			$_POST['sel_estado'] = "ok";
+
+		if($from == 0) {			
+			$this->main_model->update_estado_turno($_POST);
+			$this->edit_facturacion($_POST);
+
+			$fecha = $_POST['fecha_fact'];
 			redirect('main/cambiar_dia/'.$fecha);
-		else
+
+		}	
+		else {
 			redirect('main/facturacion/');
+			$this->edit_facturacion($_POST);
+		}	
 	}
 
 	function bloquear_dia() {
@@ -1566,79 +1575,98 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function print_cirugias($resultado) {
 
-	$html = "
-	<style>
-		table {
-			font-size: 15px;
-			border: 2px solid;
-			border-collapse: collapse;
-		}
+	if ($resultado != null) {
 
-		table td {
-			border: 2px solid;
-			text-align: center;
-		}
+		$html = "
+		<style>
+			table {
+				font-size: 15px;
+				border: 2px solid;
+				border-collapse: collapse;
+			}
 
-		table th {
-			border: 2px solid;
-			font-weight: bold;
-			font-size: 18px;
-		}
-	</style>	
-			<div style = 'text-align:center;font-size:20px;margin-bottom:10px'>
-				Cirugías ".date('d-m-Y',strtotime($resultado[0]->fecha_prop)).
-			"</div>
-			<div style = 'float:left'>
-				<table>
-					<th style = 'width:60px'>
-						Hora
-					</th>
-					<th style = 'width:200px'>
-						Paciente
-					</th>
-					<th style = 'width:175px'>
-						Cirujano
-					</th>
-					<th style = 'width:30px'>
-						Ojo
-					</th>
-					<th style = 'width:285px'>
-						Practica
-					</th>
-					<th style = 'width:100px'>
-						Detalle
-					</th>
-					<th style = 'width:150px'>
-						Anestesia
-					</th>
-					<th style = 'width:300px'>
-						Observaciones
-					</th>";
+			table td {
+				border: 2px solid;
+				text-align: center;
+			}
 
-			foreach ($resultado as $value) {
-		$html .= "<tr>
-					<td rowspan = '2'></td>
-					<td rowspan = '2'>".
-						$value->paciente.
-					"</td>
-					<td rowspan = '2'>Dr. ".
-						$value->cirujano.
-					"</td>";
+			table th {
+				border: 2px solid;
+				font-weight: bold;
+				font-size: 18px;
+			}
+		</style>	
+				<div style = 'text-align:center;font-size:20px;margin-bottom:10px'>
+					Cirugías ".date('d-m-Y',strtotime($resultado[0]->fecha_prop)).
+				"</div>
+				<div style = 'float:left'>
+					<table>
+						<th style = 'width:60px'>
+							Hora
+						</th>
+						<th style = 'width:200px'>
+							Paciente
+						</th>
+						<th style = 'width:175px'>
+							Cirujano
+						</th>
+						<th style = 'width:30px'>
+							Ojo
+						</th>
+						<th style = 'width:285px'>
+							Practica
+						</th>
+						<th style = 'width:100px'>
+							Detalle
+						</th>
+						<th style = 'width:150px'>
+							Anestesia
+						</th>
+						<th style = 'width:300px'>
+							Observaciones
+						</th>";
 
-						if ($value->practica_od != "") {
-						$html .= "<td>OD</td>
-							<td>".
-								$value->practica_od.
-							"</td>
-							<td>".
-								$value->detalle_od.
-							"</td>
-							<td>".
-								$value->anestesia_od.
-							"</td>";
-						}
-						else {
-						$html .= "<td>OS</td>
+				foreach ($resultado as $value) {
+			$html .= "<tr>
+						<td rowspan = '2'></td>
+						<td rowspan = '2'>".
+							$value->paciente.
+						"</td>
+						<td rowspan = '2'>Dr. ".
+							$value->cirujano.
+						"</td>";
+
+							if ($value->practica_od != "") {
+							$html .= "<td>OD</td>
+								<td>".
+									$value->practica_od.
+								"</td>
+								<td>".
+									$value->detalle_od.
+								"</td>
+								<td>".
+									$value->anestesia_od.
+								"</td>";
+							}
+							else {
+							$html .= "<td>OS</td>
+								<td>".
+									$value->practica_os.
+								"</td>
+								<td>".
+									$value->detalle_os.
+								"</td>
+								<td>".
+									$value->anestesia_os.
+								"</td>";
+							}
+						$html .= "<td rowspan = '2'>"
+							.$value->obs.
+						"</td>
+					</tr>
+					<tr>";
+						if ($value->practica_os != "" && $value->practica_od != "") {
+							$html .= "<td>OS</td>
 							<td>".
 								$value->practica_os.
 							"</td>
@@ -1649,29 +1677,16 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 								$value->anestesia_os.
 							"</td>";
 						}
-					$html .= "<td rowspan = '2'>"
-						.$value->obs.
-					"</td>
-				</tr>
-				<tr>";
-					if ($value->practica_os != "" && $value->practica_od != "") {
-						$html .= "<td>OS</td>
-						<td>".
-							$value->practica_os.
-						"</td>
-						<td>".
-							$value->detalle_os.
-						"</td>
-						<td>".
-							$value->anestesia_os.
-						"</td>";
-					}
-				$html .= "</tr>";
-			}
-		$html .= "</table>
-	</div>";
-	
-	return $html;
+					$html .= "</tr>";
+				}
+			$html .= "</table>
+		</div>";
+		
+		}
+		else
+			$html = "";
+
+		return $html;
 	}
 
 	function modificar_cirugia() {

@@ -166,6 +166,11 @@
 
 		</style>
 		<script type="text/javascript">
+
+			$(document).on("keypress", ":input:not(textarea)", function(event) {
+			    return event.keyCode != 13;
+			});
+
 			$(document).ready( function() {
 
 				$("#od_k1_krt").keyup(function() {
@@ -249,17 +254,28 @@
         			if (!$.isNumeric(val))
             			val = 0;
 
-          				if ($("#od_esf_subj_lejos").val()) {
-	        				$("#od_esf_subj_cerca").val((parseFloat($("#od_esf_subj_lejos").val()) + val).toFixed(2));
-	        				$("#od_cil_subj_cerca").val($("#od_cil_subj_lejos").val());
-	        				$("#od_eje_subj_cerca").val($("#od_eje_subj_lejos").val());
-        				}
+            		if ($("#od_esf_subj_lejos").val() == "")
+            			od_esf_lejos = 0;
+            		else 
+            			od_esf_lejos = $("#od_esf_subj_lejos").val();
 
-        				if ($("#os_esf_subj_lejos").val()) {
-        					$("#os_esf_subj_cerca").val((parseFloat($("#os_esf_subj_lejos").val()) + val).toFixed(2));
-        					$("#os_cil_subj_cerca").val($("#os_cil_subj_lejos").val());
-        					$("#os_eje_subj_cerca").val($("#os_eje_subj_lejos").val());
-        				}	
+            	
+            		if ($("#os_esf_subj_lejos").val() == "")
+            			os_esf_lejos = 0;
+            		else 
+            			os_esf_lejos = $("#os_esf_subj_lejos").val();
+
+      				//if ($("#od_esf_subj_lejos").val()) {
+        				$("#od_esf_subj_cerca").val( (parseFloat(od_esf_lejos + val)).toFixed(2) );
+        				$("#od_cil_subj_cerca").val($("#od_cil_subj_lejos").val());
+        				$("#od_eje_subj_cerca").val($("#od_eje_subj_lejos").val());
+    				//}
+
+    				//if ($("#os_esf_subj_lejos").val()) {
+    					$("#os_esf_subj_cerca").val( (parseFloat(os_esf_lejos + val)).toFixed(2) );
+    					$("#os_cil_subj_cerca").val($("#os_cil_subj_lejos").val());
+    					$("#os_eje_subj_cerca").val($("#os_eje_subj_lejos").val());
+    				//}	
     			});
 
     			$("#od_k1_eje_krt").keyup(function() {
@@ -1532,9 +1548,14 @@
 								<input name = "chk_sol[]" value = "YAG" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("YAG", $json->chk_sol)) { echo "checked";} }?>/> YAG
 							</td>
 							<td>
-								<input name = "chk_sol[]" value = "Ecografía" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("Ecografía", $json->chk_sol)) { echo "checked";} }?>/> Ecografía
+								<input name = "chk_sol[]" value = "TOPO" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("TOPO", $json->chk_sol)) { echo "checked";} }?>/> TOPO
 							</td>
 						</tr>
+						<tr>
+							<td>
+								<input name = "chk_sol[]" value = "Ecografía" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("Ecografía", $json->chk_sol)) { echo "checked";} }?>/> Ecografía
+							</td>
+						</tr>	
 					</table>
 				</div>
 				<div class ="panel_der">

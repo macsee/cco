@@ -1178,7 +1178,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$_POST['sel_estado'] = "ok";
 
 		if($from == 0) {			
-			$this->main_model->update_estado_turno($_POST);
+			//$this->main_model->update_estado_turno($_POST);
+			$this->edit_turno($_POST,$from);
 			$this->edit_facturacion($_POST);
 
 			$fecha = $_POST['fecha_fact'];
@@ -1284,9 +1285,9 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 				foreach ($resultado as $value) {
 
-					
 					$json = json_decode($value->datos);
 					$json_orden = json_decode($value->ordenes_pendientes);
+
 
 					if ($json_orden != null)
 						$pacientesConOrdenPend[] = (object) array('paciente' => $value, 'json' => $json,  'json_ord' => $json_orden);
@@ -1331,66 +1332,80 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 					$span = 0;
 					$flag = false;
-						
+
+					$empty = "";
+					
 					foreach ($json as $practica=>$valor ) {
+						$empty .= $valor;
+					}	
 
-						if ($obra == "todos")
-							$obrasocial = $valor;
-						else
-							$obrasocial = $obra;
+					if ($empty != "") {
 
-						if ($valor != "" && strpos($practica, "coseguro") === false && $valor == $obrasocial) {
+						foreach ($json as $practica=>$valor ) {
 
-							$coseguro = $practica."_coseguro";
 
-							$objetoPaciente = new stdClass;
-							$objetoPaciente->obrasocial = $valor;
-							if ($practica != "sin_cargo")
-								$objetoPaciente->coseguro = $json->$coseguro != "" ? $json->$coseguro : 0;
+							if ($obra == "todos")
+								$obrasocial = $valor;
 							else
-								$objetoPaciente->coseguro = 0;
+								$obrasocial = $obra;
 
-							$arrayPacientes[$practica] = $objetoPaciente;
+							if ($valor != "" && strpos($practica, "coseguro") === false && $valor == $obrasocial) {
 
-							if (!isset($resume[$practica]))
-								$resume[$practica] = (object) array('cantidad' => 0, 'subtot' => 0);
+								$coseguro = $practica."_coseguro";
 
-							$resume[$practica]->cantidad++;
-							$resume[$practica]->subtot += $objetoPaciente->coseguro;
+								$objetoPaciente = new stdClass;
+								$objetoPaciente->obrasocial = $valor;
 
-							$span++;
+								if ($practica != "sin_cargo")
+									$objetoPaciente->coseguro = $json->$coseguro != "" ? $json->$coseguro : 0;
+								else
+									$objetoPaciente->coseguro = 0;
+
+								$arrayPacientes[$practica] = $objetoPaciente;
+
+								if (!isset($resume[$practica]))
+									$resume[$practica] = (object) array('cantidad' => 0, 'subtot' => 0);
+
+								$resume[$practica]->cantidad++;
+								$resume[$practica]->subtot += $objetoPaciente->coseguro;
+
+								$span++;
+							}
+								
 						}
-							
-					}
+					}	
 
 				//Lo hago despues porque necesito saber el valor de $span
 
-					$html .= "<tr>
-								<td rowspan = '".$span."'>".
-									date('d-m-Y',strtotime($value->fecha)).
-								"</td>
-								<td rowspan = '".$span."'>".
-									$value->ficha.
-								"</td>
-								<td rowspan = '".$span."'>".
-									$value->paciente.
-								"</td>";
 
-								foreach ($arrayPacientes as $practica=>$valor) {
-									
-									if ($flag != false) {
-										$html .= "<tr>";
-										$flag = true;
-									}
+					if ($json->sin_cargo == "") {
+
+						$html .= "<tr>
+									<td rowspan = '".$span."'>".
+										date('d-m-Y',strtotime($value->fecha)).
+									"</td>
+									<td rowspan = '".$span."'>".
+										$value->ficha.
+									"</td>
+									<td rowspan = '".$span."'>".
+										$value->paciente.
+									"</td>";
+
+									foreach ($arrayPacientes as $practica=>$valor) {
+										
+										if ($flag != false) {
+											$html .= "<tr>";
+											$flag = true;
+										}
+							
+										$html .= "<td>".$practica."</td>
+										<td>".$valor->obrasocial."</td>".
+										"<td>".$valor->coseguro."</td>
+										</tr>";
 						
-									$html .= "<td>".$practica."</td>
-									<td>".$valor->obrasocial."</td>".
-									"<td>".$valor->coseguro."</td>
-									</tr>";
-					
 
-								}
-
+									}
+					}				
 				}		
 
 				$html .= "</table>

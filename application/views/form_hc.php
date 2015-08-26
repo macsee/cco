@@ -265,14 +265,17 @@
             		else 
             			os_esf_lejos = $("#os_esf_subj_lejos").val();
 
+            		val_od = parseFloat(parseFloat(val)+parseFloat(od_esf_lejos)).toFixed(2);
+            		val_os = parseFloat(parseFloat(val)+parseFloat(os_esf_lejos)).toFixed(2);
+
       				//if ($("#od_esf_subj_lejos").val()) {
-        				$("#od_esf_subj_cerca").val( (parseFloat(od_esf_lejos + val)).toFixed(2) );
+        				$("#od_esf_subj_cerca").val( val_od );
         				$("#od_cil_subj_cerca").val($("#od_cil_subj_lejos").val());
         				$("#od_eje_subj_cerca").val($("#od_eje_subj_lejos").val());
     				//}
 
     				//if ($("#os_esf_subj_lejos").val()) {
-    					$("#os_esf_subj_cerca").val( (parseFloat(os_esf_lejos + val)).toFixed(2) );
+    					$("#os_esf_subj_cerca").val( val_os );
     					$("#os_cil_subj_cerca").val($("#os_cil_subj_lejos").val());
     					$("#os_eje_subj_cerca").val($("#os_eje_subj_lejos").val());
     				//}	

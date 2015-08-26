@@ -259,7 +259,11 @@
 					
 						
 					$("#sel_localidad").val(response["localidad"]);
-						
+
+					$("#medico_fact").html(response["medico"]);
+					$("#sel_medico").val(response["medico"]);
+					
+					/*	
 					if (response["medico"].indexOf("Otro") >= 0) {
 						$('#sel_medico option[value="otro"]').remove();
 						$('#sel_medico').append($("<option></option>").attr("value",response["medico"]).text(response["medico"])); 
@@ -270,6 +274,7 @@
 						return this.text == response["medico"];
 					}).attr('selected', true);
 					
+					*/
 
 					if (response["facturar"] == "SI") {
 
@@ -768,7 +773,7 @@
 								if ($this->session->userdata('grupo') == "Medico")
 									echo anchor('main/historia_clinica/'.$fila->id_paciente, $fila->ficha);
 								else {
-									echo '<form action="'.base_url('index.php/main/editar_paciente/'.$fila->id_paciente).'" method="post" name="form_editar" id="form_editar">';
+									echo '<form action="'.base_url('index.php/main/buscar_paciente/'.$fila->id_paciente).'" method="post" name="form_editar" id="form_editar">';
 										echo '<input type="hidden" name="fecha_turno" value="'.$fecha.'">';
 									echo '<a href="#" onclick="$(this).closest(\'form\').submit(); return false;">'.$fila->ficha.'</a>';
 									echo '</form>';
@@ -1308,8 +1313,8 @@
 			</table>
 		</div>
 </div>
-	<div style = "float:left;margin-top:20px;width:50%">
-		Estado:
+	<div style = "float:left;margin-top:20px;width:40%">
+		Estado Actual:
 		<select id = "sel_estado" name="sel_estado" style = "width:180px">
 			<option></option>
 			<option value = "estudios"> Espera para estudios </option>
@@ -1319,8 +1324,13 @@
 			<!--<option value = "ok"> OK </option>-->
 		</select>
 	</div>
-	<div style = "float:left;margin-top:20px;margin-left:20px">
-		Medico:
+	<div style = "float:left;margin-top:27px;margin-left:20px">
+		<div style = "float:left">
+			Medico solicitante:
+		</div>
+		<div id = "medico_fact" style = "font-weight:bold;float:left;margin-left:10px"></div>
+	</div>	
+		<!--
 		<select id = "sel_medico" name="sel_medico" style = "width:180px">
 			<?php
 				foreach ($medicos as $med) {	
@@ -1328,9 +1338,9 @@
 				}
 			?>
 		</select>
-	</div>
-	<div style = "float:left;margin-top:20px;margin-left:20px">
-		Localidad:
+	-->
+	<div style = "float:left;margin-top:20px;margin-left:80px">
+		Facturar para:
 		<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
 			<?php 
 				foreach ($localidades as $loc) {	
@@ -1349,6 +1359,7 @@
 	<input id = "apellido_fact" name = "apellido_fact" type = "hidden"/>
 	<input id = "nombre_fact" name = "nombre_fact" type = "hidden"/>
 	<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
+	<input id = "sel_medico" name = "sel_medico" type = "hidden"/>
 </form>
 </div>
 

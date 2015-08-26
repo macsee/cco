@@ -1194,7 +1194,7 @@ class Main_model extends CI_Model
 
 		//print_r($tipo_turno);
 		$id = $array['id_turno'];
-		$medico = $array['sel_medico'];
+		//$medico = $array['sel_medico'];
 /*
 		if (strpos($array['sel_medico'], 'Otro') === false)
 			$medico = $this->main_model->get_medico_by_id($array['sel_medico']);
@@ -1209,9 +1209,9 @@ class Main_model extends CI_Model
 		$usuario = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 
 		if ($facturado == 1)
-			$this->db->query("UPDATE turnos SET ya_facturado = 1 WHERE id = '$id'");
+			$this->db->query("UPDATE turnos SET usuario = '$usuario', ya_facturado = 1 WHERE id = '$id'");
 		else
-			$this->db->query("UPDATE turnos SET usuario = '$usuario', tipo = '$tipo_turno', medico = '$medico', estado = '$estado', ya_facturado = 0 WHERE id = '$id'");
+			$this->db->query("UPDATE turnos SET usuario = '$usuario', tipo = '$tipo_turno', estado = '$estado', ya_facturado = 0 WHERE id = '$id'");
 	}
 
 	function update_facturacion($array, $data, $ordenes) {
@@ -1229,12 +1229,16 @@ class Main_model extends CI_Model
 
 		$query = $this->db->query("SELECT id FROM facturacion WHERE id_turno = '$id'");
 
-
+		if ($query->num_rows>0)
+			$this->db->query("UPDATE facturacion SET usuario = '$usuario', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', localidad = '$localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
+		else
+			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,localidad,obra_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$localidad','$obra_turno') ");
+		/*
 		if ($query->num_rows>0)
 			$this->db->query("UPDATE facturacion SET usuario = '$usuario', medico = '$medico', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', localidad = '$localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
 		else
 			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,localidad,obra_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$localidad','$obra_turno') ");
-		
+		*/
 	}
 
 	function borrar_facturacion($id) {
@@ -1252,7 +1256,7 @@ class Main_model extends CI_Model
 		else if ($medico == "Otro")
 			$medico = "Otro%";
 
-		$string = "SELECT id_turno, paciente, ficha, medico, datos, ordenes_pendientes, fecha FROM facturacion WHERE datos LIKE '%$obra%' AND medico LIKE '$medico' AND localidad LIKE '$localidad' AND (fecha BETWEEN '$date_from' AND '$date_to') ORDER BY fecha DESC";
+		$string = "SELECT id_turno, paciente, ficha, medico, datos, ordenes_pendientes, fecha FROM facturacion WHERE datos LIKE '%$obra%' AND medico LIKE '$medico' AND localidad LIKE '$localidad' AND (fecha BETWEEN '$date_from' AND '$date_to') ORDER BY last_update DESC";
 		
 		$query = $this->db->query($string);
 

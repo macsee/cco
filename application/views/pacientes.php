@@ -64,7 +64,7 @@
 	        $( "#admitir_paciente" ).dialog({
 				autoOpen: true,
 	            resizable: false,
-				width: 300,
+				width: 360,
 	            height: 190,
 	            modal: true,
 	            buttons: {
@@ -107,7 +107,7 @@
 				echo '<input name = "obra" value = "'.$key->obra_social.'"  type = "hidden"/>';
 
 				$med = $this->session->userdata('id_user');
-				echo '<div style = "float:left;width:80px;text-align:left;margin-top:10px">Medico:</div>';
+				echo '<div style = "float:left;width:135px;text-align:left;margin-top:10px">Medico:</div>';
 				echo '<select id = "sel_medico" name = "sel_medico" style="margin-left:20px;float:left;margin-right:30px;margin-bottom:20px;margin-top:10px">';
 					foreach ($medicos as $medico) {
 						if ($med == $medico->id_medico)
@@ -123,18 +123,15 @@
 					}
 				echo '</select>';
 
-				echo '<div style = "float:left;width:80px;text-align:left;margin-top:5px">Localidad:</div>';
-				echo '<select id = "sel_localidad" name = "sel_localidad" style="margin-left:20px;float:left;margin-right:30px;margin-top:5px">';
-					foreach ($localidades as $loc) {	
-						echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
-					}
-				/*
-					echo '<option value = "Alcorta">Alcorta</option>';
-					echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
-					echo '<option value = "Rosario">Rosario</option>';
-				*/	
+				echo '<div style = "float:left;width:135px;text-align:left;margin-top:5px">Lugar de atención:</div>';
+				echo '<select id = "sel_atendido" name = "sel_atendido" style="margin-left:20px;float:left;margin-right:30px;margin-top:5px">';
+					foreach ($localidades as $loc) {
+						if ($loc->id_localidad == "alcorta")
+							echo '<option value = "'.$loc->id_localidad.'" selected>'.$loc->nombre.'</option>';
+						else
+							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+					}	
 				echo '</select>';
-				//echo '<input name = "sel_localidad" value = "Alcorta"  type = "hidden"/>';
 			echo '</form>';
 		echo '</div>';		
 		
@@ -171,7 +168,7 @@
 
 						echo '</div>';
 
-						if ($this->session->userdata('grupo') == "Medico") {
+						if (strpos($this->session->userdata('funciones'), "Medico") !== false ) {
 							echo '<div style = "float: left; margin-left: 15px; cursor: pointer">';
 									echo '<a onclick = "return admitir(\''.$key->id.'\');">'; 
 									echo '<img title = "Admitir Paciente" src = "'.base_url('css/images/admitir.png').'" title = "Admitir Paciente"/>';  

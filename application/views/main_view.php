@@ -258,7 +258,8 @@
 					$("#sel_estado").val(response["estado"]);
 					
 						
-					$("#sel_localidad").val(response["localidad"]);
+					$("#sel_facturacion").val(response["fact_localidad"]);
+					$("#sel_atendido").val(response["at_localidad"]);
 
 					$("#medico_fact").html(response["medico"]);
 					$("#sel_medico").val(response["medico"]);
@@ -325,8 +326,8 @@
         $( "#confirmar_datos" ).dialog({
 			autoOpen: true,
             resizable: false,
-			width: 1200,
-            height: 500,
+			width: 1150,
+            height: 520,
             modal: true,
             buttons: {
                 "Confirmar": function() {
@@ -476,7 +477,7 @@
 		echo '</a>';
 		?>
 	</div>
-	<?php if ($this->session->userdata('grupo') == "Secretaria_1") {
+	<?php if (strpos($this->session->userdata('funciones'), "Medico") !== false ) {
 		echo '<div id = "bloquear" style="float:left;margin-top:11px;margin-left:5px">';
 			if ($bloqueado != null) {
 				echo '<a href="#" onclick = "return desbloquear()">';
@@ -545,7 +546,7 @@
 		<div id = "error_motivo" style ="color:red;float:left;width:100%"></div>
 	</form>
 </div>
-<div id="error" title="Atención" style = "display:none"> Este turno no puede modificarse.</div>
+<div id="error" title="Atención" style = "display:none"> Este turno ya no puede modificarse.</div>
 <div id="error_ficha" title="Atención" style = "display:none"> Debe especificarse un número de ficha primero.</div>
 <div id = "turnos_dia">
 
@@ -706,7 +707,7 @@
 
 						echo '<div class = "hora_ocupada">';
 							echo '<div class = "horario">';
-								if ($this->session->userdata('grupo') == "Secretaria_1")
+								if (strpos($this->session->userdata('funciones'), "Turnos") !== false )
 									echo '<a href="'.base_url("/index.php/main/nuevo_turno/".$fila->fecha.'/'.$hora.'/'.$minutos).'" name="'.$hora_completa.'">'.$hora_completa.'</a>';
 								else
 									echo '<a href="#" name="'.$hora_completa.'">'.$hora_completa.'</a>';
@@ -770,7 +771,7 @@
 								//echo anchor('main/buscar_paciente', 'Buscar..');
 							}
 							else {
-								if ($this->session->userdata('grupo') == "Medico")
+								if (strpos($this->session->userdata('funciones'), "Medico") !== false )
 									echo anchor('main/historia_clinica/'.$fila->id_paciente, $fila->ficha);
 								else {
 									echo '<form action="'.base_url('index.php/main/buscar_paciente/'.$fila->id_paciente).'" method="post" name="form_editar" id="form_editar">';
@@ -784,7 +785,7 @@
 						echo '</div>';
 
 						echo '<div class = "estado" id = "'.$fila->id.'" style="cursor: pointer;">';
-							if ($this->session->userdata('grupo') == "Secretaria_1") {
+							if (strpos($this->session->userdata('funciones'), "Turnos") !== false ) {
 
 								if ($fila->ficha < 0)
 									echo '<a onclick = "return error_ficha()">';
@@ -889,7 +890,7 @@
 						}
 					echo '</div>';
 
-					if ($this->session->userdata('grupo') == "Secretaria_1") {
+					if (strpos($this->session->userdata('funciones'), "Turnos") !== false ) {
 						echo '<div id = "botones">';
 							if ($fila->estado == "") {
 								echo '<a href="'.base_url('index.php/main/editar_turno/'.$fila->id).'">';
@@ -916,7 +917,7 @@
 				$hora = date('H', strtotime($fila));
 				$minutos = date('i', strtotime($fila));
 				$data = $fecha.'/'.$hora.'/'.$minutos;
-				if ($this->session->userdata('grupo') == "Secretaria_1") {
+				if (strpos($this->session->userdata('funciones'), "Turnos") !== false ) {
 				
 					if ($id_turno <> NULL)
 					{	
@@ -1312,54 +1313,57 @@
 				</tr>	
 			</table>
 		</div>
-</div>
-	<div style = "float:left;margin-top:20px;width:40%">
-		Estado Actual:
-		<select id = "sel_estado" name="sel_estado" style = "width:180px">
-			<option></option>
-			<option value = "estudios"> Espera para estudios </option>
-			<option value = "estudios_ok"> Estudios terminados</option>
-			<option value = "dilatacion"> En dilatación </option>
-			<option value = "medico"> Espera para médico </option>
-			<!--<option value = "ok"> OK </option>-->
-		</select>
 	</div>
-	<div style = "float:left;margin-top:27px;margin-left:20px">
-		<div style = "float:left">
-			Medico solicitante:
+	<div style = "width:100%;float:left">
+		<div style = "width:100%;float:left">
+			<div style = "float:left;margin-top:20px;width:40%">
+				Estado Actual:
+				<select id = "sel_estado" name="sel_estado" style = "width:180px">
+					<option></option>
+					<option value = "estudios"> Espera para estudios </option>
+					<option value = "estudios_ok"> Estudios terminados</option>
+					<option value = "dilatacion"> En dilatación </option>
+					<option value = "medico"> Espera para médico </option>
+					<!--<option value = "ok"> OK </option>-->
+				</select>
+			</div>
+			<div style = "float:left;margin-top:27px;margin-left:20px">
+				<div style = "float:left">
+					Medico solicitante:
+				</div>
+				<div id = "medico_fact" style = "font-weight:bold;float:left;margin-left:10px"></div>
+			</div>
 		</div>
-		<div id = "medico_fact" style = "font-weight:bold;float:left;margin-left:10px"></div>
+		<div style = "width:100%;float:left">	
+			<div style = "float:left;margin-top:20px;width:40%">
+				Lugar de atención:
+				<select id = "sel_atendido" name="sel_atendido" style = "width:180px">
+					<?php 
+						foreach ($localidades as $loc) {	
+							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+						}
+					?>
+				</select>
+			</div>
+			<div style = "float:left;margin-top:20px;margin-left:20px">
+				Lugar de facturación:
+				<select id = "sel_facturacion" name="sel_facturacion" style = "width:180px">
+					<?php 
+						foreach ($localidades as $loc) {	
+							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+						}
+					?>
+				</select>
+			</div>
+		</div>	
+		<input id = "id_turno" name = "id_turno" type = "hidden"/>
+		<input id = "ficha_fact" name = "ficha_fact" type = "hidden"/>
+		<input id = "fecha_fact" name = "fecha_fact" type = "hidden"/>
+		<input id = "apellido_fact" name = "apellido_fact" type = "hidden"/>
+		<input id = "nombre_fact" name = "nombre_fact" type = "hidden"/>
+		<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
+		<input id = "sel_medico" name = "sel_medico" type = "hidden"/>
 	</div>	
-		<!--
-		<select id = "sel_medico" name="sel_medico" style = "width:180px">
-			<?php
-				foreach ($medicos as $med) {	
-					echo '<option value ="'.$med->nombre.'">'.$med->nombre.'</option>';
-				}
-			?>
-		</select>
-	-->
-	<div style = "float:left;margin-top:20px;margin-left:80px">
-		Facturar para:
-		<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
-			<?php 
-				foreach ($localidades as $loc) {	
-					echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
-				}
-			?>
-			<!--
-			<option value = "Rosario"> Rosario </option>
-			<option value = "Villa_Constitucion"> Villa Constitución </option>
-			<option value = "Alcorta">Alcorta</option>-->
-		</select>
-	</div>
-	<input id = "id_turno" name = "id_turno" type = "hidden"/>
-	<input id = "ficha_fact" name = "ficha_fact" type = "hidden"/>
-	<input id = "fecha_fact" name = "fecha_fact" type = "hidden"/>
-	<input id = "apellido_fact" name = "apellido_fact" type = "hidden"/>
-	<input id = "nombre_fact" name = "nombre_fact" type = "hidden"/>
-	<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
-	<input id = "sel_medico" name = "sel_medico" type = "hidden"/>
 </form>
 </div>
 

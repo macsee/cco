@@ -237,14 +237,14 @@
 
 		#panel_izq{
 			float: left;
-			width: 48%;
+			width: 54%;
 			margin-left: 20px;
 			margin-top:	5px;
 		}
 
 		#panel_der{
 			float: left;
-			width: 48%;
+			width: 43%;
 			margin-top:	5px;
 		}
 
@@ -472,7 +472,7 @@
 		}
 
 		.tabla_paciente td{
-			width: 150px;
+			width: 15%;
 			height: 30px;
 		}
 
@@ -582,7 +582,7 @@
 						</div>
 						<div style = "float:left">
 							<?php
-							if ($this->session->userdata('grupo') == "Medico") {
+							if (strpos($this->session->userdata('funciones'), "Medico") !== false ) {
 								echo '<a target= "_blank" href="'.base_url('index.php/main/pacientes_admitidos/'.date('Y-m-d')).'">';
 									echo '<img src = "'.base_url('css/images/admitidos.png').'"/>'; 
 								echo '</a>';
@@ -602,19 +602,32 @@
 							<table class = "tabla_paciente">
 								<tr>
 									<td>Fecha de Nacimiento:</td>
-									<td><?php echo $datos_paciente[0]->fecha_nacimiento ?></td>
+									<td>
+										<?php
+											if ($datos_paciente[0]->fecha_nacimiento != "" && $datos_paciente[0]->fecha_nacimiento <> "0000-00-00")
+												echo date('d-m-Y',strtotime($datos_paciente[0]->fecha_nacimiento))
+										?> 
+									</td>
+									<td>Edad: 
+										<?php
+											if ($datos_paciente[0]->fecha_nacimiento != "" && $datos_paciente[0]->fecha_nacimiento <> "0000-00-00") {
+												$dif = strtotime("now") - strtotime($datos_paciente[0]->fecha_nacimiento);
+												echo floor($dif / (365*60*60*24));
+											}	
+										?>
+									</td>
 								</tr>
 								<tr>
 									<td>DNI:</td>
-									<td><?php echo $datos_paciente[0]->dni ?></td>
+									<td colspan = "2"><?php echo $datos_paciente[0]->dni ?></td>
 								</tr>
 								<tr>
 									<td>Localidad:</td>
-									<td><?php echo $datos_paciente[0]->localidad ?></td>
+									<td <td colspan = "2"><?php echo $datos_paciente[0]->localidad ?></td>
 								</tr>
 								<tr>
 									<td>Dirección:</td>
-									<td><?php echo $datos_paciente[0]->direccion ?></td>
+									<td <td colspan = "2"><?php echo $datos_paciente[0]->direccion ?></td>
 								</tr>
 							</table>
 						</div>
@@ -648,7 +661,7 @@
 				<div style = "margin-top:190px;width:100%">
 					<div class = "class_titulo">
 						Antecedentes
-						<?php if ($this->session->userdata('grupo') == "Medico") { ?>
+						<?php if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
 						<div id = "nuevo_antecedente_boton" class = "nuevo_boton">
 							Nuevo Antecedente
 						</div>
@@ -656,7 +669,7 @@
 						<?php } ?>
 					</div>
 					
-					<?php if ($this->session->userdata('grupo') == "Medico") { ?>
+					<?php if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
 						<div id = "nuevo_antecedente">
 							<form method="post">
 								<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
@@ -695,7 +708,7 @@
 				<div style = "width:100%">	
 					<div class = "class_titulo">
 						Registros
-						<?php if ($this->session->userdata('grupo') == "Medico") {
+						<?php if (strpos($this->session->userdata('funciones'), "Medico") !== false ) {
 							echo '<div id = "nuevo_registro_boton" class = "nuevo_boton">';
 								echo "Nuevo Registro";
 							echo '</div>';
@@ -703,7 +716,7 @@
 						} ?>
 					</div>
 
-					<?php if ($this->session->userdata('grupo') == "Medico") 
+					<?php if (strpos($this->session->userdata('funciones'), "Medico") !== false ) 
 					{	
 						echo '<div id = "nuevo_registro">';
 							echo '<iframe id = "myiframe" style = "border:none;width: 798px; height: 2450px" src="'.base_url('index.php/main/load_hc_form/'.$paciente_id).'"></iframe>';
@@ -1456,6 +1469,7 @@
 		  				<option value="HC">HC</option>
 		  				<option value="IMAGEN">IMAGEN</option>
 		  				<option value="INFORME">INFORME</option>
+		  				<option value="PROTOCOLO">PROTOCOLO</option>
 					</select>
 				</div>
 				<div style = "float:left;margin-top:10px;font-size:14px">

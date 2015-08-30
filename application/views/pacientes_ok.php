@@ -153,7 +153,7 @@
             if ($(this).attr('src') === img1) {
              	$(this).attr('src', img2);
              	$(this).attr('title', "Paciente atendido");
-             	if (tipo_user == "Medico")
+             	if (tipo_user.indexOf('Medico') >= 0)
              		status = "ok";
              	else
              		status = "estudios_ok";
@@ -162,7 +162,7 @@
          	else {
           		$(this).attr('src', img1);
           		$(this).attr('title', "Paciente en espera");
-          		if (tipo_user == "Medico")
+          		if (tipo_user.indexOf('Medico') >= 0)
           			status = "medico";
           		else
           			status = "estudios";
@@ -295,18 +295,12 @@
 								echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
 						}
 					?>
-				</select>	
-					<!--<option value = 0>TODOS</option>
-		    		<option value = 1>Dr. Jelusich M</option>
-		    		<option value = 2>Dr. Jelusich G</option>
-		    		<option value = 3>Dr. Bosio</option>
-		    		<option value = 17>OTROS</option>-->
-		 		
+				</select>		 		
 			</div>
 
 		<?php 
 
-			if ($tipo_user == "Medico")
+			if (strpos($tipo_user, "Medico") !== false )
 				echo '<div class="count">';
 			else 
 				echo '<div class="count" style = "background-color:white; color: #D83C3C; margin-right: 9%">';
@@ -372,7 +366,7 @@
 					if ($turno->estado != "medico" && $turno->estado != "ok" && $turno->estado != "")
 						$array_pacientes_dia[] = $turno;
 
-					if ($tipo_user == "Medico"){
+					if (strpos($tipo_user, "Medico") !== false ){
 						if ($turno->estado == "medico" || $turno->estado == "ok")
 							$array_pacientes_ok[] = $turno;
 					}	
@@ -383,7 +377,7 @@
 				}
 		?>		
 		<div id = "turnos_dia" style = "width:100%">
-		<?php if ($tipo_user == "Medico") { ?>
+		<?php if (strpos($tipo_user, "Medico") !== false ) { ?>
 			<div class = "titulo_paciente"><div style = "margin-left:10px">Pacientes en tránsito</div></div>
 			<?php if ($array_pacientes_dia != null) { ?>
 				<div id = "titulo_superior">

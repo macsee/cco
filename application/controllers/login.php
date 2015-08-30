@@ -52,7 +52,7 @@ class Login extends CI_Controller
 				$data['user'] = $user;
 				$data['nombre'] = $query->nombre;
 				$data['apellido'] = $query->apellido;
-				$data['grupo'] = $query->grupo;
+				$data['funciones'] = $query->funciones;
 				$data['id_user'] = $query->id_user;
 				
 				$this->set_credentials($data);
@@ -87,12 +87,12 @@ class Login extends CI_Controller
 			'user' => $array['user'],
 			'nombre' => $array['nombre'],
 			'apellido' => $array['apellido'],
-			'grupo' => $array['grupo'],
+			'funciones' => $array['funciones'],
 			'id_user' => $array['id_user'],
 			'is_logged_in' => true
 		);
 		
-		if ($array['grupo'] == "Medico")
+		if (strpos($data['funciones'], "Medico") !== false )
 			$this->session->set_userdata('medico_seleccionado', $array['id_user']);
 		else
 			$this->session->set_userdata('medico_seleccionado', "todos");

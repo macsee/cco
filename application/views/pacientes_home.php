@@ -247,8 +247,8 @@
 	            		<input type="text" size = "15" name="localidad" value = "<?php echo $localidad ?>" autocomplete="off" style="text-transform:capitalize" required/>
 					</li>
 					<li>
-						<label for="ficha"><font color = "red">* </font> Dirección:</label>
-	            		<input type="text" size = "15" name="direccion" value = "<?php echo $direccion ?>" autocomplete="off" style="text-transform:capitalize" required/>
+						<label for="ficha"> Dirección:</label>
+	            		<input type="text" size = "15" name="direccion" value = "<?php echo $direccion ?>" autocomplete="off" style="text-transform:capitalize"/>
 					</li>
 				</ul>	
 			
@@ -331,7 +331,7 @@
 					echo '<button class="submit" type="submit" formaction="'.base_url("index.php/main/pro_nuevo_paciente").'">Nuevo Paciente</button>';
 				echo '</div>';
 		
-				if ($this->session->userdata('grupo') == "Medico") { 
+				if (strpos($this->session->userdata('funciones'), "Medico") !== false ) { 
 				
 					$med = $this->session->userdata('id_user');
 
@@ -352,19 +352,18 @@
 										echo '<option value ="'.$medico->nombre.'">Dr. '.$medico->nombre.'</option>';
 							}
 						echo '</select>';
-						echo '<label for="localidad" style = "width:80px">Localidad:</label>';
-						echo '<select id = "sel_localidad" name = "sel_localidad" style="margin-left:20px;float:left;margin-top:8px">';
+						echo '<label for="localidad" style = "width:95px">Lugar de atención:</label>';
+						echo '<select id = "sel_atendido" name = "sel_atendido" style="margin-left:20px;float:left;margin-top:8px">';
+
 						foreach ($localidades as $loc) {
-							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+							if ($loc->id_localidad == "alcorta")
+								echo '<option value = "'.$loc->id_localidad.'" selected>'.$loc->nombre.'</option>';
+							else
+								echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
 						}	
-						/*
-							echo '<option value = "Alcorta">Alcorta</option>';
-							echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
-							echo '<option value = "Rosario">Rosario</option>';
-						*/	
+
 						echo '</select>';
-						echo '<button class="submit_ingresar" type="submit" formaction="'.base_url("index.php/main/nuevo_paciente_sinturno").'" style = "margin-left:60px">Ingresar</button>';
-						//echo '<button class="submit" style = "margin-left:20px" type="submit">Ingresar</button>';
+						echo '<button class="submit_ingresar" type="submit" formaction="'.base_url("index.php/main/nuevo_paciente_sinturno").'" style = "margin-left:50px">Ingresar</button>';
 
 					echo '</div>';	
 

@@ -146,8 +146,8 @@
 						}
 					});
 
-					$("#print").click(function() { 
-						var w = window.open();
+					$("#print").click(function() {
+						var w = window.open("", "_self");
 						var html = $("#html").val();
 						w.window.document.write(html);
 		        		w.window.print();
@@ -367,11 +367,19 @@
 
 							//$("#ficha").html(response["ficha"]);
 							$("#sel_estado").val(response["estado"]);
-							$("#sel_localidad").val(response["localidad"]);
+
+							$("#sel_facturacion").val(response["fact_localidad"]);
+							$("#sel_atendido").val(response["at_localidad"]);
+							//$("#sel_localidad").val(response["localidad"]);
+
+							$("#medico_fact").html(response["medico"]);
+							$("#sel_medico").val(response["medico"]);
+
+							/*
 							$("#sel_medico option").filter(function() {
 							    return this.text == response["medico"]; 
 							}).attr('selected', true);
-							
+							*/
 						
 							var json = JSON.parse(response['tipo']);
 							var orden = JSON.parse(response['orden']);
@@ -673,115 +681,113 @@
 					echo '<img src = "'.base_url('css/images/arrow_left_24x24.png').'" style = "margin-right:10px;margin-top:5px"/>';
 					echo "Volver";
 				echo '</a>';	
-			?>
-			
+			?>	
 		</div>
 		<div> 
 			<form id = "form_facturacion" name = "form_facturacion" action="<?php echo base_url('index.php/main/facturacion')?>" method="post">
-				<div style ="float:left;margin-left:20px">
-					Obra Social:
-					<select style = "font-size: 12pt" = "sel_obra" name="sel_obra">
-						<option value = "todos">Todas</option>
-						<?php
-							if (!isset($obra_selected))
-								$obra_selected = "";
+				<div style = "width:100%;float:left">
+					<div style ="float:left;margin-left:20px">
+						Obra Social:
+						<select style = "font-size: 12pt" = "sel_obra" name="sel_obra">
+							<option value = "todos">Todas</option>
+							<?php
+								if (!isset($obra_selected))
+									$obra_selected = "";
 
-							foreach ($obras as $obra)
-								if ($obra->obra == $obra_selected)									
-									echo '<option value ="'.$obra->obra.'" selected>'.$obra->obra.'</option>';
-								else
-									echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-					</select>
-				</div>
-				<div style ="float:left;margin-left:20px">
-					Medico:
-					<select style = "font-size: 12pt" id = "sel_medico_" name="sel_medico_">
-						<option value = "todos">Todos</option>
-						<?php
-							if (!isset($medico_selected))
-									$medico_selected = "";
-
-							foreach ($medicos as $medico)
-								if ($medico_selected == $medico->id_medico)
-									echo '<option value ='.$medico->id_medico.' selected>'.$medico->nombre.'</option>';
-								else
-									echo '<option value ='.$medico->id_medico.'>'.$medico->nombre.'</option>';
-						?>
-					</select>
-				</div>
-				<div style ="float:left;margin-left:20px">
-					Localidad:
-					<select style = "font-size: 12pt" id = "sel_localidad_barra" name="sel_localidad_barra">
-						<?php 	
-								if (!isset($localidad_selected))
-									$localidad_selected = "";
-
-								foreach ($localidades as $loc) {
-									if ($loc->id_localidad == $localidad_selected)
-										echo '<option value = "'.$loc->id_localidad.'" selected>'.$loc->nombre.'</option>';
+								foreach ($obras as $obra)
+									if ($obra->obra == $obra_selected)									
+										echo '<option value ="'.$obra->obra.'" selected>'.$obra->obra.'</option>';
 									else
-										echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+							?>
+						</select>
+					</div>
+					<div style ="float:left;margin-left:50px">
+						Medico:
+						<select style = "font-size: 12pt" id = "sel_medico_" name="sel_medico_">
+							<option value = "todos">Todos</option>
+							<?php
+								if (!isset($medico_selected))
+										$medico_selected = "";
 
-								}
+								foreach ($medicos as $medico)
+									if ($medico_selected == $medico->id_medico)
+										echo '<option value ='.$medico->id_medico.' selected>'.$medico->nombre.'</option>';
+									else
+										echo '<option value ='.$medico->id_medico.'>'.$medico->nombre.'</option>';
+							?>
+						</select>
+					</div>
+					<div style ="float:left;margin-left:50px">
+						Lugar de Atención:
+						<select style = "font-size: 12pt" id = "sel_facturacion_barra" name="sel_facturacion_barra">
+							<?php 	
+									if (!isset($localidad_fact_selected))
+										$localidad_fact_selected = "";
 
-								/*
-								if (!isset($localidad_selected)) {
-									echo '<option value = "Rosario" selected>Rosario</option>';
-									echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
-									echo '<option value = "Alcorta">Alcorta</option>';
-								}	
-								else
-									if ($localidad_selected == "Rosario") {
-										echo '<option value = "Rosario" selected>Rosario</option>';
-										echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
-										echo '<option value = "Alcorta">Alcorta</option>';
-									}	
-									else if ($localidad_selected == "Villa Constitucion"){
-										echo '<option value = "Rosario">Rosario</option>';
-										echo '<option value = "Villa_Constitucion" selected>Villa Constitución</option>';
-										echo '<option value = "Alcorta">Alcorta</option>';
+									echo "<option>Todas</option>";
+									foreach ($localidades as $loc) {
+										if ($loc->id_localidad == $localidad_fact_selected)
+											echo '<option value = "'.$loc->id_localidad.'" selected>'.$loc->nombre.'</option>';
+										else
+											echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
 									}
-									else {
-										echo '<option value = "Rosario">Rosario</option>';
-										echo '<option value = "Villa_Constitucion">Villa Constitución</option>';
-										echo '<option value = "Alcorta" selected>Alcorta</option>';
-									}	
-								*/	
+
+							?>
+						</select>
+					</div>
+					<div style ="float:left;margin-left:50px">
+						Lugar de Facturación:
+						<select style = "font-size: 12pt" id = "sel_atendido_barra" name="sel_atendido_barra">
+							<?php 	
+									if (!isset($localidad_at_selected))
+										$localidad_at_selected = "";
+
+									echo "<option>Todas</option>";
+									foreach ($localidades as $loc) {
+										if ($loc->id_localidad == $localidad_at_selected)
+											echo '<option value = "'.$loc->id_localidad.'" selected>'.$loc->nombre.'</option>';
+										else
+											echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+									}
+
+							?>
+						</select>
+					</div>
+				</div>
+				<div style = "width:100%;float:left;margin-top:10px">	
+					<div style ="float:left;margin-left:20px">
+						<?php 
+							if (!isset($fecha_desde))
+								$fecha_desde = "";
+
+							if (!isset($fecha_hasta))
+								$fecha_hasta = "";
 						?>
-					</select>
-				</div>
-				<div style ="float:left;margin-left:20px">
-					<?php 
-						if (!isset($fecha_desde))
-							$fecha_desde = "";
+						Desde: <input style = "font-size: 11pt" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>" required/>
+					</div>
+					<div style ="float:left;margin-left:20px">
+						Hasta: <input style = "font-size: 11pt" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" required/>
+					</div>	
+					<div style ="float:left;margin-left:20px">
+						<button style = "font-size: 12pt" type = "submit"> Buscar </button>
+						<?php 
+							if (!isset($print))
+								$print = "";
 
-						if (!isset($fecha_hasta))
-							$fecha_hasta = "";
-					?>
-					Desde: <input style = "font-size: 11pt" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>" required/>
-				</div>
-				<div style ="float:left;margin-left:20px">
-					Hasta: <input style = "font-size: 11pt" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" required/>
+							if ($print != "") {?>
+								<button id = "print" style = "font-size: 12pt"> Imprimir </button>
+						<?php }?>
+					</div>
+					<input id = "html" type = "hidden" value = "<?php echo $print ?>" />
 				</div>	
-				<div style ="float:left;margin-left:20px">
-					<button style = "font-size: 12pt" type = "submit"> Buscar </button>
-					<?php 
-						if (!isset($print))
-							$print = "";
-
-						if ($print != "") {?>
-							<button id = "print" style = "font-size: 12pt"> Imprimir </button>
-					<?php }?>
-				</div>
-				<input id = "html" type = "hidden" value = "<?php echo $print ?>" />
 			</form>
 		</div>
 		<!--RESULTADO DE PACIENTES CON ORDENES-->
 		<div style = "border-top:1px solid;float:left;width: 100%;margin-top:10px;">
 			<?php
 				$pacientes = array();
-			
+				
 				if (isset($resultado)) {
 					if ($resultado == null)
 						echo "No hay datos";
@@ -1653,40 +1659,38 @@
 					</table>
 				</div>
 			</div>
-			<div style = "float:left;margin-top:20px;">
-				Medico:
-				<select id = "sel_medico" name="sel_medico" style = "width:180px">
-					<?php
-						foreach ($medicos as $med) {	
-							echo '<option value ="'.$med->nombre.'">'.$med->nombre.'</option>';
-						}
-					?>
-				</select>
+			<div style = "float:left;margin-top:27px;margin-left:20px">
+				<div style = "float:left">
+					Medico solicitante:
+				</div>
+				<div id = "medico_fact" style = "font-weight:bold;float:left;margin-left:10px"></div>
 			</div>
-			<div style = "float:left;margin-top:20px;margin-left:20px">
-				Localidad:
-				<select id = "sel_localidad" name="sel_localidad" style = "width:180px">
+			<div style = "float:left;margin-top:20px;margin-left:150px">
+				Lugar de atención:
+				<select id = "sel_atendido" name="sel_atendido" style = "width:180px">
 					<?php
 					foreach ($localidades as $loc) {	
 						echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
 					}
 					?>
-					<!--
-					<option value = "Rosario"> Rosario </option>
-					<option value = "Villa_Constitucion"> Villa Constitución </option>
-					<option value = "Alcorta">Alcorta</option>-->
+				</select>
+			</div>
+			<div style = "float:left;margin-top:20px;margin-left:50px">
+				Lugar de facturación:
+				<select id = "sel_facturacion" name="sel_facturacion" style = "width:180px">
+					<?php
+					foreach ($localidades as $loc) {	
+						echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+					}
+					?>
 				</select>
 			</div>
 			<input id = "id_turno" name = "id_turno" type = "hidden"/>
 			<input id = "sel_estado" name = "sel_estado" type = "hidden"/>
 			<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
 			<input id = "facturado" name = "facturado" value = 1 type = "hidden"/>
-			<!--
-			<input id = "sel_obra" name = "sel_obra" type = "hidden"/>
 			<input id = "sel_medico" name = "sel_medico" type = "hidden"/>
-			<input id = "sel_localidad" name = "sel_localidad" type = "hidden"/>
-			<input id = "fecha_desde" name = "fecha_hasta" type = "hidden"/>
-			<input id = "fecha_hasta" name = "fecha_desde" type = "hidden"/>-->
+			<!--<input id = "sel_atendido" name = "sel_atendido" type = "hidden"/>-->
 		</form>
 	</div>
 </body>

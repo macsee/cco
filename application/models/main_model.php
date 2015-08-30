@@ -1129,11 +1129,11 @@ class Main_model extends CI_Model
 
 	function get_pacientes_admitidos($fecha, $medico_seleccionado) {
 
-		$tipo_user = $this->session->userdata('grupo');
+		$tipo_user = $this->session->userdata('funciones');
 
-		if ($tipo_user == "Tecnico")
+		if (strpos($tipo_user, "Estudios") !== false )
 			$estado = "(estado = 'estudios' OR estado = 'estudios_ok')";
-		else if ($tipo_user == "Medico")
+		else if (strpos($tipo_user, "Medico") !== false )
 			$estado = "estado != ''";
 
 			/*$tipo = " AND (	tipo LIKE '%CVC%' or 
@@ -1224,15 +1224,16 @@ class Main_model extends CI_Model
 		$fecha = $array['fecha'];
 		$estado = $array['estado'];
 		$medico = $array['medico'];
-		$localidad = $array['localidad'];
+		$fact_localidad = $array['fact_localidad'];
+		$at_localidad = $array['at_localidad'];
 		$obra_turno = $array['obra_turno'];
 
 		$query = $this->db->query("SELECT id FROM facturacion WHERE id_turno = '$id'");
 
 		if ($query->num_rows>0)
-			$this->db->query("UPDATE facturacion SET usuario = '$usuario', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', localidad = '$localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
+			$this->db->query("UPDATE facturacion SET usuario = '$usuario', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', facturacion_localidad = '$fact_localidad', atendido_localidad = '$at_localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
 		else
-			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,localidad,obra_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$localidad','$obra_turno') ");
+			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,facturacion_localidad,atendido_localidad,obra_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$fact_localidad','$at_localidad','$obra_turno') ");
 		/*
 		if ($query->num_rows>0)
 			$this->db->query("UPDATE facturacion SET usuario = '$usuario', medico = '$medico', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', localidad = '$localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
@@ -1245,7 +1246,7 @@ class Main_model extends CI_Model
 		$this->db->query("DELETE FROM facturacion WHERE id_turno = '$id'");
 	}
 
-	function buscar_facturacion ($obra, $medico, $localidad, $date_from, $date_to) {
+	function buscar_facturacion ($obra, $medico, $fact_localidad, $at_localidad, $date_from, $date_to) {
 
 		$medico = $this->get_medico_by_id($medico);
 	
@@ -1256,7 +1257,13 @@ class Main_model extends CI_Model
 		else if ($medico == "Otro")
 			$medico = "Otro%";
 
-		$string = "SELECT id_turno, paciente, ficha, medico, datos, ordenes_pendientes, fecha FROM facturacion WHERE datos LIKE '%$obra%' AND medico LIKE '$medico' AND localidad LIKE '$localidad' AND (fecha BETWEEN '$date_from' AND '$date_to') ORDER BY last_update DESC";
+		if ( $fact_localidad == "Todas")
+			$fact_localidad = "%%";
+
+		if ( $at_localidad == "Todas")
+			$at_localidad = "%%";
+
+		$string = "SELECT id_turno, paciente, ficha, medico, datos, ordenes_pendientes, fecha FROM facturacion WHERE datos LIKE '%$obra%' AND medico LIKE '$medico' AND facturacion_localidad LIKE '$fact_localidad' AND atendido_localidad LIKE '$at_localidad' AND (fecha BETWEEN '$date_from' AND '$date_to') ORDER BY fecha DESC";
 		
 		$query = $this->db->query($string);
 
@@ -1560,6 +1567,27 @@ class Main_model extends CI_Model
 		$this->db->query($string);				
 	}
 
+	function reset_usuario($array) {
+
+		$key = $this->config->item('encryption_key');
+		
+		$password = $array['user'];
+		$iduser = $array['iduser'];
+
+
+		$query = $this->db->query("SELECT * FROM usuarios WHERE id_user = '$iduser'");
+
+		if ($query->num_rows()>0) {
+
+			$str = "UPDATE usuarios SET 
+									password = AES_ENCRYPT('$password','$key'),
+									last_login = NULL
+							WHERE id_user = '$iduser'";
+
+			$this->db->query($str);				
+		}	
+	}
+
 	function crear_usuario($array) {
 
 		$key = $this->config->item('encryption_key');
@@ -1569,18 +1597,34 @@ class Main_model extends CI_Model
 		$password = $array['user'];
 		$nombre = $array['nombre'];
 		$apellido = $array['apellido'];
-		$grupo = $array['grupo'];
+		$grupo = $array['funciones'];
 		$iduser = $array['iduser'];
+		$funciones = implode(",",$array['funciones']);
 
-		$str = "INSERT INTO usuarios (user,password,nombre,apellido,grupo,id_user) VALUES (
-								AES_ENCRYPT('$user','$key'),
-								AES_ENCRYPT('$password','$key'),
-								AES_ENCRYPT('$nombre','$key'),
-								AES_ENCRYPT('$apellido','$key'),
-								AES_ENCRYPT('$grupo','$key'),
-								'$iduser'
-							)";
-		
+
+		$query = $this->db->query("SELECT * FROM usuarios WHERE id_user = '$iduser'");
+
+		if ($query->num_rows()>0) {
+
+			$str = "UPDATE usuarios SET 
+									user = AES_ENCRYPT('$user','$key'),
+									nombre = AES_ENCRYPT('$nombre','$key'),
+									apellido = AES_ENCRYPT('$apellido','$key'),
+									funciones = AES_ENCRYPT('$funciones','$key')
+							WHERE id_user = '$iduser'";
+		}
+		else {
+
+			$str = "INSERT INTO usuarios (user,password,nombre,apellido,funciones,id_user) VALUES (
+									AES_ENCRYPT('$user','$key'),
+									AES_ENCRYPT('$password','$key'),
+									AES_ENCRYPT('$nombre','$key'),
+									AES_ENCRYPT('$apellido','$key'),
+									AES_ENCRYPT('$funciones','$key'),
+									'$iduser'
+								)";
+		}
+
 		$this->db->query($str);
 
 	}
@@ -1595,8 +1639,8 @@ class Main_model extends CI_Model
 						CONVERT(AES_DECRYPT(user, '$key') USING 'utf8')  user,
 						CONVERT(AES_DECRYPT(nombre, '$key') USING 'utf8')  nombre,
 						CONVERT(AES_DECRYPT(apellido, '$key') USING 'utf8')  apellido,
-						id_user,
-						CONVERT(AES_DECRYPT(grupo, '$key') USING 'utf8')  grupo					
+						CONVERT(AES_DECRYPT(funciones, '$key') USING 'utf8')  funciones,
+						id_user
 						FROM usuarios";
 	
 
@@ -1611,6 +1655,53 @@ class Main_model extends CI_Model
 		}	
 		else
 			return null;
+
+	}
+
+	function add_medico($array) {
+
+		$nombre_apellido = $array['apellido'].", ".$array['nombre'][0];
+		$idmedico = $array['iduser'];
+
+		if (!isset($array["especialidad"]))
+			$especialidad = "";
+		else
+			$especialidad = $array["especialidad"];
+
+		if (!isset($array["cirujano"]))
+			$cirujano = "";
+		else
+			$cirujano = $array["cirujano"];
+
+		if (!isset($array["config"]))
+			$config = "#FFD9B5";
+		else
+			$config = $array["config"];
+
+
+		$query = $this->db->query("SELECT * FROM medicos WHERE id_medico = '$idmedico'");
+
+		if ($query->num_rows()>0) {
+
+			$str = "UPDATE medicos SET 
+									nombre = '$nombre_apellido',
+									config = '$config',
+									especialidad = '$especialidad',
+									cirujano = '$cirujano'
+							WHERE id_medico = '$idmedico'";
+		}
+		else {
+
+			$str = "INSERT INTO medicos (nombre,config,especialidad,cirujano,id_medico) VALUES (
+									'$nombre_apellido',
+									'$config',
+									'$especialidad',
+									'$cirujano',
+									'$idmedico'
+								)";
+		}
+
+		$this->db->query($str);
 
 	}
 }

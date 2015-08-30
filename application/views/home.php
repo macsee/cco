@@ -118,7 +118,7 @@
 	<div id = "portada_inf">
 
 <?php 	
-		$grupo = $this->session->userdata('grupo');
+		$funciones = $this->session->userdata('funciones');
 
 		echo '<div class = "boton_home">';
 			echo '<a class = "button_example clase1" href="'.base_url('index.php/main/cambiar_dia/'.date("Y-m-d")).'">Turnos</a>';
@@ -127,23 +127,30 @@
 			echo '<a class = "button_example clase2" href="'.base_url('index.php/main/pacientes/').'">Pacientes</a>';
 		echo '</div>';
 		//if (strpos($this->session->userdata('grupo'),"Secretaria") === false)
-		if ($grupo == "Medico" || $grupo == "Tecnico") {
+		if (strpos($funciones, "Medico") !== false || strpos($funciones, "Estudios") !== false) {
 			echo '<div class = "boton_home">';
 				echo '<a class = "button_example clase3" href="'.base_url('index.php/main/pacientes_admitidos/'.date("Y-m-d")).'">Pacientes Admitidos</a>';
 			echo '</div>';
 		}
 
-		if ($grupo == "Secretaria_1") {
+		if (strpos($funciones, "Facturacion") !== false) {
 			echo '<div class = "boton_home">';
 				echo '<a class = "button_example clase3" href="'.base_url('index.php/main/facturacion/').'">Facturación</a>';
 			echo '</div>';
 		}
 		
-		if ($grupo == "Secretaria_1" || $grupo == "Medico") {	
+		if (strpos($funciones, "Cirugias") !== false) {	
 			echo '<div class = "boton_home">';
 				echo '<a class = "button_example clase5" href="'.base_url('index.php/main/agenda_cirugias/').'">Cirugías</a>';
 			echo '</div>';
-		}	
+		}
+
+		if (strpos($funciones, "Admin") !== false) {	
+			echo '<div class = "boton_home">';
+				echo '<a class = "button_example clase5" href="'.base_url('index.php/main/admin/').'">Admin</a>';
+			echo '</div>';
+		}
+
 		/*
 		echo '<div class = "boton_home">';
 			echo '<a class = "button_example clase4" href="'.base_url('index.php/main/agendas/').'">Agendas</a>';

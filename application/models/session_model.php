@@ -15,7 +15,7 @@ class Session_model extends CI_Model
 									CONVERT(AES_DECRYPT(user, '$key') USING 'utf8') user,
 									CONVERT(AES_DECRYPT(nombre, '$key') USING 'utf8') nombre,
 									CONVERT(AES_DECRYPT(apellido, '$key') USING 'utf8') apellido,
-									CONVERT(AES_DECRYPT(grupo, '$key') USING 'utf8') grupo,
+									CONVERT(AES_DECRYPT(funciones, '$key') USING 'utf8') funciones,
 									id_user,
 									last_login					
 									FROM usuarios WHERE AES_DECRYPT(user, '$key') = '$user' AND AES_DECRYPT(password, '$key') = '$pass'"

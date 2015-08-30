@@ -45,7 +45,8 @@
 		$array['ficha'] = $result['ficha'];
 		$array['fecha'] = date('Y-m-d', strtotime($result['fecha']));
 		$array['estado'] = $result['estado'];
-		$array['localidad'] = $result['localidad'];
+		$array['fact_localidad'] = $result['facturacion_localidad'];
+		$array['at_localidad'] = $result['atendido_localidad'];
 		$array['obra_social'] = $result['obra_turno'];
 	}	
 	else {

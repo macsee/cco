@@ -608,34 +608,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 				$array['id_paciente'] = $ultimo->id;
 
 				$this->sin_turno($array);
-			/*	
-				$array['tipo'] = $tipo;
-				$array['fecha'] = date('Y-m-d');
-				$array['hora'] = date('H');
-				$array['minutos'] = date('i');
-				$array['hora_citado'] = date('H');
-				$array['minutos_citado'] = date('i');
-				$array['notas'] = "";
-				$array['otro'] = "";
-				$array['medico'] = $_POST['sel_medico'];
-				$array['sel_localidad'] = $_POST['sel_localidad'];
-				$array['sel_estado'] = "medico";
-				$array['obra_turno'] = $_POST['obra'];
-			*/
-				//$this->main_model->guardar_turno($array);
 
-				//$array['id_turno'] = $ultimo_turno->id;
-				//$array['ficha_fact'] = $array['ficha'];
-				//$array['fecha_fact'] = $array['fecha'];
-				//$array['sel_localidad'] = $_POST['sel_localidad'];
-				//$array['apellido_fact'] = $_POST['nombre'];
-				//$array['nombre_fact'] = $_POST['apellido'];
-				//$array['chk_turno'] = $tipo;
-				//$array['sel_consulta'] = $_POST['obra'];
-				//$array['coseguro_consulta'] = ""; 	
-
-				//$this->facturar_sinturno($array);
-				//$this->edit_facturacion($array);
 
 				redirect('main/historia_clinica/'.$ultimo->id, 'location');
 				
@@ -655,35 +628,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	function paciente_sinturno() {
 
 		$this->sin_turno($_POST);
-		/*
-		$tipo = array("Consulta");
-
-		$array = $_POST;
-		*/
-		/*
-		$array['nombre'] = $_POST['nombre'];
-		$array['apellido'] = $_POST['apellido'];
-		$array['obra'] = $_POST['obra'];
-		$array['ficha'] = $_POST['ficha'];
-		$array['id_paciente'] = $_POST['id_paciente'];
-		*/
-		/*
-		$array['tipo'] = $tipo;
-		$array['fecha'] = date('Y-m-d');
-		$array['hora'] = date('H');
-		$array['minutos'] = date('i');
-		$array['hora_citado'] = date('H');
-		$array['minutos_citado'] = date('i');
-		$array['notas'] = "";
-		$array['otro'] = "";
-		$array['medico'] = $_POST['sel_medico'];
-		//$array['sel_localidad'] = $_POST['sel_localidad'];
-		$array['sel_estado'] = "medico";
-		$array['obra_turno'] = $_POST['obra'];
-
-		$this->main_model->guardar_turno($array);
-		$this->main_model->facturar_sinturno($array);
-		*/
+		
 	}
 
 	function sin_turno($post) {
@@ -724,7 +669,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$array['ficha_fact'] = $post['ficha'];
 		$array['sel_estado'] = "medico";
 		$array['fecha_fact'] = $post['fecha'];;
-		$array['sel_localidad'] = $post['sel_localidad'];
+		$array['sel_atendido'] = $post['sel_atendido'];
+		$array['sel_facturacion'] = $post['sel_atendido'];
 		$array['apellido_fact'] = $post['apellido'];
 		$array['nombre_fact'] = $post['nombre'];	
 
@@ -1016,7 +962,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 		$medico_selected = $this->session->userdata('medico_seleccionado');
 
-		$data['tipo_user'] = $this->session->userdata('grupo');
+		$data['tipo_user'] = $this->session->userdata('funciones');
 		$data['medico_selected'] = $medico_selected;
 
 		$medico = $this->main_model->get_medico_by_id($medico_selected);
@@ -1034,19 +980,12 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	function edit_facturacion($array) {
 
 		$array_info['id_turno'] = $array['id_turno'];
-		$array_info['medico'] = $array['sel_medico'];
-
-/*
-		if (strpos($array['sel_medico'], 'Otro') === false)
-			$array_info['medico'] = $this->main_model->get_medico_by_id($array['sel_medico']);
-		else
-			$array_info['medico'] = $array['sel_medico'];
-*/
-		
+		$array_info['medico'] = $array['sel_medico'];		
 		$array_info['ficha'] = $array['ficha_fact'];
 		$array_info['estado'] = $array['sel_estado'];
 		$array_info['fecha'] = $array['fecha_fact'];
-		$array_info['localidad'] = $array['sel_localidad'];
+		$array_info['fact_localidad'] = $array['sel_facturacion'];
+		$array_info['at_localidad'] = $array['sel_atendido'];
 		$array_info['obra_turno'] = $array['obra_turno'];
 
 		$nombre_1 = ucwords($array['nombre_fact']);
@@ -1177,19 +1116,19 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		if (!isset($_POST['sel_estado']))
 			$_POST['sel_estado'] = "ok";
 
+		$this->edit_turno($_POST,$from);
+		$this->edit_facturacion($_POST);
+
 		if($from == 0) {			
-			//$this->main_model->update_estado_turno($_POST);
-			$this->edit_turno($_POST,$from);
-			$this->edit_facturacion($_POST);
+			//$this->main_model->update_estado_turno($_POST);	
+			//$this->edit_facturacion($_POST);
 
 			$fecha = $_POST['fecha_fact'];
 			redirect('main/cambiar_dia/'.$fecha);
 
 		}	
-		else {
+		else
 			redirect('main/facturacion/');
-			$this->edit_facturacion($_POST);
-		}	
 	}
 
 	function bloquear_dia() {
@@ -1212,13 +1151,16 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['localidades'] = $this->main_model->get_localidades();
 
 		if (sizeof($_POST) != 0) {
-			$data['resultado'] = $this->main_model->buscar_facturacion($_POST['sel_obra'], $_POST['sel_medico_'], $_POST['sel_localidad_barra'], $_POST['fecha_desde'], $_POST['fecha_hasta']);
+			$data['resultado'] = $this->main_model->buscar_facturacion($_POST['sel_obra'], $_POST['sel_medico_'], $_POST['sel_facturacion_barra'], $_POST['sel_atendido_barra'], $_POST['fecha_desde'], $_POST['fecha_hasta']);
 			$data['obra_selected'] = $_POST['sel_obra'];
-			$data['localidad_selected'] = $_POST['sel_localidad_barra'];
+			$data['localidad_fact_selected'] = $_POST['sel_facturacion_barra'];
+			$data['localidad_at_selected'] = $_POST['sel_atendido_barra'];
+
 			$data['medico_selected'] = $_POST['sel_medico_'];
 			$data['fecha_desde'] = $_POST['fecha_desde'];
 			$data['fecha_hasta'] = $_POST['fecha_hasta'];
-			$data['print'] = $this->print_facturacion($data['obra_selected'], $data['medico_selected'], $data['localidad_selected'], $data['resultado'], $data['fecha_desde'], $data['fecha_hasta']);
+
+			$data['print'] = $this->print_facturacion($data['obra_selected'], $data['medico_selected'], $data['localidad_fact_selected'], $data['resultado'], $data['fecha_desde'], $data['fecha_hasta']);
 		}
 
 		$this->load->view('facturacion_view',$data);		
@@ -1372,13 +1314,9 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 								$span++;
 							}
 								
-						}
-					}	
+						}	
 
 				//Lo hago despues porque necesito saber el valor de $span
-
-
-					if ($json->sin_cargo == "") {
 
 						$html .= "<tr>
 									<td rowspan = '".$span."'>".
@@ -1728,7 +1666,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$this->load->view('cirugias_view',$data);	
 	}
 
-	function crear_usuarios() {
+	function admin() {
 
 		$data['resultado'] = $this->main_model->get_usuarios();
 		//print_r($data['resultado']);
@@ -1739,7 +1677,26 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	function ingresar_usuario() {
 		
 		$this->main_model->crear_usuario($_POST);
-		redirect('main/crear_usuarios');
+
+		$funciones = implode(",",$_POST['funciones']);
+
+		if (strpos($funciones,"Medico") !== false)
+			$this->ingresar_medico($_POST);
+
+		redirect('main/admin');
+	}
+
+	function ingresar_medico() {
+
+		$this->main_model->add_medico($_POST);
+		redirect('main/admin');
+
+	}
+
+	function resetear_usuario() {
+		
+		$this->main_model->reset_usuario($_POST);
+		redirect('main/admin');
 	}
 }
 

@@ -677,9 +677,6 @@
 								<button style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Antecedente" formaction="<?php echo base_url('index.php/main/submit_data/antecedente')?>"></button>
 								<button style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>"></button>
 								<button style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>"></button>
-								<!--<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit" formaction="<?php echo base_url('index.php/main/submit_data/antecedente')?>">Guardar</button>-->
-								<!--<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>">Guardar Borrador</button>-->
-								<!--<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>">Eliminar</button>-->
 							</form>
 						</div>
 					<?php } ?>

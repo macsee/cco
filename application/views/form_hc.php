@@ -323,8 +323,9 @@
 				
     			$('#txt_diag')
 				.textext({
-	            	plugins : 'tags autocomplete',
-	            	tagsItems : lista
+	            	plugins : 'tags autocomplete prompt',
+	            	tagsItems : lista,
+	            	prompt : 'Añadir diagnóstico...',
 	        	})
 	        	.bind('getSuggestions', function(e, data)
 	        	{

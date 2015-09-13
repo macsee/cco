@@ -484,7 +484,6 @@
 										<td class = "izq">Obra Social:</td>
 										<td>
 											<select style = "font-size: 12pt" id = "sel_obra" name="sel_obra" required>
-												<option value = "todos">Todas</option>
 												<?php
 													if (!isset($obra_selected))
 														$obra_selected = "";

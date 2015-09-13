@@ -345,7 +345,7 @@
 					
 					var values = {
 			        		'id': id,
-				};
+					};
 
 			    $.ajax({
 						type: 'POST',
@@ -373,8 +373,9 @@
 							//$("#sel_localidad").val(response["localidad"]);
 
 							$("#medico_fact").html(response["medico"]);
-							$("#sel_medico").val(response["medico"]);
+							$("#sel_medico_").val(response["medico"]);
 
+							$("#obra_sel").val($("#sel_obra").val());							
 							/*
 							$("#sel_medico option").filter(function() {
 							    return this.text == response["medico"]; 
@@ -421,8 +422,6 @@
 			                //$( this ).dialog( "close" );
 						},
 			            "Confirmar": function() {
-							//var x = url+"/borrar_turno/"+data;
-							//location.href = x;
 							$("#form_facturacion_edit").submit();
 			            },
 						"Cancelar": function() {
@@ -688,14 +687,14 @@
 				<div style = "width:100%;float:left">
 					<div style ="float:left;margin-left:20px">
 						Obra Social:
-						<select style = "font-size: 12pt" = "sel_obra" name="sel_obra">
+						<select style = "font-size: 12pt" id = "sel_obra" name="sel_obra">
 							<option value = "todos">Todas</option>
 							<?php
-								if (!isset($obra_selected))
-									$obra_selected = "";
+								if (!isset($sel_obra))
+									$sel_obra = "";
 
 								foreach ($obras as $obra)
-									if ($obra->obra == $obra_selected)									
+									if ($obra->obra == $sel_obra)									
 										echo '<option value ="'.$obra->obra.'" selected>'.$obra->obra.'</option>';
 									else
 										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
@@ -704,14 +703,14 @@
 					</div>
 					<div style ="float:left;margin-left:50px">
 						Medico:
-						<select style = "font-size: 12pt" id = "sel_medico_" name="sel_medico_">
+						<select style = "font-size: 12pt" id = "sel_medico" name="sel_medico">
 							<option value = "todos">Todos</option>
 							<?php
-								if (!isset($medico_selected))
-										$medico_selected = "";
+								if (!isset($sel_medico))
+										$sel_medico = "";
 
 								foreach ($medicos as $medico)
-									if ($medico_selected == $medico->id_medico)
+									if ($sel_medico == $medico->id_medico)
 										echo '<option value ='.$medico->id_medico.' selected>'.$medico->nombre.'</option>';
 									else
 										echo '<option value ='.$medico->id_medico.'>'.$medico->nombre.'</option>';
@@ -719,15 +718,15 @@
 						</select>
 					</div>
 					<div style ="float:left;margin-left:50px">
-						Lugar de Atención:
+						Lugar de Facturación:
 						<select style = "font-size: 12pt" id = "sel_facturacion_barra" name="sel_facturacion_barra">
 							<?php 	
-									if (!isset($localidad_fact_selected))
-										$localidad_fact_selected = "";
+									if (!isset($sel_facturacion_barra))
+										$sel_facturacion_barra = "";
 
 									echo "<option>Todas</option>";
 									foreach ($localidades as $loc) {
-										if ($loc->id_localidad == $localidad_fact_selected)
+										if ($loc->id_localidad == $sel_facturacion_barra)
 											echo '<option value = "'.$loc->id_localidad.'" selected>'.$loc->nombre.'</option>';
 										else
 											echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
@@ -737,15 +736,15 @@
 						</select>
 					</div>
 					<div style ="float:left;margin-left:50px">
-						Lugar de Facturación:
+						Lugar de Atención:
 						<select style = "font-size: 12pt" id = "sel_atendido_barra" name="sel_atendido_barra">
 							<?php 	
-									if (!isset($localidad_at_selected))
-										$localidad_at_selected = "";
+									if (!isset($sel_atendido_barra))
+										$sel_atendido_barra = "";
 
 									echo "<option>Todas</option>";
 									foreach ($localidades as $loc) {
-										if ($loc->id_localidad == $localidad_at_selected)
+										if ($loc->id_localidad == $sel_atendido_barra)
 											echo '<option value = "'.$loc->id_localidad.'" selected>'.$loc->nombre.'</option>';
 										else
 											echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
@@ -817,9 +816,9 @@
 								$json = json_decode($value->datos);
 								$json_orden = json_decode($value->ordenes_pendientes);
 
-								$array = count_turnos_obra($json,$json_orden,$obra_selected,$array);
+								$array = count_turnos_obra($json,$json_orden,$sel_obra,$array);
 
-								$array_paciente = count_turnos_obra($json,$json_orden,$obra_selected,crear_objeto());
+								$array_paciente = count_turnos_obra($json,$json_orden,$sel_obra,crear_objeto());
 								$flag = 0;
 
 								$ficha = $value->ficha;
@@ -1689,7 +1688,7 @@
 			<input id = "sel_estado" name = "sel_estado" type = "hidden"/>
 			<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
 			<input id = "facturado" name = "facturado" value = 1 type = "hidden"/>
-			<input id = "sel_medico" name = "sel_medico" type = "hidden"/>
+			<input id = "sel_medico_" name = "sel_medico" type = "hidden"/>
 			<!--<input id = "sel_atendido" name = "sel_atendido" type = "hidden"/>-->
 		</form>
 	</div>

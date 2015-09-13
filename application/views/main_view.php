@@ -1363,6 +1363,7 @@
 		<input id = "nombre_fact" name = "nombre_fact" type = "hidden"/>
 		<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
 		<input id = "sel_medico" name = "sel_medico" type = "hidden"/>
+		<!--<input id = "facturado" name = "facturado" value = 0 type = "hidden"/>-->
 	</div>	
 </form>
 </div>

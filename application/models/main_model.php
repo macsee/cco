@@ -1246,7 +1246,14 @@ class Main_model extends CI_Model
 		$this->db->query("DELETE FROM facturacion WHERE id_turno = '$id'");
 	}
 
-	function buscar_facturacion ($obra, $medico, $fact_localidad, $at_localidad, $date_from, $date_to) {
+	function buscar_facturacion ($array) {
+
+		$obra = $array['sel_obra'];
+		$medico = $array['sel_medico'];
+		$fact_localidad = $array['sel_facturacion_barra'];
+		$at_localidad = $array['sel_atendido_barra'];
+		$date_from = $array['fecha_desde'];
+		$date_to = $array['fecha_hasta'];
 
 		$medico = $this->get_medico_by_id($medico);
 	
@@ -1431,7 +1438,7 @@ class Main_model extends CI_Model
 
 		$obra = $array['sel_obra_'];
 		$practica = $array['sel_practica_'];
-		$medico = $this->get_medico_by_id($_POST['sel_medico_']);
+		$medico = $this->get_medico_by_id($array['sel_medico_']);
 		//$cirujano = $this->get_medico_by_id($_POST['sel_cirujano']);
 
 		$date_from = $array['fecha_desde'];

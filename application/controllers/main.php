@@ -17,7 +17,10 @@ class Main extends CI_Controller
 	
 	
 	function index()
-	{
+	{	
+		session_start();
+		$_SESSION = array();
+
 		$this->load->view('home');
 		//$this->load->view('login_view');
 		//$this->cambiar_dia(date("Y-m-d"));
@@ -988,6 +991,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$array_info['at_localidad'] = $array['sel_atendido'];
 		$array_info['obra_turno'] = $array['obra_turno'];
 
+		//$this->session->set_flashdata('obra_selected',$array['obra_sel']);
+
 		$nombre_1 = ucwords($array['nombre_fact']);
 		$nombre_1 = ucwords(strtolower($nombre_1));
 
@@ -1146,23 +1151,50 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function facturacion() {
 
+		session_start();
+
 		$data['obras'] = $this->main_model->get_obras();
 		$data['medicos'] = $this->main_model->get_medicos();
 		$data['localidades'] = $this->main_model->get_localidades();
 
 		if (sizeof($_POST) != 0) {
-			$data['resultado'] = $this->main_model->buscar_facturacion($_POST['sel_obra'], $_POST['sel_medico_'], $_POST['sel_facturacion_barra'], $_POST['sel_atendido_barra'], $_POST['fecha_desde'], $_POST['fecha_hasta']);
-			$data['obra_selected'] = $_POST['sel_obra'];
-			$data['localidad_fact_selected'] = $_POST['sel_facturacion_barra'];
-			$data['localidad_at_selected'] = $_POST['sel_atendido_barra'];
+			$_SESSION = $_POST;
+		}	
 
-			$data['medico_selected'] = $_POST['sel_medico_'];
-			$data['fecha_desde'] = $_POST['fecha_desde'];
-			$data['fecha_hasta'] = $_POST['fecha_hasta'];
+		if (sizeof($_SESSION) != 0) {	
 
-			$data['print'] = $this->print_facturacion($data['obra_selected'], $data['medico_selected'], $data['localidad_fact_selected'], $data['resultado'], $data['fecha_desde'], $data['fecha_hasta']);
+			$data = array_merge($_SESSION,$data);
+			$data['resultado'] = $this->main_model->buscar_facturacion($_SESSION);
+			$data['print'] = $this->print_facturacion($data);
+			
+			//print_r($data);
 		}
 
+/*
+		if (sizeof($_POST) != 0) {
+		
+			$_SESSION['sel_obra'] = $_POST['sel_obra'];
+			$_SESSION['sel_facturacion_barra'] = $_POST['sel_facturacion_barra'];
+			$_SESSION['sel_atendido_barra'] = $_POST['sel_atendido_barra'];
+			$_SESSION['sel_medico'] = $_POST['sel_medico_'];
+			$_SESSION['fecha_desde'] = $_POST['fecha_desde'];
+			$_SESSION['fecha_hasta'] = $_POST['fecha_hasta'];
+
+		}
+
+		if (sizeof($_SESSION) != 0) {
+
+			$data['obra_selected'] = $_SESSION['sel_obra'];
+			$data['localidad_fact_selected'] = $_SESSION['sel_facturacion_barra'];
+			$data['localidad_at_selected'] = $_SESSION['sel_atendido_barra'];
+			$data['medico_selected'] = $_SESSION['sel_medico'];
+			$data['fecha_desde'] = $_SESSION['fecha_desde'];
+			$data['fecha_hasta'] = $_SESSION['fecha_hasta'];
+
+			$data['resultado'] = $this->main_model->buscar_facturacion($data);
+			$data['print'] = $this->print_facturacion($data['obra_selected'], $data['medico_selected'], $data['localidad_fact_selected'], $data['resultado'], $data['fecha_desde'], $data['fecha_hasta']);
+		}
+*/
 		$this->load->view('facturacion_view',$data);		
 	}
 
@@ -1171,9 +1203,9 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		redirect('main/facturacion/');
 	}
 
-	function print_facturacion($obra, $medico, $localidad, $resultado, $desde, $hasta) {
+	function print_facturacion($array) {
 
-		if ($medico == "todos")
+		if ($array['sel_medico'] == "todos")
 			$medico = "Todos";
 		else
 			$medico = "Dr. ".$this->main_model->get_medico_by_id($medico);
@@ -1207,7 +1239,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			<div style = 'margin-bottom: 20px;width:100%;float:left;border-bottom:1px solid;padding-bottom:10px;font-size:18px'>
 				<div style = 'float:left;width:100%'>
 					<div style = 'float:left;width:100px;font-weight:bold'>Período:</div>
-					<div style = 'float:left'>".date('d-m-Y',strtotime($desde))." al ".date('d-m-Y',strtotime($hasta))."</div>
+					<div style = 'float:left'>".date('d-m-Y',strtotime($array['fecha_desde']))." al ".date('d-m-Y',strtotime($array['fecha_hasta']))."</div>
 				</div>
 				<div style = 'float:left;width:100%'>
 					<div style = 'float:left;width:100px;font-weight:bold'>Medico:</div>
@@ -1215,7 +1247,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 				</div>
 				<div style = 'float:left;width:100%'>
 					<div style = 'float:left;width:100px;font-weight:bold'>Localidad:</div>
-					<div style = 'float:left'>".$localidad."</div>
+					<div style = 'float:left'>".$array['sel_facturacion_barra']."</div>
 				</div>
 			</div>
 			";
@@ -1223,9 +1255,9 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$pacientesConOrdenPend = null;
 			$pacientesSinOrdenPend = null;
 
-			if ($resultado != null) {
+			if ($array['resultado'] != null) {
 
-				foreach ($resultado as $value) {
+				foreach ($array['resultado'] as $value) {
 
 					$json = json_decode($value->datos);
 					$json_orden = json_decode($value->ordenes_pendientes);
@@ -1286,7 +1318,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 						foreach ($json as $practica=>$valor ) {
 
 
-							if ($obra == "todos")
+							if ($array['sel_obra'] == "todos")
 								$obrasocial = $valor;
 							else
 								$obrasocial = $obra;
@@ -1503,26 +1535,28 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function agenda_cirugias() {
 
-		$data = $_POST;
+		session_start();
+
 		$data['obras'] = $this->main_model->get_obras();
 		$data['medicos'] = $this->main_model->get_medicos();
 		$data['tipo_cirugia'] = $this->main_model->get_tipo_cirugias();
 		$data['anestesias'] = $this->main_model->get_anestesias();
 
 		//$data['medico_selected'] = $this->main_model->get_medico_by_id($_POST['sel_medico']);
-		
-		if ( isset($_POST['fecha_desde']) && isset($_POST['fecha_hasta']) ) {
+
+		if (sizeof($_POST) != 0) {
+			$_SESSION = $_POST;
+		}	
+
+		if (sizeof($_SESSION) != 0) {	
+
+			$data = array_merge($_SESSION,$data);
 
 			$data['resultado'] = $this->main_model->get_cirugias($data);
-			$data['print'] = $this->print_cirugias($data['resultado']);
-			/*$data['obra_selected'] = $_POST['sel_obra'];
-			$data['medico_selected'] = $_POST['sel_medico'];
-			$data['fecha_desde'] = $_POST['fecha_desde'];
-			$data['fecha_hasta'] = $_POST['fecha_hasta'];
-			$data['practica_selected'] = $_POST['sel_practica'];*/
+			$data['print'] = $this->print_cirugias($data['resultado']);	
+
 		}
 
-		//print_r($data);
 		$this->load->view('cirugias_view',$data);
 	}
 
@@ -1644,14 +1678,16 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function modificar_cirugia() {
 
+		//session_start();
 		$data = $_POST;
-		$data['obras'] = $this->main_model->get_obras();
-		$data['medicos'] = $this->main_model->get_medicos();
-		$data['tipo_cirugia'] = $this->main_model->get_tipo_cirugias();
 
-		$data['sel_obra_'] = $_POST['sel_obra_panel'];
-		$data['sel_practica_'] = $_POST['sel_practica_panel'];
-		$data['sel_medico_'] = $_POST['sel_medico_panel'];
+		//$data['obras'] = $this->main_model->get_obras();
+		//$data['medicos'] = $this->main_model->get_medicos();
+		//$data['tipo_cirugia'] = $this->main_model->get_tipo_cirugias();
+
+		//$data['sel_obra_'] = $_POST['sel_obra_panel'];
+		//$data['sel_practica_'] = $_POST['sel_practica_panel'];
+		//$data['sel_medico_'] = $_POST['sel_medico_panel'];
 
 		/*
 		$data['obra_selected'] = $_POST['sel_obra'];
@@ -1661,9 +1697,11 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$data['practica_selected'] = $_POST['sel_practica'];*/
 
 		//print_r($data);
-		$this->main_model->update_cirugia($_POST);
 		//$this->agenda_cirugias();
-		$this->load->view('cirugias_view',$data);	
+
+		$this->main_model->update_cirugia($_POST);
+		redirect('main/agenda_cirugias/');
+		//$this->load->view('cirugias_view',$data);	
 	}
 
 	function admin() {

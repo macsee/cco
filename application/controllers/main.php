@@ -420,15 +420,17 @@ class Main extends CI_Controller
 		//redirect('main/cambiar_dia/'.$data[0]->fecha.'#'.$hora, 'location');
 	}
 
-	function cambiar_turno($fecha, $hora, $minuto)
+	function cambiar_turno()
 	{
-		$data['fecha'] = $fecha;
-		$data['hora'] = $hora.':'.$minuto;
+		$data['fecha'] = $_POST['form_fecha'];
+		$data['hora'] = $_POST['form_hora'].':'.$_POST['form_minutos'];
+		$data['citado'] = $_POST['cita_hora'].':'.$_POST['cita_minutos'];
+	
 		$data['id'] = $this->get('id');
 		$data['nombre_turno'] = $this->get('nombre');
 		$data['apellido_turno'] = $this->get('apellido');
 		$this->main_model->cambiar_turno($data);
-		redirect('main/cambiar_dia/'.$fecha, 'location');
+		redirect('main/cambiar_dia/'.$data['fecha'], 'location');
 		//redirect('main/cambiar_dia/'.$fecha.'#'.$data['hora'], 'location');
 	}
 
@@ -552,13 +554,28 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 
 	function pro_ingresar_paciente() {
-		$this->main_model->ingresar_paciente($_POST);
-		redirect('main/pacientes/', 'location');
+
+		$ultimo = $this->main_model->ingresar_paciente($_POST);
+		$_POST['id_paciente'] = $ultimo->id; // guardo el id paciente para que lo tome sin_turno
+
+		if ($_POST['tipo'] == "sin_turno") {
+			$this->sin_turno($_POST);
+			redirect('main/historia_clinica/'.$ultimo->id, 'location');
+		}	
+
+		if (isset($_POST['id_turno']) && $_POST['id_turno'] != "") {
+				$this->main_model->asignar_ficha($_POST['id_turno'],$_POST['ficha'], $ultimo->id); // para asignar la nueva ficha al paciente en el turno.
+				redirect('main/cambiar_dia/'.$_POST['fecha_turno'], 'location');
+		}
+		else	
+			redirect('main/pacientes/', 'location');
+		
+		//redirect('main/pacientes/', 'location');
 	}
 
-	function pro_nuevo_paciente()
-	{	
-		//print_r($_POST);
+	function pro_nuevo_paciente() {	
+
+		$data = $_POST;
 		$data['ficha'] = $this->main_model->check_ficha($_POST['ficha']);
 		$data['nroficha'] = $_POST['ficha'];
 		$data['paciente'] = $this->main_model->check_nombre_apellido($_POST['nombre'], $_POST['apellido']);
@@ -578,11 +595,13 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			}
 			else {
 				$data['value'] = 'error ficha';
+				$data['tipo'] = 'con_turno';
 				$this->load->view('paciente_error',$data);
 			}
 		}
 		else {
 			$data['value'] = 'error paciente';
+			$data['tipo'] = 'con_turno';
 			$this->load->view('paciente_error',$data);
 		}
 		//$this->load->view('nuevo_turno_exito');
@@ -591,38 +610,37 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	function nuevo_paciente_sinturno() {
 
 
-//		error_reporting(E_ALL);
-//		ini_set('display_errors', '1');
-
+		$data = $_POST;
 
 		$data['ficha'] = $this->main_model->check_ficha($_POST['ficha']);
 		$data['nroficha'] = $_POST['ficha'];
 		$data['paciente'] = $this->main_model->check_nombre_apellido($_POST['nombre'], $_POST['apellido']);
 		//$tipo = array("Consulta");
 
-		$array = $_POST;
+		//$array = $_POST;
 
 		if ($data['paciente'] == 0) {
 			if ($data['ficha'] == 0	) {
 				
 				$ultimo = $this->main_model->ingresar_paciente($_POST);
 
-				$array['ficha'] = $ultimo->nroficha;
-				$array['id_paciente'] = $ultimo->id;
+				$data['ficha'] = $ultimo->nroficha;
+				$data['id_paciente'] = $ultimo->id;
 
-				$this->sin_turno($array);
-
+				$this->sin_turno($data);
 
 				redirect('main/historia_clinica/'.$ultimo->id, 'location');
 				
 			}
 			else {
 				$data['value'] = 'error ficha';
+				$data['tipo'] = 'sin_turno';
 				$this->load->view('paciente_error',$data);
 			}
 		}
 		else {
 			$data['value'] = 'error paciente';
+			$data['tipo'] = 'sin_turno';
 			$this->load->view('paciente_error',$data);
 		}
 
@@ -983,7 +1001,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 	function edit_facturacion($array) {
 
 		$array_info['id_turno'] = $array['id_turno'];
-		$array_info['medico'] = $array['sel_medico'];		
+		$array_info['sel_medico'] = $array['sel_medico'];		
 		$array_info['ficha'] = $array['ficha_fact'];
 		$array_info['estado'] = $array['sel_estado'];
 		$array_info['fecha'] = $array['fecha_fact'];
@@ -1205,10 +1223,10 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function print_facturacion($array) {
 
-		if ($array['sel_medico'] == "todos")
+		if ($array['sel_medico_barra'] == "todos")
 			$medico = "Todos";
 		else
-			$medico = "Dr. ".$this->main_model->get_medico_by_id($medico);
+			$medico = "Dr. ".$this->main_model->get_medico_by_id($array['sel_medico_barra']);
 
 		$html = "
 			<style>

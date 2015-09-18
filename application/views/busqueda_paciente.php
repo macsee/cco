@@ -161,20 +161,28 @@
 		Busqueda de Pacientes
 	</div>
 
-	<div style = "float:left; margin-left:80%;">
-				<?php
-				echo '<a href="'.base_url('index.php').'">'; 
-					echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>'; 
-				echo '</a>';
-				?>
-			</div>
+	<div style = "float:left; margin-left:75%;">
+		<?php
+		echo '<a href="'.base_url('index.php').'">'; 
+			echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>'; 
+		echo '</a>';
+		?>
+	</div>
 
-			<div style = "float:left; margin-left:2%;">
-				<?php
-				echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d')).'">';
-					echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 
-				echo '</a>';
-				?>
+	<div style = "float:left; margin-left:10px;">
+		<?php
+		echo '<a href="'.base_url('index.php/main/pacientes/').'">'; 
+			echo '<img src = "'.base_url('css/images/user_18x24.png').'"/>'; 
+		echo '</a>';
+		?>
+	</div>
+
+	<div style = "float:left; margin-left:10px;">
+		<?php
+		echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d')).'">';
+			echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 
+		echo '</a>';
+		?>
 	</div>
 
 </div>	

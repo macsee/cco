@@ -370,17 +370,28 @@
 
 							$("#sel_facturacion").val(response["fact_localidad"]);
 							$("#sel_atendido").val(response["at_localidad"]);
+							$("#obra_sel").val($("#sel_obra").val());
 							//$("#sel_localidad").val(response["localidad"]);
 
-							$("#medico_fact").html(response["medico"]);
-							$("#sel_medico_").val(response["medico"]);
+							//$("#medico_fact").html(response["medico"]);
+							//$("#sel_medico_").val(response["medico"]);
 
-							$("#obra_sel").val($("#sel_obra").val());							
+													
 							/*
 							$("#sel_medico option").filter(function() {
 							    return this.text == response["medico"]; 
 							}).attr('selected', true);
 							*/
+
+							if (response["medico"].indexOf("Otro") >= 0) {
+								$('#sel_medico option[value="otro"]').remove();
+								$('#sel_medico').append($("<option></option>").attr("value",response["medico"]).text(response["medico"])); 
+							}	
+								
+							
+							$("#sel_medico option").filter(function() {
+								return this.text == response["medico"];
+							}).attr('selected', true);
 						
 							var json = JSON.parse(response['tipo']);
 							var orden = JSON.parse(response['orden']);
@@ -703,14 +714,14 @@
 					</div>
 					<div style ="float:left;margin-left:50px">
 						Medico:
-						<select style = "font-size: 12pt" id = "sel_medico" name="sel_medico">
+						<select style = "font-size: 12pt" id = "sel_medico_barra" name="sel_medico_barra">
 							<option value = "todos">Todos</option>
 							<?php
-								if (!isset($sel_medico))
+								if (!isset($sel_medico_barra))
 										$sel_medico = "";
 
 								foreach ($medicos as $medico)
-									if ($sel_medico == $medico->id_medico)
+									if ($sel_medico_barra == $medico->id_medico)
 										echo '<option value ='.$medico->id_medico.' selected>'.$medico->nombre.'</option>';
 									else
 										echo '<option value ='.$medico->id_medico.'>'.$medico->nombre.'</option>';
@@ -1661,8 +1672,15 @@
 			<div style = "float:left;margin-top:27px;margin-left:20px">
 				<div style = "float:left">
 					Medico solicitante:
+					<select id = "sel_medico" name="sel_medico" style = "width:180px">
+					<?php 
+						foreach ($medicos as $med) {	
+							echo '<option value = "'.$med->id_medico.'">'.$med->nombre.'</option>';
+						}
+					?>
+					</select>
 				</div>
-				<div id = "medico_fact" style = "font-weight:bold;float:left;margin-left:10px"></div>
+				<!--<div id = "medico_fact" style = "font-weight:bold;float:left;margin-left:10px"></div>-->
 			</div>
 			<div style = "float:left;margin-top:20px;margin-left:150px">
 				Lugar de atención:
@@ -1688,7 +1706,7 @@
 			<input id = "sel_estado" name = "sel_estado" type = "hidden"/>
 			<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
 			<input id = "facturado" name = "facturado" value = 1 type = "hidden"/>
-			<input id = "sel_medico_" name = "sel_medico" type = "hidden"/>
+			<!--<input id = "sel_medico_" name = "sel_medico" type = "hidden"/>-->
 			<!--<input id = "sel_atendido" name = "sel_atendido" type = "hidden"/>-->
 		</form>
 	</div>

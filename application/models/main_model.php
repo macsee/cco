@@ -451,7 +451,7 @@ class Main_model extends CI_Model
 	{
 		$data['fecha'] = $array['fecha'];
 		$data['hora'] = $array['hora'];
-		$data['citado'] = $array['hora'];
+		$data['citado'] = $array['citado'];
 		$where = "id = '".$array['id']."'";
 		$this->setear('nombre',"");
 		$this->setear('apellido',"");
@@ -1195,12 +1195,12 @@ class Main_model extends CI_Model
 		//print_r($tipo_turno);
 		$id = $array['id_turno'];
 		//$medico = $array['sel_medico'];
-/*
+
 		if (strpos($array['sel_medico'], 'Otro') === false)
 			$medico = $this->main_model->get_medico_by_id($array['sel_medico']);
 		else
 			$medico = $array['sel_medico'];
-*/
+
 		//$medico = $this->get_medico_by_id($array['sel_medico']);
 
 		$estado = $array['sel_estado'];
@@ -1209,9 +1209,9 @@ class Main_model extends CI_Model
 		$usuario = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
 
 		if ($facturado == 1)
-			$this->db->query("UPDATE turnos SET usuario = '$usuario', ya_facturado = 1 WHERE id = '$id'");
+			$this->db->query("UPDATE turnos SET medico = '$medico', usuario = '$usuario', ya_facturado = 1 WHERE id = '$id'");
 		else
-			$this->db->query("UPDATE turnos SET usuario = '$usuario', tipo = '$tipo_turno', estado = '$estado', ya_facturado = 0 WHERE id = '$id'");
+			$this->db->query("UPDATE turnos SET medico = '$medico', usuario = '$usuario', tipo = '$tipo_turno', estado = '$estado', ya_facturado = 0 WHERE id = '$id'");
 	}
 
 	function update_facturacion($array, $data, $ordenes) {
@@ -1223,7 +1223,13 @@ class Main_model extends CI_Model
 		$ficha = $array['ficha'];
 		$fecha = $array['fecha'];
 		$estado = $array['estado'];
-		$medico = $array['medico'];
+
+		if (strpos($array['sel_medico'], 'Otro') === false)
+			$medico = $this->main_model->get_medico_by_id($array['sel_medico']);
+		else
+			$medico = $array['sel_medico'];
+
+		//$medico = $array['medico'];
 		$fact_localidad = $array['fact_localidad'];
 		$at_localidad = $array['at_localidad'];
 		$obra_turno = $array['obra_turno'];
@@ -1231,7 +1237,7 @@ class Main_model extends CI_Model
 		$query = $this->db->query("SELECT id FROM facturacion WHERE id_turno = '$id'");
 
 		if ($query->num_rows>0)
-			$this->db->query("UPDATE facturacion SET usuario = '$usuario', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', facturacion_localidad = '$fact_localidad', atendido_localidad = '$at_localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
+			$this->db->query("UPDATE facturacion SET medico = '$medico', usuario = '$usuario', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', facturacion_localidad = '$fact_localidad', atendido_localidad = '$at_localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
 		else
 			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,facturacion_localidad,atendido_localidad,obra_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$fact_localidad','$at_localidad','$obra_turno') ");
 		/*
@@ -1249,7 +1255,7 @@ class Main_model extends CI_Model
 	function buscar_facturacion ($array) {
 
 		$obra = $array['sel_obra'];
-		$medico = $array['sel_medico'];
+		$medico = $array['sel_medico_barra'];
 		$fact_localidad = $array['sel_facturacion_barra'];
 		$at_localidad = $array['sel_atendido_barra'];
 		$date_from = $array['fecha_desde'];

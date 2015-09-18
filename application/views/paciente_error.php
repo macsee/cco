@@ -43,7 +43,6 @@ if ($value == 'error paciente') {
 		}
 
 		echo '</div>';
-
 ?>		
 
 		<form class="contact_form" action="<?php echo base_url('index.php/main/pro_ingresar_paciente')?>" method="post" name="contact_form" id="contact_form">
@@ -52,13 +51,36 @@ if ($value == 'error paciente') {
 			<input type="hidden" name="apellido" value="<?php echo $apellido?>"/>
 			<input type="hidden" name="ficha" value="<?php echo $nroficha?>"/>
 
+			<input type="hidden" name="tel1_1" value="<?php echo $tel1_1?>"/>	
+			<input type="hidden" name="tel1_2" value="<?php echo $tel1_2?>"/>
+			<input type="hidden" name="tel2_1" value="<?php echo $tel2_1?>"/>	
+			<input type="hidden" name="tel2_2" value="<?php echo $tel2_2?>"/>
+
+
+			<input type="hidden" name="dni" value="<?php echo $dni?>"/>	
+			<input type="hidden" name="localidad" value="<?php echo $localidad?>"/>
+			<input type="hidden" name="direccion" value="<?php echo $direccion?>"/>
+
+			<input type="hidden" name="fecha" value="<?php echo $fecha?>"/>
+
+			<input type="hidden" name="obra" value="<?php echo $obra?>"/>
+			<input type="hidden" name="nro_afiliado" value="<?php echo $nro_afiliado?>"/>
+
+			<input type="hidden" name="obs" value="<?php echo $obs?>"/>
+
+			<input type="hidden" name="tipo" value="<?php echo $tipo?>"/>
+
+			<input type="hidden" name="sel_medico" value="<?php echo $sel_medico?>"/>
+
+			<input type="hidden" name="sel_atendido" value="<?php echo $sel_atendido?>"/>
+
 			<div id = "botones" style = "width:100%">
 				<p style = "text-align: center"> ¿Ingresar de todas formas? </p>
 	        		<button class="submit" type="submit">Guardar</button>
 					<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/pacientes")?>';">Cancelar</button>
 			</div>
 		</form>
-<?php	
+<?php
 }
 
 else {

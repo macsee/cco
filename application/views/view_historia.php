@@ -634,11 +634,11 @@
 						<div id = "panel_der">
 							<table class = "tabla_paciente">
 								<tr>
-									<td>Teléfono:</td>
+									<td>Teléfono 1:</td>
 									<td><?php echo $datos_paciente[0]->tel1 ?></td>
 								</tr>
 								<tr>
-									<td>Celular:</td>
+									<td>Teléfono 2:</td>
 									<td><?php echo $datos_paciente[0]->tel2 ?></td>
 								</tr>
 								<tr>

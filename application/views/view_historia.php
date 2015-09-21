@@ -19,8 +19,47 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url('js/jsPanel-master/source/jquery.jspanel.css')?>"/>-->
 		<script type="text/javascript">
 
+
+			function save_registro() {
+
+				var $iframe = $('#registro_iframe');
+			
+				formaction = "<?php echo base_url('index.php/main/guardar_borrador/registro')?>";
+
+				$iframe.contents().find("body #form_registro").attr('action', formaction);
+				$iframe.contents().find("body #form_registro").attr('target', '_parent');
+				$iframe.contents().find("body #form_registro").submit();
+
+			}
+
+			function enviar_ant(id) {
+				
+				if (id == "ant_guardar")
+					formaction = "<?php echo base_url('index.php/main/submit_data/antecedente')?>";
+				else if (id == "ant_borrador")
+					formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>";
+				else
+					formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>";
+
+				if ($('[name="antecedente"]').val() != "") {
+
+					$.ajax({
+				    	url: formaction,
+				    	data: {antecedente: $('[name="antecedente"]').val(), paciente: $('[name="paciente"]').val()},
+				    	type : "POST",
+				      	success: function(){
+				      		save_registro();
+				      	}
+				    });
+
+				    return false;
+				}
+							
+			}
+
 	  		$(document).ready(function()
 			{
+
 				var content = $("<div style= 'margin-top:20px;margin-left:20px'>"+
 								"<form action='<?php echo base_url('index.php/main/add_record')?>' method='post'>"+
   								"<input type='text' name='record'><br>"+
@@ -671,12 +710,17 @@
 					
 					<?php if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
 						<div id = "nuevo_antecedente">
-							<form method="post">
+							<form method="post" id = "form_antecedentes">
 								<input type="hidden" name="paciente" value = <?php echo $paciente_id ?> />
-								<textarea style ="font-size:15px;width:95%;height:200px;margin-left:20px;margin-top:20px" name = "antecedente" required><?php echo $borrador_antecedente ?></textarea>
-								<button style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Antecedente" formaction="<?php echo base_url('index.php/main/submit_data/antecedente')?>"></button>
-								<button style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>"></button>
-								<button style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>"></button>
+								<textarea style ="font-size:15px;width:95%;height:200px;margin-left:20px;margin-top:20px" id = "txt_antecedente" name = "antecedente" required><?php echo $borrador_antecedente ?></textarea>
+								<button style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Antecedente" id = "ant_guardar" onclick = "return enviar_ant('ant_guardar')"></button>
+								<button style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" id = "ant_borrador" onclick = "return enviar_ant('ant_borrador')"></button>
+								<button style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" id = "ant_eliminar" onclick = "return enviar_ant('ant_eliminar')"></button>
+								<!--
+									<button style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Antecedente" formaction="<?php echo base_url('index.php/main/submit_data/antecedente')?>"></button>
+									<button style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" formaction="<?php echo base_url('index.php/main/guardar_borrador/antecedente')?>"></button>
+									<button style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" formaction="<?php echo base_url('index.php/main/eliminar_borrador/antecedente')?>"></button>
+								-->
 							</form>
 						</div>
 					<?php } ?>
@@ -716,7 +760,7 @@
 					<?php if (strpos($this->session->userdata('funciones'), "Medico") !== false ) 
 					{	
 						echo '<div id = "nuevo_registro">';
-							echo '<iframe id = "myiframe" style = "border:none;width: 798px; height: 2450px" src="'.base_url('index.php/main/load_hc_form/'.$paciente_id).'"></iframe>';
+							echo '<iframe id = "registro_iframe" style = "border:none;width: 798px; height: 2450px" src="'.base_url('index.php/main/load_hc_form/'.$paciente_id).'"></iframe>';
 						echo '</div>';
 					}	
 						if ($historia == 0) {

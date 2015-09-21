@@ -167,6 +167,21 @@
 		</style>
 		<script type="text/javascript">
 
+			function enviar_reg(id) {
+
+				if (id == "reg_guardar")
+					formaction = "<?php echo base_url('index.php/main/submit_data/registro')?>";
+				else if (id == "reg_borrador")
+					formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>";
+				else
+					formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>";
+
+				$('#form_registro').attr('action', formaction);
+				$('#form_registro').attr('target', '_parent');
+				$("#form_registro").submit();
+
+			}
+
 			$(document).on("keypress", ":input:not(textarea)", function(event) {
 			    return event.keyCode != 13;
 			});
@@ -606,7 +621,7 @@
 		            );
 	       		});
 							
-				$('#myform').submit(function( event ) {
+				$('#form_registro').submit(function( event ) {
 					//event.preventDefault();
 
 					var txt = "";
@@ -673,9 +688,9 @@
 	</head>
 	<body>
 		<?php $json = json_decode($borrador_registro) ?>
-		<form id = "myform" method = "post" action = "<?php echo base_url('/index.php/main/submit_data/registro')?>" target = "_parent">
+		<form id = "form_registro" method = "post" target = "_parent">
 			<div>
-				<h3 style = "margin-left:10px"> Motivo de consulta: </h3> <textarea style ="font-size:12pt;width:620px;height:100px;margin-right:20px;margin-top:20px;float:right" name = "motivo" required><?php echo (isset($json->motivo)) ? $json->motivo:""; ?></textarea>
+				<h3 style = "margin-left:10px"> Motivo de consulta: </h3> <textarea id = "motivo" style ="font-size:12pt;width:620px;height:100px;margin-right:20px;margin-top:20px;float:right" name = "motivo" required><?php echo (isset($json->motivo)) ? $json->motivo:""; ?></textarea>
 			</div>
 			<div class = "separador">
 				<div class = "titulo">
@@ -1586,12 +1601,12 @@
 			</div>
 			<input type="hidden" name="paciente" value = <?php echo $paciente ?> />
 			<div class = "separador" style = "margin-bottom:0px">
-				<!--<button style = "float:right;margin-right:28px;margin-top:5px" class="submit mod" type="submit">Guardar</button>-->
-				<button style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Registro"></button>
-				<button style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>"></button>
-				<button style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>"></button>
-				<!--<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>">Guardar Borrador</button>-->
-				<!--<button style = "float:right;margin-right:20px;margin-top:5px" class="submit_borrador mod" type="submit" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>">Eliminar</button>-->
+				<!--<button id = "reg_guardar" style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Registro" onclick ="return enviar_reg('reg_guardar')"></button>
+				<button id = "reg_borrador" style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" onclick ="return enviar_reg('reg_borrador')"></button>
+				<button id = "reg_eliminar" style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" onclick ="return enviar_reg('reg_eliminar')"></button>-->
+				<button id = "reg_guardar" style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Registro" formaction="<?php echo base_url('/index.php/main/submit_data/registro')?>"></button>
+				<button id = "reg_borrador" style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>"></button>
+				<button id = "reg_eliminar" style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>"></button>
 				
 			</div>
 			<!--formaction = "<?php echo base_url('/index.php/main/submit_data/')?>" target = "_parent"-->

@@ -922,7 +922,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
    		return $result;
 	}		
 
-	function submit_data($tipo) { 
+	function submit_data($tipo) {
+		 
 		$data['fecha'] = date('Y-m-d H:i:s',time());
 
 		if ($tipo == "registro") {

@@ -1224,6 +1224,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 	function print_facturacion($array) {
 
+		$obra = $array['sel_obra'];
+
 		if ($array['sel_medico_barra'] == "todos")
 			$medico = "Todos";
 		else

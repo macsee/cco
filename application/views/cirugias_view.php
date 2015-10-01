@@ -359,6 +359,9 @@
 			else {
 		?>
 			<div style = "float:left">
+				<div style = "background-color:#1e3e53;float:left;width:100%;color:white;text-align:center;margin-bottom:3px;font-family:'OSWALD'">
+					Pacientes con cirugías confirmadas
+				</div>
 				<table>
 					<th style = "width:60px">
 						Ficha
@@ -391,12 +394,12 @@
 					</tr>
 				</table>
 				<?php foreach ($resultado as $value) {
-					if ($this->session->userdata('grupo') == "Medico") {?>
-					<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">
-			<?php 	}
-			else {	?>	
+					//if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
+					<!--<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">-->
+				<?php 	//}
+				//else {	?>	
 					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">
-			<?php }?>			
+				<?php //} ?>			
 						<div style = "width:62px;margin-left:2px" class = "paciente">
 							<?php echo $value->id_paciente ?>
 						</div>
@@ -406,7 +409,7 @@
 						<div style = "width:175px" class = "paciente">
 							<?php echo $value->obra ?>
 						</div>
-						<div style = "width:35px" class = "paciente">
+						<div style = "width:30px" class = "paciente">
 						<?php 
 							if ($value->practica_od != "") {
 								echo "<div>";
@@ -420,7 +423,115 @@
 							}	
 						?>
 						</div>
-						<div style = "width:285px" class = "paciente">
+						<div style = "width:280px" class = "paciente">
+							<?php
+								echo "<div>";
+									echo $value->practica_od;
+								echo "</div>";	
+								echo "<div class = 'fila_inf'>";
+									echo $value->practica_os;
+								echo "</div>";
+							?>
+						</div>
+						<div style = "width:150px" class = "paciente">
+							<?php
+								echo "<div>";
+									echo $value->detalle_od;
+								echo "</div>";	
+								echo "<div class = 'fila_inf'>";
+									echo $value->detalle_os;
+								echo "</div>";
+							?>
+						</div>	
+						<div style = "width:200px" class = "paciente">
+							<?php
+								echo "<div>";
+									echo $value->anestesia_od;
+								echo "</div>";	
+								echo "<div class = 'fila_inf'>";
+									echo $value->anestesia_os;
+								echo "</div>";
+							?>
+						</div>
+						<div style = "width:105px" class = "paciente">
+						</div>	
+						<div style = "width:105px" class = "paciente">
+							<?php echo $fecha = date('d-m-Y',strtotime($value->fecha_prop)); ?>
+						</div>	
+						<div class = "paciente">
+							<?php echo $value->confirmado; ?>
+						</div>
+					</div>
+
+				<?php } 
+			}?>	
+			</div>
+			<div style = "float:left">
+				<div style = "background-color:#1e3e53;float:left;width:100%;color:white;text-align:center;margin-bottom:3px;font-family:'OSWALD'">
+					Pacientes con cirugías sin confirmar
+				</div>
+				<table>
+					<th style = "width:60px">
+						Ficha
+					</th>
+					<th style = "width:200px">
+						Paciente
+					</th>
+					<th style = "width:175px">
+						Obra Social
+					</th>
+					<th style = "width:30px">
+						Ojo
+					</th>
+					<th style = "width:285px">
+						Practica
+					</th>
+					<th style = "width:150px">
+						Detalle
+					</th>
+					<th style = "width:200px">
+						Anestesia
+					</th>
+					<th style = "width:100px">
+						Fecha Cirugia
+					</th>
+					<th style = "width:50px">
+						Confirmado
+					</th>
+					<tr>
+					</tr>
+				</table>
+				<?php foreach ($resultado as $value) {
+					//if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
+					<!--<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">-->
+				<?php 	//}
+				//else {	?>	
+					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">
+				<?php //} ?>			
+						<div style = "width:62px;margin-left:2px" class = "paciente">
+							<?php echo $value->id_paciente ?>
+						</div>
+						<div style = "width:195px;" class = "paciente">
+							<?php echo $value->paciente ?>
+						</div>
+						<div style = "width:175px" class = "paciente">
+							<?php echo $value->obra ?>
+						</div>
+						<div style = "width:30px" class = "paciente">
+						<?php 
+							if ($value->practica_od != "") {
+								echo "<div>";
+									echo "OD";
+								echo "</div>";
+							}	
+							if ($value->practica_os != "") {
+								echo "<div class = 'fila_inf'>";
+									echo "OS";
+								echo "</div>";
+							}	
+						?>
+						</div>
+						<div style = "width:280px" class = "paciente">
 							<?php
 								echo "<div>";
 									echo $value->practica_od;
@@ -464,9 +575,6 @@
 			</div>
 			<?php foreach ($resultado as $value) { ?>
 			<div class = "detail" title = "Detalles" id = "<?php echo 'detail_'.$value->id ?>" style = "float:left;margin-left:10px;display:none;">
-				<!--<div class = "titulo" style = "text-align:center;">
-					Detalles
-				</div>-->
 				<div>
 					<form id = "<?php echo 'myform_'.$value->id?>" action="<?php echo base_url('index.php/main/modificar_cirugia')?>" method="post">
 						<div style = "float:left;width:45%;margin-top:10px" class = "cuadro">
@@ -683,7 +791,6 @@
 			</div>
 		<?php 
 			}
-		}
 		?>		
 	</body>
 </html>		

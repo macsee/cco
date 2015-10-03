@@ -530,7 +530,7 @@
 	<form action="<?php echo base_url('index.php/main/cambiar_turno')?>" method="post" name="form_cambiar" id="form_cambiar">
 		<?php
 			if (isset($nombre_turno)) {
-				echo $apellido_turno.', '.$nombre_turno;
+				echo str_replace('%20', ' ', $apellido_turno.', '.$nombre_turno);
 			}
 		?>
 		<div style = "margin-top:10px">

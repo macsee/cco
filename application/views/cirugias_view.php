@@ -243,173 +243,199 @@
 		</div>
 		<div style = "border-bottom:1px solid;height:80px;margin-bottom:5px">
 			<form id = "form_cirugia" name = "form_cirugia" method="post">
-				<div style ="float:left;margin-left:10px">
-					Práctica
-					<select style = "font-size: 12pt" id = "sel_practica_" name = "sel_practica_">
-							<option value = "todas" selected>Todas</option>
+				<div style = "float:left">
+					<div style ="float:left;margin-left:10px">
+						<?php if (!isset($busqueda_paciente))
+									$busqueda_paciente = "";
+						?>			
+						Paciente
+						<input style = "font-size:15px" type = "text" name = "busqueda_paciente" value = "<?php echo $busqueda_paciente?>" size = "30" autocomplete="off"/>
+					</div>	
+					<div style ="float:left;margin-left:20px">
+						Práctica
+						<select style = "font-size: 12pt" id = "sel_practica_" name = "sel_practica_">
+								<option value = "todas" selected>Todas</option>
+								<?php
+								if (!isset($sel_practica_))
+									$sel_practica_ = "";
+
+									foreach ($tipo_cirugia as $cirugia)
+										if ($cirugia->nombre == $sel_practica_)
+											echo '<option selected>'.$cirugia->nombre.'</option>';
+										else
+											echo '<option>'.$cirugia->nombre.'</option>';
+								?>
+						</select>
+					</div>
+					<div style ="float:left;margin-left:20px">
+						Obra Social:
+						<select style = "font-size: 12pt" id = "sel_obra_" name="sel_obra_">
+							<option value = "todos">Todas</option>
 							<?php
-							if (!isset($sel_practica_))
-								$sel_practica_ = "";
+								if (!isset($sel_obra_))
+									$sel_obra_ = "";
 
-								foreach ($tipo_cirugia as $cirugia)
-									if ($cirugia->nombre == $sel_practica_)
-										echo '<option selected>'.$cirugia->nombre.'</option>';
+								foreach ($obras as $obra)
+									if ($obra->obra == $sel_obra_)									
+										echo '<option selected>'.$obra->obra.'</option>';
 									else
-										echo '<option>'.$cirugia->nombre.'</option>';
+										echo '<option>'.$obra->obra.'</option>';
 							?>
-					</select>
-				</div>
-				<div style ="float:left;margin-left:20px">
-					Obra Social:
-					<select style = "font-size: 12pt" id = "sel_obra_" name="sel_obra_">
-						<option value = "todos">Todas</option>
-						<?php
-							if (!isset($sel_obra_))
-								$sel_obra_ = "";
+						</select>
+					</div>
+					<div style ="float:left;margin-left:20px;margin-right:30px">
+						Derivado por:
+						<select style = "font-size: 12pt" id = "sel_medico_" name="sel_medico_">
+							<option value = "todos">Todos</option>
+							<?php
+								if (!isset($sel_medico_))
+										$sel_medico_ = "";
 
-							foreach ($obras as $obra)
-								if ($obra->obra == $sel_obra_)									
-									echo '<option selected>'.$obra->obra.'</option>';
+								foreach ($medicos as $medico)
+									if ($medico->id_medico == $sel_medico_)
+										echo '<option value ='.$medico->id_medico.' selected>'.$medico->nombre.'</option>';
+									else
+										echo '<option value ='.$medico->id_medico.'>'.$medico->nombre.'</option>';
+							?>
+						</select>
+					</div>
+					<!--<div style ="float:left;margin-left:20px;margin-top:15px">
+						Confirmadas:
+						<?php 	if (isset($check_conf))
+									if ($check_conf != "")
+										$check_conf = "checked";
+									else
+										$check_conf = "";
 								else
-									echo '<option>'.$obra->obra.'</option>';
+									$check_conf = "";	
 						?>
-					</select>
+						<input name = "check_conf" type = "checkbox" <?php echo $check_conf?>/>
+					</div>-->
 				</div>
-				<div style ="float:left;margin-left:20px;margin-right:250px">
-					Derivado por:
-					<select style = "font-size: 12pt" id = "sel_medico_" name="sel_medico_">
-						<option value = "todos">Todos</option>
-						<?php
-							if (!isset($sel_medico_))
-									$sel_medico_ = "";
-
-							foreach ($medicos as $medico)
-								if ($medico->id_medico == $sel_medico_)
-									echo '<option value ='.$medico->id_medico.' selected>'.$medico->nombre.'</option>';
+				<div style = "float:left">
+					<div style ="float:left;margin-left:10px;margin-top:15px">
+						Debe orden:
+						<?php 	if (isset($check_orden))
+									if ($check_orden != "")
+										$check_orden = "checked";
+									else
+										$check_orden = "";
 								else
-									echo '<option value ='.$medico->id_medico.'>'.$medico->nombre.'</option>';
+									$check_orden = "";	
 						?>
-					</select>
-				</div>
-				<div style ="float:left;margin-left:20px;margin-top:15px">
-					Confirmadas:
-					<?php 	if (isset($check_conf))
-								if ($check_conf != "")
-									$check_conf = "checked";
+						<input name = "check_orden" type = "checkbox" <?php echo $check_orden?>/>
+					</div>
+					<div style ="float:left;margin-left:30px;margin-right:115px;margin-top:15px">
+						Deuda:
+						<?php 	if (isset($check_deuda))
+									if ($check_deuda != "")
+										$check_deuda = "checked";
+									else
+										$check_deuda = "";
 								else
-									$check_conf = "";
-							else
-								$check_conf = "";	
-					?>
-					<input name = "check_conf" type = "checkbox" <?php echo $check_conf?>/>
-				</div>
-				<div style ="float:left;margin-left:30px;margin-top:15px">
-					Debe orden:
-					<?php 	if (isset($check_orden))
-								if ($check_orden != "")
-									$check_orden = "checked";
-								else
-									$check_orden = "";
-							else
-								$check_orden = "";	
-					?>
-					<input name = "check_orden" type = "checkbox" <?php echo $check_orden?>/>
-				</div>
-				<div style ="float:left;margin-left:30px;margin-right:100px;margin-top:15px">
-					Deuda:
-					<?php 	if (isset($check_deuda))
-								if ($check_deuda != "")
-									$check_deuda = "checked";
-								else
-									$check_deuda = "";
-							else
-								$check_deuda = "";	
-					?>
-					<input name = "check_deuda" type = "checkbox" <?php echo $check_deuda?>/>
-				</div>	
-				<div style ="float:left;margin-left:10px;margin-top:15px">
-					<?php 
-						if (!isset($fecha_desde))
-							$fecha_desde = "";
+									$check_deuda = "";	
+						?>
+						<input name = "check_deuda" type = "checkbox" <?php echo $check_deuda?>/>
+					</div>
+					<div style ="float:left;margin-left:10px;margin-top:15px">
+						<?php 
+							if (!isset($fecha_desde))
+								$fecha_desde = "";
 
-						if (!isset($fecha_hasta))
-							$fecha_hasta = "";
-					?>
-					Desde: <input style = "font-size: 11pt;width:150px" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>" required/>
-				</div>
-				<div style ="float:left;margin-left:20px;margin-top:15px">
-					Hasta: <input style = "font-size: 11pt;width:150px" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" required/>
+							if (!isset($fecha_hasta))
+								$fecha_hasta = "";
+						?>
+						Desde: <input style = "font-size: 11pt;width:150px" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>" />
+					</div>
+					<div style ="float:left;margin-left:20px;margin-top:15px">
+						Hasta: <input style = "font-size: 11pt;width:150px" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" />
+					</div>	
+					<div style ="float:left;margin-left:20px;margin-top:15px">
+						<button style = "font-size: 12pt" type = "submit" formaction = "<?php echo base_url('index.php/main/agenda_cirugias')?>"> Buscar </button>
+						<?php 
+							if (!isset($print))
+								$print = "";
+							
+							if ($print != "") {?>
+								<button id = "print" style = "font-size: 12pt"> Imprimir </button>
+						<?php }?>	
+					</div>
 				</div>	
-				<div style ="float:left;margin-left:20px;margin-top:15px">
-					<button style = "font-size: 12pt" type = "submit" formaction = "<?php echo base_url('index.php/main/agenda_cirugias')?>"> Buscar </button>
-					<?php 
-						if (!isset($print))
-							$print = "";
-						
-						if ($print != "") {?>
-							<button id = "print" style = "font-size: 12pt"> Imprimir </button>
-					<?php }?>	
-				</div>
 				<input id = "html" type = "hidden" value = "<?php echo $print ?>" />
 			</form>
 		</div>
-		<?php if (isset($resultado)) 
-			if ($resultado == null)
+		<?php 
+		$resultado_conf = array();
+		$resultado_noconf = array();
+
+		if (!isset($resultado))
+			$resultado = null;
+
+			if ($resultado == null) {
 					echo "No hay datos";
+					return;
+			}		
 			else {
+				foreach ($resultado as $value) {
+					if ($value->confirmado == "Si")
+						array_push($resultado_conf,$value);
+					else
+						array_push($resultado_noconf,$value);
+				}
+			}
 		?>
-			<div style = "float:left">
+			<div style = "float:left;width:100%;margin-bottom:10px">
 				<div style = "background-color:#1e3e53;float:left;width:100%;color:white;text-align:center;margin-bottom:3px;font-family:'OSWALD'">
 					Pacientes con cirugías confirmadas
 				</div>
-				<table>
-					<th style = "width:60px">
-						Ficha
-					</th>
-					<th style = "width:200px">
-						Paciente
-					</th>
-					<th style = "width:175px">
-						Obra Social
-					</th>
-					<th style = "width:30px">
-						Ojo
-					</th>
-					<th style = "width:285px">
-						Practica
-					</th>
-					<th style = "width:150px">
-						Detalle
-					</th>
-					<th style = "width:200px">
-						Anestesia
-					</th>
-					<th style = "width:100px">
-						Fecha Cirugia
-					</th>
-					<th style = "width:50px">
-						Confirmado
-					</th>
-					<tr>
-					</tr>
-				</table>
-				<?php foreach ($resultado as $value) {
-					//if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
-					<!--<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">-->
-				<?php 	//}
+				<?php 
+				if (sizeof($resultado_conf) == 0)
+					echo "No hay cirugías confirmadas.";
+				else { ?>
+					<table>
+						<th style = "width:60px">
+							Ficha
+						</th>
+						<th style = "width:220px">
+							Paciente
+						</th>
+						<th style = "width:190px">
+							Obra Social
+						</th>
+						<th style = "width:30px">
+							Ojo
+						</th>
+						<th style = "width:290px">
+							Practica
+						</th>
+						<th style = "width:150px">
+							Detalle
+						</th>
+						<th style = "width:200px">
+							Anestesia
+						</th>
+						<th style = "width:100px">
+							Fecha Cirugia
+						</th>
+					</table>
+					<?php 
+					foreach ($resultado_conf as $value) {
+						//if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
+						<!--<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">-->
+					<?php 	//}
 				//else {	?>	
 					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">
-				<?php //} ?>			
+					<?php //} ?>			
 						<div style = "width:62px;margin-left:2px" class = "paciente">
 							<?php echo $value->id_paciente ?>
 						</div>
-						<div style = "width:195px;" class = "paciente">
+						<div style = "width:225px;" class = "paciente">
 							<?php echo $value->paciente ?>
 						</div>
-						<div style = "width:175px" class = "paciente">
+						<div style = "width:190px" class = "paciente">
 							<?php echo $value->obra ?>
 						</div>
-						<div style = "width:30px" class = "paciente">
+						<div style = "width:35px" class = "paciente">
 						<?php 
 							if ($value->practica_od != "") {
 								echo "<div>";
@@ -423,7 +449,7 @@
 							}	
 						?>
 						</div>
-						<div style = "width:280px" class = "paciente">
+						<div style = "width:295px" class = "paciente">
 							<?php
 								echo "<div>";
 									echo $value->practica_od;
@@ -433,7 +459,7 @@
 								echo "</div>";
 							?>
 						</div>
-						<div style = "width:150px" class = "paciente">
+						<div style = "width:155px" class = "paciente">
 							<?php
 								echo "<div>";
 									echo $value->detalle_od;
@@ -452,72 +478,68 @@
 									echo $value->anestesia_os;
 								echo "</div>";
 							?>
-						</div>
-						<div style = "width:105px" class = "paciente">
-						</div>	
-						<div style = "width:105px" class = "paciente">
-							<?php echo $fecha = date('d-m-Y',strtotime($value->fecha_prop)); ?>
 						</div>	
 						<div class = "paciente">
-							<?php echo $value->confirmado; ?>
-						</div>
+							<?php echo $fecha = date('d-m-Y',strtotime($value->fecha_prop)); ?>
+						</div>	
 					</div>
 
-				<?php } 
-			}?>	
+				<?php }
+				}
+			?>	
 			</div>
-			<div style = "float:left">
+			<div style = "float:left;width:100%">
 				<div style = "background-color:#1e3e53;float:left;width:100%;color:white;text-align:center;margin-bottom:3px;font-family:'OSWALD'">
 					Pacientes con cirugías sin confirmar
 				</div>
-				<table>
-					<th style = "width:60px">
-						Ficha
-					</th>
-					<th style = "width:200px">
-						Paciente
-					</th>
-					<th style = "width:175px">
-						Obra Social
-					</th>
-					<th style = "width:30px">
-						Ojo
-					</th>
-					<th style = "width:285px">
-						Practica
-					</th>
-					<th style = "width:150px">
-						Detalle
-					</th>
-					<th style = "width:200px">
-						Anestesia
-					</th>
-					<th style = "width:100px">
-						Fecha Cirugia
-					</th>
-					<th style = "width:50px">
-						Confirmado
-					</th>
-					<tr>
-					</tr>
-				</table>
-				<?php foreach ($resultado as $value) {
-					//if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
-					<!--<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">-->
-				<?php 	//}
-				//else {	?>	
+				<?php
+				if (sizeof($resultado_noconf) == 0)
+					echo "No hay cirugías sin confirmar.";
+				else { ?>
+					<table>
+						<th style = "width:60px">
+							Ficha
+						</th>
+						<th style = "width:220px">
+							Paciente
+						</th>
+						<th style = "width:190px">
+							Obra Social
+						</th>
+						<th style = "width:30px">
+							Ojo
+						</th>
+						<th style = "width:290px">
+							Practica
+						</th>
+						<th style = "width:150px">
+							Detalle
+						</th>
+						<th style = "width:200px">
+							Anestesia
+						</th>
+						<th style = "width:100px">
+							Fecha Cirugia
+						</th>
+					</table>
+				<?php 
+					foreach ($resultado_noconf as $value) {
+						//if (strpos($this->session->userdata('funciones'), "Medico") !== false) { ?>
+						<!--<div style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">-->
+					<?php 	//}
+				//else {	?>
 					<div class = "data" id = "<?php echo $value->id?>" style = "border:1px solid #E5E5E5;background-color:#F7F7F7;height:60px;margin-top:2px;width:99.7%">
-				<?php //} ?>			
+					<?php //} ?>			
 						<div style = "width:62px;margin-left:2px" class = "paciente">
 							<?php echo $value->id_paciente ?>
 						</div>
-						<div style = "width:195px;" class = "paciente">
+						<div style = "width:225px;" class = "paciente">
 							<?php echo $value->paciente ?>
 						</div>
-						<div style = "width:175px" class = "paciente">
+						<div style = "width:190px" class = "paciente">
 							<?php echo $value->obra ?>
 						</div>
-						<div style = "width:30px" class = "paciente">
+						<div style = "width:35px" class = "paciente">
 						<?php 
 							if ($value->practica_od != "") {
 								echo "<div>";
@@ -531,7 +553,7 @@
 							}	
 						?>
 						</div>
-						<div style = "width:280px" class = "paciente">
+						<div style = "width:295px" class = "paciente">
 							<?php
 								echo "<div>";
 									echo $value->practica_od;
@@ -541,7 +563,7 @@
 								echo "</div>";
 							?>
 						</div>
-						<div style = "width:150px" class = "paciente">
+						<div style = "width:155px" class = "paciente">
 							<?php
 								echo "<div>";
 									echo $value->detalle_od;
@@ -560,18 +582,15 @@
 									echo $value->anestesia_os;
 								echo "</div>";
 							?>
-						</div>
-						<div style = "width:105px" class = "paciente">
-						</div>	
-						<div style = "width:105px" class = "paciente">
-							<?php echo $fecha = date('d-m-Y',strtotime($value->fecha_prop)); ?>
 						</div>	
 						<div class = "paciente">
-							<?php echo $value->confirmado; ?>
-						</div>
+							<?php echo $fecha = date('d-m-Y',strtotime($value->fecha_prop)); ?>
+						</div>	
 					</div>
 
-				<?php } ?>	
+				<?php } 
+				}
+			?>	
 			</div>
 			<?php foreach ($resultado as $value) { ?>
 			<div class = "detail" title = "Detalles" id = "<?php echo 'detail_'.$value->id ?>" style = "float:left;margin-left:10px;display:none;">

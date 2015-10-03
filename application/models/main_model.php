@@ -1262,6 +1262,11 @@ class Main_model extends CI_Model
 		$date_to = $array['fecha_hasta'];
 
 		$medico = $this->get_medico_by_id($medico);
+
+		if (($date_from != "") && ($date_to != ""))
+			$between = "AND (fecha BETWEEN '$date_from' AND '$date_to')";
+		else
+			$between = "";
 	
 		if ( $obra == "todos")
 			$obra = "";
@@ -1276,7 +1281,7 @@ class Main_model extends CI_Model
 		if ( $at_localidad == "Todas")
 			$at_localidad = "%%";
 
-		$string = "SELECT id_turno, paciente, ficha, medico, datos, ordenes_pendientes, fecha FROM facturacion WHERE datos LIKE '%$obra%' AND medico LIKE '$medico' AND facturacion_localidad LIKE '$fact_localidad' AND atendido_localidad LIKE '$at_localidad' AND (fecha BETWEEN '$date_from' AND '$date_to') ORDER BY fecha DESC";
+		$string = "SELECT id_turno, paciente, ficha, medico, datos, ordenes_pendientes, fecha FROM facturacion WHERE datos LIKE '%$obra%' AND medico LIKE '$medico' AND facturacion_localidad LIKE '$fact_localidad' AND atendido_localidad LIKE '$at_localidad' ".$between." ORDER BY fecha DESC";
 		
 		$query = $this->db->query($string);
 
@@ -1445,10 +1450,16 @@ class Main_model extends CI_Model
 		$obra = $array['sel_obra_'];
 		$practica = $array['sel_practica_'];
 		$medico = $this->get_medico_by_id($array['sel_medico_']);
+		$paciente = ucwords($array['busqueda_paciente']);
 		//$cirujano = $this->get_medico_by_id($_POST['sel_cirujano']);
 
 		$date_from = $array['fecha_desde'];
 		$date_to = $array['fecha_hasta'];
+
+		if (($date_from != "") && ($date_to != ""))
+			$between = " AND (fecha_prop BETWEEN '$date_from' AND '$date_to')";
+		else
+			$between = "";
 
 		if ( $obra == "todos")
 			$obra = "%%";
@@ -1497,10 +1508,11 @@ class Main_model extends CI_Model
 						fecha_prop
 						FROM cirugias WHERE AES_DECRYPT(obra, '$key') LIKE '$obra'
 						AND AES_DECRYPT(medico, '$key') LIKE '$medico'
+						AND AES_DECRYPT(paciente, '$key') LIKE '%$paciente%'
 						AND (AES_DECRYPT(practica_od, '$key') LIKE '$practica'
 						OR AES_DECRYPT(practica_od, '$key') LIKE '$practica')
 						AND AES_DECRYPT(debe_orden, '$key') LIKE '$debe_orden'
-						AND AES_DECRYPT(confirmado, '$key') LIKE '$confirmado' ".$deuda. " AND (fecha_prop BETWEEN '$date_from' AND '$date_to')";
+						AND AES_DECRYPT(confirmado, '$key') LIKE '$confirmado' ".$deuda.$between."";
 
 		$query = $this->db->query($string);
 		

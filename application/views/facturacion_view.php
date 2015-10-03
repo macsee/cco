@@ -774,10 +774,10 @@
 							if (!isset($fecha_hasta))
 								$fecha_hasta = "";
 						?>
-						Desde: <input style = "font-size: 11pt" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>" required/>
+						Desde: <input style = "font-size: 11pt" id = "fecha_desde" name = "fecha_desde" type = "date" value = "<?php echo $fecha_desde?>" />
 					</div>
 					<div style ="float:left;margin-left:20px">
-						Hasta: <input style = "font-size: 11pt" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" required/>
+						Hasta: <input style = "font-size: 11pt" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" />
 					</div>	
 					<div style ="float:left;margin-left:20px">
 						<button style = "font-size: 12pt" type = "submit"> Buscar </button>

@@ -492,7 +492,7 @@
 		echo '</a>';
 		?>
 	</div>
-	<?php if (strpos($this->session->userdata('funciones'), "Medico") !== false ) {
+	<?php if (strpos($this->session->userdata('funciones'), "Turnos") !== false ) {
 		echo '<div id = "bloquear" style="float:left;margin-top:11px;margin-left:5px">';
 			if ($bloqueado != null) {
 				echo '<a href="#" onclick = "return desbloquear()">';

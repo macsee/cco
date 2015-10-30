@@ -456,10 +456,10 @@
 								<div style = "width:200px;" class = "paciente">
 									<?php echo $value->paciente ?>
 								</div>
-								<div style = "width:172px" class = "paciente">
+								<div style = "width:170px" class = "paciente">
 									<?php echo $value->obra ?>
 								</div>
-								<div style = "width:32px" class = "paciente">
+								<div style = "width:30px" class = "paciente">
 								<?php 
 									if ($value->practica_od != "") {
 										echo "<div>";
@@ -473,7 +473,7 @@
 									}	
 								?>
 								</div>
-								<div style = "width:258px" class = "paciente">
+								<div style = "width:250px" class = "paciente">
 									<?php
 										echo "<div>";
 											echo $value->practica_od;
@@ -577,10 +577,10 @@
 							<div style = "width:200px;" class = "paciente">
 								<?php echo $value->paciente ?>
 							</div>
-							<div style = "width:172px" class = "paciente">
+							<div style = "width:170px" class = "paciente">
 								<?php echo $value->obra ?>
 							</div>
-							<div style = "width:32px" class = "paciente">
+							<div style = "width:30px" class = "paciente">
 							<?php 
 								if ($value->practica_od != "") {
 									echo "<div>";
@@ -594,7 +594,7 @@
 								}	
 							?>
 							</div>
-							<div style = "width:258px" class = "paciente">
+							<div style = "width:250px" class = "paciente">
 								<?php
 									echo "<div>";
 										echo $value->practica_od;

@@ -1189,31 +1189,6 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			//print_r($data);
 		}
 
-/*
-		if (sizeof($_POST) != 0) {
-		
-			$_SESSION['sel_obra'] = $_POST['sel_obra'];
-			$_SESSION['sel_facturacion_barra'] = $_POST['sel_facturacion_barra'];
-			$_SESSION['sel_atendido_barra'] = $_POST['sel_atendido_barra'];
-			$_SESSION['sel_medico'] = $_POST['sel_medico_'];
-			$_SESSION['fecha_desde'] = $_POST['fecha_desde'];
-			$_SESSION['fecha_hasta'] = $_POST['fecha_hasta'];
-
-		}
-
-		if (sizeof($_SESSION) != 0) {
-
-			$data['obra_selected'] = $_SESSION['sel_obra'];
-			$data['localidad_fact_selected'] = $_SESSION['sel_facturacion_barra'];
-			$data['localidad_at_selected'] = $_SESSION['sel_atendido_barra'];
-			$data['medico_selected'] = $_SESSION['sel_medico'];
-			$data['fecha_desde'] = $_SESSION['fecha_desde'];
-			$data['fecha_hasta'] = $_SESSION['fecha_hasta'];
-
-			$data['resultado'] = $this->main_model->buscar_facturacion($data);
-			$data['print'] = $this->print_facturacion($data['obra_selected'], $data['medico_selected'], $data['localidad_fact_selected'], $data['resultado'], $data['fecha_desde'], $data['fecha_hasta']);
-		}
-*/
 		$this->load->view('facturacion_view',$data);		
 	}
 

@@ -381,6 +381,21 @@
 		<?php 
 		$resultado_conf = array();
 		$resultado_noconf = array();
+
+		class objetoPracticas {
+			public $cant;
+			public $presupuestado;
+			public $plus;
+			public $pagado;
+
+			function  __construct() {
+   			 	$this->cant = 1;
+   			 	$this->presupuestado = 0;
+   			 	$this->plus = 0;
+   			 	$this->pagado = 0;
+  			}
+		}
+
 		$resultado_practicas = array();
 
 		$total_presupesto = 0;
@@ -492,17 +507,42 @@
 											echo $value->detalle_os;
 										echo "</div>";
 
+										$obj = null;
+
 										if ($value->practica_od != "")
-											if (!isset($resultado_practicas[$value->practica_od]))
-												$resultado_practicas[$value->practica_od] = 1;
-											else
-												$resultado_practicas[$value->practica_od]++;
+											if (!isset($resultado_practicas[$value->practica_od])) {
+												$obj = new objetoPracticas();
+												$obj->presupuestado = $value->presupuesto;
+												$obj->plus = $value->plus_paciente;
+												$obj->pagado = $value->pagado_paciente;
+												$resultado_practicas[$value->practica_od] = $obj;
+											}
+											else {
+												$obj = $resultado_practicas[$value->practica_od];
+												$obj->cant++;
+												$obj->presupuesto += $value->presupuesto;
+												$obj->plus += $value->plus_paciente;
+												$obj->pagado += $value->pagado_paciente;
+											}
+
+										
 										
 										if ($value->practica_os != "")
-											if (!isset($resultado_practicas[$value->practica_os]))
-												$resultado_practicas[$value->practica_os] = 1;
-											else
-												$resultado_practicas[$value->practica_os]++;
+											if (!isset($resultado_practicas[$value->practica_os])) {
+												$obj = new objetoPracticas();
+												$obj->presupuestado = $value->presupuesto;
+												$obj->plus = $value->plus_paciente;
+												$obj->pagado = $value->pagado_paciente;
+												$resultado_practicas[$value->practica_os] = $obj;
+											}
+											else {
+												$obj = $resultado_practicas[$value->practica_os];
+												$obj->cant++;
+												$obj->presupuesto += $value->presupuesto;
+												$obj->plus += $value->plus_paciente;
+												$obj->pagado += $value->pagado_paciente;
+											}
+												
 
 										$total_presupesto += $value->presupuesto;
 										$total_pagado += $value->pagado_paciente;
@@ -649,11 +689,18 @@
 						<th>
 							Cant.
 						</th>
+						<th>
+							Subt.
+						</th>
 						<?php
 							foreach ($resultado_practicas as $key=>$value) {
 								echo '<tr style = "border-bottom: 1px solid">';
 								echo '<td>'.$key.'</td>';
-								echo '<td style = "border-left: 1px solid;">'.$value.'</td>';
+								echo '<td style = "border-left: 1px solid;">'.$value->cant.'</td>';
+								if ($value->presupuestado != "")
+									echo '<td style = "border-left: 1px solid;">$'.$value->presupuestado.'</td>';
+								else
+									echo '<td style = "border-left: 1px solid;">$0</td>';
 								echo '</tr>';
 							}	
 						?>

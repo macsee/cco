@@ -718,7 +718,7 @@
 							<option value = "todos">Todos</option>
 							<?php
 								if (!isset($sel_medico_barra))
-										$sel_medico = "";
+										$sel_medico_barra = "";
 
 								foreach ($medicos as $medico)
 									if ($sel_medico_barra == $medico->id_medico)
@@ -765,7 +765,7 @@
 						</select>
 					</div>
 				</div>
-				<div style = "width:100%;float:left;margin-top:10px">	
+				<div style = "float:left;margin-top:10px">	
 					<div style ="float:left;margin-left:20px">
 						<?php 
 							if (!isset($fecha_desde))
@@ -780,7 +780,7 @@
 						Hasta: <input style = "font-size: 11pt" id = "fecha_hasta" name = "fecha_hasta" type = "date" value = "<?php echo $fecha_hasta?>" />
 					</div>	
 					<div style ="float:left;margin-left:20px">
-						<button style = "font-size: 12pt" type = "submit"> Buscar </button>
+						<button style = "font-size: 12pt;margin-right:5px" type = "submit"> Buscar </button>
 						<?php 
 							if (!isset($print))
 								$print = "";
@@ -792,6 +792,21 @@
 					<input id = "html" type = "hidden" value = "<?php echo $print ?>" />
 				</div>	
 			</form>
+			<div style ="float:left;margin-top:10px;margin-left:5px">
+				<?php
+				if ($print != "") {?>
+						<!--<button id = "print" style = "font-size: 12pt"> Imprimir </button>-->
+						<form action="<?php echo base_url('index.php/main/download_facturacion')?>" method="post">
+							<input name = "fecha_desde" type = "hidden" value = "<?php echo $fecha_desde?>">
+							<input name = "fecha_hasta" type = "hidden" value = "<?php echo $fecha_hasta?>">
+							<input name="sel_atendido_barra" type = "hidden" value = "<?php echo $sel_atendido_barra?>">
+							<input name="sel_facturacion_barra" type = "hidden" value = "<?php echo $sel_facturacion_barra?>">
+							<input name="sel_medico_barra" type = "hidden" value = "<?php echo $sel_medico_barra?>">
+							<input name="sel_obra" type = "hidden" value = "<?php echo $sel_obra?>">
+							<button type = "submit" style = "font-size: 12pt"> Descargar </button>
+						</form>
+				<?php }?>
+			</div>
 		</div>
 		<!--RESULTADO DE PACIENTES CON ORDENES-->
 		<div style = "border-top:1px solid;float:left;width: 100%;margin-top:10px;">

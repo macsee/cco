@@ -1197,6 +1197,155 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		redirect('main/facturacion/');
 	}
 
+	function download_facturacion() {
+
+		$resultado = $this->main_model->buscar_facturacion($_POST);
+		$filename = date('d-m-Y-Hi').'.csv';
+
+		header('Content-Type: text/csv; charset=utf-8');
+		//header("Content-Type: application/vnd.ms-excel");
+		header('Content-Disposition: attachment; filename="Facturacion_'.$filename.'";');
+		
+		// create a file pointer connected to the output stream
+		$output = fopen('php://output', 'w');
+
+		$pacientesConOrdenPend = null;
+		$pacientesSinOrdenPend = null;
+
+		if ($resultado != null) {
+
+			foreach ($resultado as $value) {
+
+				$json = json_decode($value->datos);
+				$json_orden = json_decode($value->ordenes_pendientes);
+
+
+				if ($json_orden != null)
+					$pacientesConOrdenPend[] = (object) array('paciente' => $value, 'json' => $json,  'json_ord' => $json_orden);
+				else
+					$pacientesSinOrdenPend[] = (object) array('paciente' => $value, 'json' => $json);
+			}
+		}	
+
+		if ($pacientesSinOrdenPend != null) {
+
+			if ($_POST['fecha_desde'] == "" && $_POST['fecha_hasta'] == "")
+				$fecha = "Histórico";
+			else
+				$fecha = $_POST['fecha_desde']." a ".$_POST['fecha_hasta'];
+
+			if ($_POST['sel_medico_barra'] == "todos")
+				$medico = "Todos";
+			else
+				$medico = "Dr. ".$this->main_model->get_medico_by_id($_POST['sel_medico_barra']);
+
+			if ($_POST['sel_atendido_barra'] == "Todas")
+				$atendido = "Todas las Localidades";
+			else
+				$atendido = $_POST['sel_atendido_barra'];
+
+			if ($_POST['sel_facturacion_barra'] == "Todas")
+				$facturacion = "Todas las Localidades";
+			else
+				$facturacion = $_POST['sel_facturacion_barra'];
+
+			if ($_POST['sel_obra'] == "todos")
+				$obra = "Todas las Obras Sociales";
+			else
+				$obra = $_POST['sel_obra'];
+
+			//echo implode("\t", array('Fecha', 'Ficha', 'Paciente', 'Practica', 'Obra Social', 'Coseguro')) . "\n";
+
+			fputcsv($output, array('Período:', $fecha,"","","",""),";");
+			fputcsv($output, array('Medico:', $medico,"","","",""),";");
+			fputcsv($output, array('Atendido en:', $atendido,"","","",""),";");
+			fputcsv($output, array('Facturado en:', $facturacion,"","","",""),";");
+			fputcsv($output, array('Obra social:', $obra,"","","",""),";");
+			fputcsv($output, array("","","","","",""),";");
+
+			fputcsv($output, array('Fecha', 'Ficha', 'Paciente', 'Practica', 'Obra Social', 'Coseguro'),";");
+
+			foreach ($pacientesSinOrdenPend as $val) {
+
+				//$arrayPacientes = array();
+				
+
+				$json = $val->json;
+				$value = $val->paciente;
+
+				$empty = "";
+				
+				foreach ($json as $practica=>$valor ) {
+					$empty .= $valor;
+				}
+
+				if ($empty != "") {
+
+					foreach ($json as $practica=>$valor ) {
+
+						$obrasocial = $valor;
+
+						if ($_POST['sel_obra'] != "todos")
+							$obrasocial = $_POST['sel_obra'];
+
+						if ($valor != "" && strpos($practica, "coseguro") === false && $valor == $obrasocial) {
+
+							$valor_coseguro = 0;
+							$coseguro = $practica."_coseguro";
+
+							if (isset($json->$coseguro) && $json->$coseguro != "")
+								$valor_coseguro = $json->$coseguro;
+
+						          // display field/column names as a first row
+						       
+								/*echo implode("\t",	array(	date('d-m-Y',strtotime($value->fecha)),
+															$value->ficha,
+															$value->paciente,
+															$practica,
+															$valor,
+															$valor_coseguro
+													)
+											)."\n";		*/
+
+							if (!isset($resume[$practica]))
+								$resume[$practica] = (object) array('cantidad' => 0, 'subtot' => 0);
+
+							$resume[$practica]->cantidad++;
+							$resume[$practica]->subtot += $valor_coseguro;
+						
+								
+							fputcsv($output, 	array(	date('d-m-Y',strtotime($value->fecha)),
+												$value->ficha,
+												$value->paciente,
+												$practica,
+												$valor,
+												$valor_coseguro
+											)
+
+									,";"
+							);
+								
+						}	
+					}
+				}
+			}
+
+			fputcsv($output, array("","","","","",""),";");
+			fputcsv($output, array("Resumen","","","","",""),";");
+			fputcsv($output, array("Practica","Cantidad","Subtotal","","",""),";");
+
+			$total = 0;
+
+			foreach ($resume as $practica=>$valor ) {
+				$total += $valor->subtot;
+				fputcsv($output, array($practica,$valor->cantidad,$valor->subtot,"","",""),";");
+			}
+			
+			fputcsv($output, array("Total","",$total,"","",""),";");
+			fclose($output);	
+		}
+	}
+
 	function print_facturacion($array) {
 
 		$obra = $array['sel_obra'];

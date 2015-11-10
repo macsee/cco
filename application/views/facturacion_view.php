@@ -449,6 +449,17 @@
 	<body>
 
 	<?php
+
+		function format_practica($string) {
+
+			if (strpos($string, "_orden") !== false)
+				$string = str_replace("_orden","",$string);
+
+			if (strpos($string, "consulta") !== false)
+				return ucfirst ($string);
+			else	
+				return strtoupper($string);
+		}	
 	
 		class objetoTurnos {
 			public $cant;
@@ -497,112 +508,139 @@
 
 			if ($obra == "todos") {
 
-				if ($json->cvc != "" && $json_obra['cvc_orden'] != "SI") {
+				if ($json->cvc != "") {
 					$array['cvc']->cant++;
 					$array['cvc']->coseg += intval($json->cvc_coseguro);
 				}
 
-				if ($json->iol != "" && $json_obra['iol_orden'] != "SI") {
+				if ($json->iol != "") {
 					$array['iol']->cant++;
 					$array['iol']->coseg += intval($json->iol_coseguro);
 				}
 
-				if ($json->topo != "" && $json_obra['topo_orden'] != "SI") {
+				if ($json->topo != "") {
 					$array['topo']->cant++;
 					$array['topo']->coseg += intval($json->topo_coseguro);
 				}
 
-				if ($json->oct != "" && $json_obra['oct_orden'] != "SI") {
+				if ($json->oct != "") {
 					$array['oct']->cant++;
 					$array['oct']->coseg += intval($json->oct_coseguro);
 				}	
 
-				if ($json->hrt != "" && $json_obra['hrt_orden'] != "SI") {
+				if ($json->hrt != "") {
 					$array['hrt']->cant++;
 					$array['hrt']->coseg += intval($json->hrt_coseguro);
 				}	
 
-				if ($json->me != "" && $json_obra['me_orden'] != "SI") {
+				if ($json->me != "") {
 					$array['me']->cant++;
 					$array['me']->coseg += intval($json->me_coseguro);
 				}	
 
-				if ($json->rfg != "" && $json_obra['rfg_orden'] != "SI") {
+				if ($json->rfg != "") {
 					$array['rfg']->cant++;
 					$array['rfg']->coseg += intval($json->rfg_coseguro);
 				}	
 
-				if ($json->rfgc != "" && $json_obra['rfgc_orden'] != "SI") {
+				if ($json->rfgc != "") {
 					$array['rfgc']->cant++;
 					$array['rfgc']->coseg += intval($json->rfgc_coseguro);
 				}	
 					
-				if ($json->obi != "" && $json_obra['obi_orden'] != "SI") {
+				if ($json->obi != "") {
 					$array['obi']->cant++;
 					$array['obi']->coseg += intval($json->obi_coseguro);
 				}	
 					
-				if ($json->paqui != "" && $json_obra['paqui_orden'] != "SI") {
+				if ($json->paqui != "") {
 					$array['paqui']->cant++;
 					$array['paqui']->coseg += intval($json->paqui_coseguro);
 				}	
 					
-				if ($json->consulta != "" && $json_obra['consulta_orden'] != "SI") {
+				if ($json->consulta != "") {
 					$array['consulta']->cant++;
 					$array['consulta']->coseg += intval($json->consulta_coseguro);
 				}	
 				
-				if ($json->laser != "" && $json_obra['laser_orden'] != "SI") {
+				if ($json->laser != "") {
 					$array['laser']->cant++;
 					$array['laser']->coseg += intval($json->laser_coseguro);
 				}	
 					
-				if ($json->yag != "" && $json_obra['yag_orden'] != "SI") {
+				if ($json->yag != "") {
 					$array['yag']->cant++;
 					$array['yag']->coseg += intval($json->yag_coseguro);
 				}
-						
+
 			}
 			else {
 
-				if ($json->cvc == $obra && $json_obra['cvc_orden'] != "SI")
+				if ($json->cvc == $obra) {
 					$array['cvc']->cant++;
+					$array['cvc']->coseg += intval($json->cvc_coseguro);
+				}
 
-				if ($json->iol == $obra && $json_obra['iol_orden'] != "SI")
+				if ($json->iol == $obra) {
 					$array['iol']->cant++;
-						
-				if ($json->topo == $obra && $json_obra['topo_orden'] != "SI")
+					$array['iol']->coseg += intval($json->iol_coseguro);
+				}
+
+				if ($json->topo == $obra) {
 					$array['topo']->cant++;
+					$array['topo']->coseg += intval($json->topo_coseguro);
+				}
 
-				if ($json->oct == $obra && $json_obra['oct_orden'] != "SI")
+				if ($json->oct == $obra) {
 					$array['oct']->cant++;
+					$array['oct']->coseg += intval($json->oct_coseguro);
+				}	
 
-				if ($json->hrt == $obra && $json_obra['hrt_orden'] != "SI")
+				if ($json->hrt == $obra) {
 					$array['hrt']->cant++;
+					$array['hrt']->coseg += intval($json->hrt_coseguro);
+				}	
 
-				if ($json->me == $obra && $json_obra['me_orden'] != "SI")
+				if ($json->me == $obra) {
 					$array['me']->cant++;
+					$array['me']->coseg += intval($json->me_coseguro);
+				}	
 
-				if ($json->rfg == $obra && $json_obra['rfg_orden'] != "SI")
+				if ($json->rfg == $obra) {
 					$array['rfg']->cant++;
+					$array['rfg']->coseg += intval($json->rfg_coseguro);
+				}	
 
-				if ($json->rfgc == $obra && $json_obra['rfgc_orden'] != "SI")
+				if ($json->rfgc == $obra) {
 					$array['rfgc']->cant++;
+					$array['rfgc']->coseg += intval($json->rfgc_coseguro);
+				}	
 					
-				if ($json->obi == $obra && $json_obra['obi_orden'] != "SI")
+				if ($json->obi == $obra) {
 					$array['obi']->cant++;
+					$array['obi']->coseg += intval($json->obi_coseguro);
+				}	
 					
-				if ($json->paqui == $obra && $json_obra['paqui_orden'] != "SI")
+				if ($json->paqui == $obra) {
 					$array['paqui']->cant++;
+					$array['paqui']->coseg += intval($json->paqui_coseguro);
+				}	
 					
-				if ($json->consulta == $obra && $json_obra['consulta_orden'] != "SI")
+				if ($json->consulta == $obra) {
 					$array['consulta']->cant++;
+					$array['consulta']->coseg += intval($json->consulta_coseguro);
+				}	
 				
-				if ($json->laser == $obra && $json_obra['laser_orden'] != "SI")
+				if ($json->laser == $obra) {
 					$array['laser']->cant++;
+					$array['laser']->coseg += intval($json->laser_coseguro);
+				}	
 					
-				if ($json->yag == $obra && $json_obra['yag_orden'] != "SI")
+				if ($json->yag == $obra) {
 					$array['yag']->cant++;
+					$array['yag']->coseg += intval($json->yag_coseguro);
+				}
+
 			}
 			
 			return $array;
@@ -673,6 +711,11 @@
 			if ($json['consulta_orden'] == "SI") {
 				$paciente = $value;
 				$cadena .= "Consulta,";
+			}
+
+			if ($json['me_orden'] == "SI") {
+				$paciente = $value;
+				$cadena .= "ME,";
 			}
 
 			$cadena = rtrim($cadena, ",");
@@ -811,7 +854,7 @@
 		<!--RESULTADO DE PACIENTES CON ORDENES-->
 		<div style = "border-top:1px solid;float:left;width: 100%;margin-top:10px;">
 			<?php
-				$pacientes = array();
+				$pacientes = [];
 				
 				if (isset($resultado)) {
 					if ($resultado == null)
@@ -840,363 +883,73 @@
 							foreach ($resultado as $value) {
 								
 								$json = json_decode($value->datos);
-								$json_orden = json_decode($value->ordenes_pendientes);
+								//$json_orden = json_decode($value->ordenes_pendientes);
+								$mismo_turno = 0;
 
-								$array = count_turnos_obra($json,$json_orden,$sel_obra,$array);
+								if(count(json_decode($value->ordenes_pendientes,1))!=0)
+									$pacientes[] = $value;
 
-								$array_paciente = count_turnos_obra($json,$json_orden,$sel_obra,crear_objeto());
-								$flag = 0;
+								if(count(json_decode($value->datos,1))!=0) {
+    								echo '<tr style = "border-top:1px solid;border-bottom:none">';
 
-								$ficha = $value->ficha;
-								$paciente = $value->paciente;
-								$medico = $value->medico;
-								$fecha = date('d-m-Y',strtotime($value->fecha));
-								$generar = '<a href = "#">Generar</a>';
-								$modificar = '<a href = "#" onclick = "return confirmar(\''.$value->id_turno.'\')">Editar</a>';
+									foreach ($json as $practica=>$valor ) {
 
-								$chk_ord = "";
+										$obrasocial = $valor;
 
-								$pacientes = pacientes_sin_orden($json_orden,$value,$pacientes);
+										if ($sel_obra != "todos")
+											$obrasocial = $sel_obra;
 
-								if ($array_paciente['cvc']->cant != 0){
+										if ($valor != "" && strpos($practica, "coseguro") === false && $valor == $obrasocial) {
 
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
+											$valor_coseguro = 0;
+											$coseguro = $practica."_coseguro";
+
+											if (isset($json->$coseguro) && $json->$coseguro != "")
+												$valor_coseguro = $json->$coseguro;
+
+											if (!isset($resume[$practica]))
+												$resume[$practica] = (object) array('cantidad' => 0, 'subtot' => 0);
+
+											$resume[$practica]->cantidad++;
+											$resume[$practica]->subtot += $valor_coseguro;
+											
+											$practica_orden = $practica."_orden";
+
+											if(count(json_decode($value->ordenes_pendientes,1))==0) {
+												
+												$ficha = anchor('main/historia_clinica/'.$value->id_paciente, $value->ficha, 'target="_blank"');
+												$paciente = $value->paciente;
+												$medico = $value->medico;
+												$fecha = date('d-m-Y',strtotime($value->fecha));
+												$generar = '<a href = "#">Generar</a>';
+												$modificar = '<a href = "#" onclick = "return confirmar(\''.$value->id_turno.'\')">Editar</a>';
+
+												if ($mismo_turno == 0) {
+													$mismo_turno = 1;
+													echo '<tr style = "border-top:1px solid;border-bottom:none">';
+												}
+												else {
+													$fecha = "";
+													$ficha = "";
+													$paciente = "";
+													$medico = "";
+													$generar = "";
+													$modificar = "";
+													echo '<tr style = "border:none">';
+												}
+
+												echo '<td style = "border-left:none">'.$fecha.'</td>';
+												echo '<td>'.$ficha.'</td>';
+												echo '<td>'.$paciente.'</td>';
+												echo '<td>'.format_practica($practica).'</td>';
+												echo '<td>'.$valor.'</td>';
+												echo '<td>'.$medico.'</td>';
+												echo '<td>'.$valor_coseguro.'</td>';
+												echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
+											echo '</tr>';
+											}
+										}
 									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>CVC</td>';
-										echo '<td>'.$json->cvc.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['cvc']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['iol']->cant != 0){
-									
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>IOL</td>';
-										echo '<td>'.$json->iol.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['iol']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['topo']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										$modificar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>TOPO</td>';
-										echo '<td>'.$json->topo.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['topo']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['oct']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>OCT</td>';
-										echo '<td>'.$json->oct.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['oct']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['me']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>ME</td>';
-										echo '<td>'.$json->me.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['me']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['rfg']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>RFG</td>';
-										echo '<td>'.$json->rfg.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['rfg']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['rfgc']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>RFG Color</td>';
-										echo '<td>'.$json->rfgc.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['rfgc']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['paqui']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>PAQUI</td>';
-										echo '<td>'.$json->paqui.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['paqui']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['obi']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>OBI</td>';
-										echo '<td>'.$json->obi.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['obi']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['hrt']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>HRT</td>';
-										echo '<td>'.$json->hrt.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['hrt']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['laser']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>Laser</td>';
-										echo '<td>'.$json->laser.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['laser']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['yag']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>YAG</td>';
-										echo '<td>'.$json->yag.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['yag']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
-								}
-									
-								if ($array_paciente['consulta']->cant != 0){
-
-									if ($flag == 0) {
-										$flag = 1;
-										echo '<tr style = "border-top:1px solid;border-bottom:none">';
-									}	
-									else {
-										$fecha = "";
-										$ficha = "";
-										$paciente = "";
-										$medico = "";
-										$generar = "";
-										$modificar = "";
-										echo '<tr style = "border:none">';
-									}
-										echo '<td style = "border-left:none">'.$fecha.'</td>';
-										echo '<td>'.$ficha.'</td>';
-										echo '<td>'.$paciente.'</td>';
-										echo '<td>Consulta</td>';
-										echo '<td>'.$json->consulta.'</td>';
-										echo '<td>'.$medico.'</td>';
-										echo '<td>'.$array_paciente['consulta']->coseg.'</td>';
-										echo '<td><div style = "float:left;margin-right:10px">'.$generar.'</div><div style = "float:left">'.$modificar.'</div></td>';
-									echo '</tr>';
 								}
 							}
 								echo '</table>';
@@ -1211,118 +964,20 @@
 									echo '<tr>';
 			  							echo '<th style = "text-align:left">Práctica</th>';
 			  							echo '<th style = "border-left:1px solid">Cantidad Total</th>';
-			  							//echo '<th style = "border-left:1px solid">Importe Práctica</th>';
-			  							//echo '<th style = "border-left:1px solid">Subtotal</th>';
 			  							echo '<th style = "border-left:1px solid">Coseguro</th>';
 									echo '</tr>';
-										echo '<td>CVC</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_cvc" value = "'.$array['cvc']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_cvc" name = "valor_cvc"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_cvc" name = "subtotal_cvc" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['cvc']->coseg.'</td>';
-										$total_coseguro += intval($array['cvc']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>IOL</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_iol" value = "'.$array['iol']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_iol" name = "valor_iol"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_iol" name = "subtotal_iol" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['iol']->coseg.'</td>';
-										$total_coseguro += intval($array['iol']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>TOPO</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_topo" value = "'.$array['topo']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_topo" name = "valor_topo"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_topo" name = "subtotal_topo" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['topo']->coseg.'</td>';
-										$total_coseguro += intval($array['topo']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>OCT</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_oct" value = "'.$array['oct']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_oct" name = "valor_oct"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_oct" name = "subtotal_oct" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['oct']->coseg.'</td>';
-										$total_coseguro += intval($array['oct']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>ME</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_me" value = "'.$array['me']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_me" name = "valor_me"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_me" name = "subtotal_me" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['me']->coseg.'</td>';
-										$total_coseguro += intval($array['me']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>RFG Color</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_rfgc" value = "'.$array['rfgc']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_rfgc" name = "valor_rfgc"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_rfgc" name = "subtotal_rfgc" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['rfgc']->coseg.'</td>';
-										$total_coseguro += intval($array['rfgc']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>RFG</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_rfg" value = "'.$array['rfg']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_rfg" name = "valor_rfg"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_rfg" name = "subtotal_rfg" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['rfg']->coseg.'</td>';
-										$total_coseguro += intval($array['rfg']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>HRT</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_hrt" value = "'.$array['hrt']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_hrt" name = "valor_hrt"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_hrt" name = "subtotal_hrt" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['hrt']->coseg.'</td>';
-										$total_coseguro += intval($array['hrt']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>Laser</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_laser" value = "'.$array['laser']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_laser" name = "valor_laser"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_laser" name = "subtotal_laser" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['laser']->coseg.'</td>';
-										$total_coseguro += intval($array['laser']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>YAG</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_yag" value = "'.$array['yag']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_yag" name = "valor_yag"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_yag" name = "subtotal_yag" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['yag']->coseg.'</td>';
-										$total_coseguro += intval($array['yag']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>OBI</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_obi" value = "'.$array['obi']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_obi" name = "valor_obi"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_obi" name = "subtotal_obi" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['obi']->coseg.'</td>';
-										$total_coseguro += intval($array['obi']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>PAQUI</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_paqui" value = "'.$array['paqui']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_paqui" name = "valor_paqui"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_paqui" name = "subtotal_paqui" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['paqui']->coseg.'</td>';
-										$total_coseguro += intval($array['paqui']->coseg);
-									echo '</tr>';
-									echo '<tr>';
-										echo '<td>Consulta</td>';
-										echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" id = "cant_consulta" value = "'.$array['consulta']->cant.'" disabled/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "valor_consulta" name = "valor_consulta"/></td>';
-										//echo '<td style = "border-left:1px solid;text-align:center">$<input id = "subtotal_consulta" name = "subtotal_consulta" disabled/></td>';
-										echo '<td style = "border-left:1px solid;text-align:center">'.$array['consulta']->coseg.'</td>';
-										$total_coseguro += intval($array['consulta']->coseg);
-									echo '</tr>';
+									$total_coseguro = 0;
+
+									foreach ($resume as $practica=>$valor ) {
+										$total_coseguro += $valor->subtot;
+										echo '<tr>';
+											echo '<td>'.format_practica($practica).'</td>';
+											echo '<td style = "border-left:1px solid;text-align:center"><input class = "invisible" value = "'.$valor->cantidad.'" disabled/></td>';
+											echo '<td style = "border-left:1px solid;text-align:center">'.$valor->subtot.'</td>';
+										echo '</tr>';
+									}
 								echo '</table>';
 								echo '<div class = "totales">';
-									//echo '<div style = "margin-left:10px;float:left">';
-									//	echo '<div style = "float:left;width:50px">Total: </div><input style = "width:70px;font-size:12pt;background-color: #63C2D8" class = "invisible" id = "total" disabled/>';
-									//echo '</div>';
 									echo '<div style = "float:left;margin-left:110px">';
 										echo "Coseguro Total: $ ".$total_coseguro;
 									echo '</div>';
@@ -1346,14 +1001,21 @@
 					  							echo '<th style = "text-align:left;border-left:1px solid">Acción</th>';
 											echo '</tr>';
 										foreach ($pacientes as $value) {
-											echo '<tr>';
-												echo '<td style = "border-left:none;">'.date('d-m-Y',strtotime($value->paciente->fecha)).'</td>';
-												echo '<td>'.$value->paciente->ficha.'</td>';
-												echo '<td>'.$value->paciente->paciente.'</td>';
-												echo '<td>'.$value->practicas.'</td>';
-												echo '<td>'.$value->paciente->medico.'</td>';
-												echo '<td><a href = "#" onclick = "return confirmar(\''.$value->paciente->id_turno.'\')">Editar</a>';
-											echo '</tr>';
+
+											$json_orden = json_decode($value->ordenes_pendientes);
+
+											foreach ($json_orden as $practica => $valor) {
+												if ( $valor == "SI") {
+													echo '<tr>';
+														echo '<td style = "border-left:none;">'.date('d-m-Y',strtotime($value->fecha)).'</td>';
+														echo '<td>'.anchor('main/historia_clinica/'.$value->id_paciente, $value->ficha, 'target="_blank"').'</td>';
+														echo '<td>'.$value->paciente.'</td>';
+														echo '<td>'.format_practica($practica).'</td>';
+														echo '<td>'.$value->medico.'</td>';
+														echo '<td><a href = "#" onclick = "return confirmar(\''.$value->id_turno.'\')">Editar</a>';
+													echo '</tr>';
+												}
+											}
 										}
 										echo '</table>';	
 									}

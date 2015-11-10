@@ -171,7 +171,7 @@
 			Editar Turno
 		</div>
 
-		<div style = "float:left; margin-left:61%;">
+		<div style = "float:left; margin-left:55%;">
 				<?php
 				echo '<a href="'.base_url('index.php').'">'; 
 					echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>'; 

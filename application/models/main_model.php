@@ -367,7 +367,9 @@ class Main_model extends CI_Model
 	}
 
 	function get_turno_by($id) 
-	{
+	{	
+		$data = null;
+
 		$query = $this->db->query("SELECT * FROM turnos WHERE id = '$id'");
 		
 		foreach ($query->result() as $resultado)
@@ -1288,7 +1290,18 @@ class Main_model extends CI_Model
 		if ($query->num_rows()>0)
 		{
 			foreach ($query->result() as $fila)
-			{
+			{	
+				$var = $this->get_turno_by($fila->id_turno);
+
+				$fila->id_paciente = $var[0]->id_paciente;
+				//print_r($var[0]);
+				//echo $var[0]->id_paciente;
+
+				//if($var != null)
+					
+				//else
+				//	$fila->id_paciente = "";
+
 				$data[] = $fila;
 			}
 			return $data;

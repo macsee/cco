@@ -1202,8 +1202,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$resultado = $this->main_model->buscar_facturacion($_POST);
 		$filename = date('d-m-Y-Hi').'.csv';
 
-		header('Content-Type: text/csv; charset=utf-8');
 		//header("Content-Type: application/vnd.ms-excel");
+		header('Content-Type: text/csv; charset=utf-8');
 		header('Content-Disposition: attachment; filename="Facturacion_'.$filename.'";');
 		
 		// create a file pointer connected to the output stream
@@ -1213,21 +1213,6 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$pacientesSinOrdenPend = null;
 
 		if ($resultado != null) {
-
-			foreach ($resultado as $value) {
-
-				$json = json_decode($value->datos);
-				$json_orden = json_decode($value->ordenes_pendientes);
-
-
-				if ($json_orden != null)
-					$pacientesConOrdenPend[] = (object) array('paciente' => $value, 'json' => $json,  'json_ord' => $json_orden);
-				else
-					$pacientesSinOrdenPend[] = (object) array('paciente' => $value, 'json' => $json);
-			}
-		}	
-
-		if ($pacientesSinOrdenPend != null) {
 
 			if ($_POST['fecha_desde'] == "" && $_POST['fecha_hasta'] == "")
 				$fecha = "Histórico";
@@ -1254,33 +1239,24 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			else
 				$obra = $_POST['sel_obra'];
 
-			//echo implode("\t", array('Fecha', 'Ficha', 'Paciente', 'Practica', 'Obra Social', 'Coseguro')) . "\n";
+			fputcsv($output, array('Período:', $fecha,"","","","",""),";");
+			fputcsv($output, array('Medico:', $medico,"","","","",""),";");
+			fputcsv($output, array('Atendido en:', $atendido,"","","","",""),";");
+			fputcsv($output, array('Facturado en:', $facturacion,"","","","",""),";");
+			fputcsv($output, array('Obra social:', $obra,"","","","",""),";");
+			fputcsv($output, array("","","","","","",""),";");
 
-			fputcsv($output, array('Período:', $fecha,"","","",""),";");
-			fputcsv($output, array('Medico:', $medico,"","","",""),";");
-			fputcsv($output, array('Atendido en:', $atendido,"","","",""),";");
-			fputcsv($output, array('Facturado en:', $facturacion,"","","",""),";");
-			fputcsv($output, array('Obra social:', $obra,"","","",""),";");
-			fputcsv($output, array("","","","","",""),";");
+			fputcsv($output, array('Fecha', 'Ficha', 'Paciente', 'Practica', 'Obra Social', 'Coseguro','Debe Orden'),";");
 
-			fputcsv($output, array('Fecha', 'Ficha', 'Paciente', 'Practica', 'Obra Social', 'Coseguro'),";");
 
-			foreach ($pacientesSinOrdenPend as $val) {
+			foreach ($resultado as $value) {
 
-				//$arrayPacientes = array();
-				
+				$json = json_decode($value->datos);
+				$json_orden = json_decode($value->ordenes_pendientes);
 
-				$json = $val->json;
-				$value = $val->paciente;
 
-				$empty = "";
-				
-				foreach ($json as $practica=>$valor ) {
-					$empty .= $valor;
-				}
-
-				if ($empty != "") {
-
+				if(count(json_decode($value->datos,1))!=0) {
+    				
 					foreach ($json as $practica=>$valor ) {
 
 						$obrasocial = $valor;
@@ -1296,59 +1272,96 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 							if (isset($json->$coseguro) && $json->$coseguro != "")
 								$valor_coseguro = $json->$coseguro;
 
-						          // display field/column names as a first row
-						       
-								/*echo implode("\t",	array(	date('d-m-Y',strtotime($value->fecha)),
+							if (!isset($resume[$practica]))
+								$resume[$practica] = (object) array('cantidad' => 0, 'subtot' => 0);
+
+							$resume[$practica]->cantidad++;
+							$resume[$practica]->subtot += $valor_coseguro;
+							
+							$debe = "";
+							$practica_orden = $practica."_orden";
+
+							if(count(json_decode($value->ordenes_pendientes,1))!=0 && $json_orden->$practica_orden != "")
+								$debe = "SI";
+							
+							/*
+								echo implode("\t",	array(	date('d-m-Y',strtotime($value->fecha)),
 															$value->ficha,
 															$value->paciente,
 															$practica,
 															$valor,
 															$valor_coseguro
 													)
-											)."\n";		*/
+											)."\n";		
 
-							if (!isset($resume[$practica]))
-								$resume[$practica] = (object) array('cantidad' => 0, 'subtot' => 0);
+							*/
+														
+								fputcsv($output, 	array(	date('d-m-Y',strtotime($value->fecha)),
+													$value->ficha,
+													$value->paciente,
+													$practica,
+													$valor,
+													$valor_coseguro,
+													$debe
+												)
 
-							$resume[$practica]->cantidad++;
-							$resume[$practica]->subtot += $valor_coseguro;
-						
+										,";"
+								);
 								
-							fputcsv($output, 	array(	date('d-m-Y',strtotime($value->fecha)),
-												$value->ficha,
-												$value->paciente,
-												$practica,
-												$valor,
-												$valor_coseguro
-											)
+							
+						}			
 
-									,";"
-							);
-								
-						}	
 					}
-				}
-			}
 
-			fputcsv($output, array("","","","","",""),";");
-			fputcsv($output, array("Resumen","","","","",""),";");
-			fputcsv($output, array("Practica","Cantidad","Subtotal","","",""),";");
+				}
+			}	
+
+			fputcsv($output, array("","","","","","",""),";");
+			fputcsv($output, array("Resumen","","","","","",""),";");
+			fputcsv($output, array("Practica","Cantidad","Subtotal","","","",""),";");
 
 			$total = 0;
 
 			foreach ($resume as $practica=>$valor ) {
 				$total += $valor->subtot;
-				fputcsv($output, array($practica,$valor->cantidad,$valor->subtot,"","",""),";");
+				fputcsv($output, array($practica,$valor->cantidad,$valor->subtot,"","","",""),";");
 			}
 			
-			fputcsv($output, array("Total","",$total,"","",""),";");
-			fclose($output);	
+			fputcsv($output, array("Total","",$total,"","","",""),";");
+			fclose($output);
+
 		}
 	}
 
 	function print_facturacion($array) {
 
-		$obra = $array['sel_obra'];
+		$sel_obra = $array['sel_obra'];
+
+
+		if ($array['fecha_desde'] == "" && $array['fecha_hasta'] == "")
+			$fecha = "Histórico";
+		else
+			$fecha = $array['fecha_desde']." a ".$array['fecha_hasta'];
+
+		if ($array['sel_medico_barra'] == "todos")
+			$medico = "Todos";
+		else
+			$medico = "Dr. ".$this->main_model->get_medico_by_id($array['sel_medico_barra']);
+
+		if ($array['sel_atendido_barra'] == "Todas")
+			$atendido = "Todas las Localidades";
+		else
+			$atendido = $array['sel_atendido_barra'];
+
+		if ($array['sel_facturacion_barra'] == "Todas")
+			$facturacion = "Todas las Localidades";
+		else
+			$facturacion = $array['sel_facturacion_barra'];
+
+		if ($array['sel_obra'] == "todos")
+			$obra = "Todas las Obras Sociales";
+		else
+			$obra = $array['sel_obra'];
 
 		if ($array['sel_medico_barra'] == "todos")
 			$medico = "Todos";
@@ -1377,14 +1390,14 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 				header table {
 					border: none;
 				}
-			</style>	
+			</style>
 			<div style = 'text-align:center;font-size:20px;font-weight:bold;margin-bottom:50px'>
 				Detalle de Prácticas
 			</div>
 			<div style = 'margin-bottom: 20px;width:100%;float:left;border-bottom:1px solid;padding-bottom:10px;font-size:18px'>
 				<div style = 'float:left;width:100%'>
 					<div style = 'float:left;width:100px;font-weight:bold'>Período:</div>
-					<div style = 'float:left'>".date('d-m-Y',strtotime($array['fecha_desde']))." al ".date('d-m-Y',strtotime($array['fecha_hasta']))."</div>
+					<div style = 'float:left'>".$fecha."</div>
 				</div>
 				<div style = 'float:left;width:100%'>
 					<div style = 'float:left;width:100px;font-weight:bold'>Medico:</div>
@@ -1392,30 +1405,12 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 				</div>
 				<div style = 'float:left;width:100%'>
 					<div style = 'float:left;width:100px;font-weight:bold'>Localidad:</div>
-					<div style = 'float:left'>".$array['sel_facturacion_barra']."</div>
+					<div style = 'float:left'>".$facturacion."</div>
 				</div>
 			</div>
-			";
-	
-			$pacientesConOrdenPend = null;
-			$pacientesSinOrdenPend = null;
+			";		
 
 			if ($array['resultado'] != null) {
-
-				foreach ($array['resultado'] as $value) {
-
-					$json = json_decode($value->datos);
-					$json_orden = json_decode($value->ordenes_pendientes);
-
-
-					if ($json_orden != null)
-						$pacientesConOrdenPend[] = (object) array('paciente' => $value, 'json' => $json,  'json_ord' => $json_orden);
-					else
-						$pacientesSinOrdenPend[] = (object) array('paciente' => $value, 'json' => $json);
-				}
-			}	
-
-			if ($pacientesSinOrdenPend != null) {
 
 				$html .= "<div style = 'float:left'>
 				<div style = 'margin-bottom:5px;font-size:18px;font-weight:bold'>
@@ -1440,7 +1435,151 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 					</th>
 					<th style = 'width:100px'>
 						Coseguro
+					</th>
+					<th style = 'width:50px'>
+						Debe Orden
 					</th>";
+
+				foreach ($array['resultado'] as $value) {
+
+					$json = json_decode($value->datos);
+					$json_orden = json_decode($value->ordenes_pendientes);
+
+					$mismo_turno = 0;
+					$span = 0;
+
+					foreach ($json as $practica=>$valor ) {
+						
+						if (strpos($practica,"_coseguro") === false && $valor != "")
+							$span++;
+					}	
+
+					if($span!=0) {
+
+    					$html .= "<tr style = 'border-top:1px solid;border-bottom:none'>";
+
+    					foreach ($json as $practica=>$valor ) {
+
+							$obrasocial = $valor;
+
+							if ($sel_obra != "todos")
+								$obrasocial = $sel_obra;
+
+							if ($valor != "" && strpos($practica, "coseguro") === false && $valor == $obrasocial) {
+
+								$valor_coseguro = 0;
+								$coseguro = $practica."_coseguro";
+
+								if (isset($json->$coseguro) && $json->$coseguro != "")
+									$valor_coseguro = $json->$coseguro;
+
+								if (!isset($resume[$practica]))
+									$resume[$practica] = (object) array('cantidad' => 0, 'subtot' => 0);
+
+								$resume[$practica]->cantidad++;
+								$resume[$practica]->subtot += $valor_coseguro;
+								
+								$practica_orden = $practica."_orden";
+
+								//if(count(json_decode($value->ordenes_pendientes,1))==0) {
+								
+								$ficha = $value->ficha;
+								$paciente = $value->paciente;
+								$medico = $value->medico;
+								$fecha = date('d-m-Y',strtotime($value->fecha));
+								$debe = "";
+							
+								if ($mismo_turno == 0) {
+									$mismo_turno = 1;
+									$html .= "<tr>
+												<td rowspan = '".$span."'>".
+													date('d-m-Y',strtotime($fecha)).
+												"</td>
+												<td rowspan = '".$span."'>".
+													$ficha.
+												"</td>
+												<td rowspan = '".$span."'>".
+													$paciente.
+												"</td>";
+								}
+								else
+									$html .= "<tr style = 'border:none'>";
+
+								if(count(json_decode($value->ordenes_pendientes,1))!=0 && $json_orden->$practica_orden != "")
+									$debe = "SI";
+								
+								$html .= 	"<td>".$practica."</td>
+											<td>".$valor."</td>
+											<td>".$valor_coseguro."</td>
+											<td>".$debe."</td>";
+
+								//}
+							}
+							$html .= "</tr>";
+						}
+    				}
+				}
+
+			$html .= "</table>
+					</div>
+				</div>";
+			}
+
+			$html .= "<div style = 'float:left;width:100%;margin-top:10px'>";
+			$html .= "<div style = 'font-size:18px;font-weight:bold;margin-bottom:5px'>Resumen:</div>";
+			$html .= "<div>";
+			$html .= "<table>
+			<th>Práctica</th>
+			<th>Cantidad</th>
+			<th>Subtotal Coseg.</th>";
+			$suma = 0;
+
+			foreach ($resume as $key=>$valor) {
+				$html .= "<tr>".
+					"<td>".$key."</td>".
+					"<td>".$valor->cantidad."</td>".
+					"<td>".$valor->subtot."</td>".
+				"</tr>";
+				$suma += $valor->subtot;
+			}
+			$html .= "<tr>
+					<td colspan = '2'></td>
+					<td style = 'font-weight:bold;font-size:18px'>Total: ".$suma."</td>
+				</tr>
+			";
+			$html .= "</table>
+				</div>";
+			$html .= "</div>";
+
+		return $html;
+	}	
+/*
+			if ($pacientesSinOrdenPend != null) {
+
+	$html .= "<div style = 'float:left'>
+				<div style = 'margin-bottom:5px;font-size:18px;font-weight:bold'>
+					Detalle de pacientes con órdenes:
+				</div>
+				<div>
+					<table>
+						<th style = 'width:100px'>
+							Fecha
+						</th>
+						<th style = 'width:100px'>
+							Ficha
+						</th>
+						<th style = 'width:175px'>
+							Paciente
+						</th>
+						<th style = 'width:100px'>
+							Practica
+						</th>
+						<th style = 'width:300px'>
+							Obra Social
+						</th>
+						<th style = 'width:100px'>
+							Coseguro
+						</th>";
 
 				foreach ($pacientesSinOrdenPend as $val) {
 
@@ -1491,7 +1630,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 								$span++;
 							}
 								
-						}	
+						}
 
 				//Lo hago despues porque necesito saber el valor de $span
 
@@ -1652,9 +1791,8 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 			$html .= "</div>";
 			
 		}
+*/
 
-		return $html;
-	}
 
 	function coordinacion($id) {
 

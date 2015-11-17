@@ -1292,8 +1292,11 @@ class Main_model extends CI_Model
 			foreach ($query->result() as $fila)
 			{	
 				$var = $this->get_turno_by($fila->id_turno);
-
-				$fila->id_paciente = $var[0]->id_paciente;
+				if ( is_null($var[0]) )
+					$fila->id_paciente = "";
+				else
+					$fila->id_paciente = $var[0]->id_paciente;
+				
 				//print_r($var[0]);
 				//echo $var[0]->id_paciente;
 

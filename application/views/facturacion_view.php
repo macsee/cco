@@ -917,7 +917,11 @@
 
 											if(count(json_decode($value->ordenes_pendientes,1))==0) {
 												
-												$ficha = anchor('main/historia_clinica/'.$value->id_paciente, $value->ficha, 'target="_blank"');
+												if ($value->id_paciente != "")
+													$ficha = anchor('main/historia_clinica/'.$value->id_paciente, $value->ficha, 'target="_blank"');
+												else
+													$ficha = anchor("#", $value->ficha, 'target="_blank"');
+
 												$paciente = $value->paciente;
 												$medico = $value->medico;
 												$fecha = date('d-m-Y',strtotime($value->fecha));
@@ -1008,7 +1012,10 @@
 												if ( $valor == "SI") {
 													echo '<tr>';
 														echo '<td style = "border-left:none;">'.date('d-m-Y',strtotime($value->fecha)).'</td>';
-														echo '<td>'.anchor('main/historia_clinica/'.$value->id_paciente, $value->ficha, 'target="_blank"').'</td>';
+														if ($value->id_paciente != "")
+															echo '<td>'.anchor('main/historia_clinica/'.$value->id_paciente, $value->ficha, 'target="_blank"').'</td>';
+														else
+															echo '<td>'.anchor("#", $value->ficha, 'target="_blank"').'</td>';
 														echo '<td>'.$value->paciente.'</td>';
 														echo '<td>'.format_practica($practica).'</td>';
 														echo '<td>'.$value->medico.'</td>';

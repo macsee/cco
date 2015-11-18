@@ -341,6 +341,10 @@
 						echo '<select id = "sel_medico" name = "sel_medico" style = "float:left;margin-top:8px;margin-right:50px">';
 							foreach ($medicos as $medico) {
 								if ($med == $medico->id_medico)
+									echo '<option value ="'.$medico->id_medico.'" selected>Dr.'.$medico->nombre.'</option>';
+								else
+									echo '<option value ="'.$medico->id_medico.'">Dr.'.$medico->nombre.'</option>';
+									/*
 									if ($medico->nombre == "Otro")
 										echo '<option value ="'.$medico->nombre.'" selected>'.$medico->nombre.'</option>';
 									else
@@ -350,6 +354,7 @@
 										echo '<option value ="'.$medico->nombre.'">'.$medico->nombre.'</option>';
 									else
 										echo '<option value ="'.$medico->nombre.'">Dr. '.$medico->nombre.'</option>';
+									*/	
 							}
 						echo '</select>';
 						echo '<label for="localidad" style = "width:95px">Lugar de atención:</label>';

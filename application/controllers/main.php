@@ -666,7 +666,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$array['minutos_citado'] = date('i');
 		$array['notas'] = "";
 		$array['otro'] = "";
-		$array['medico'] = $post['sel_medico'];
+		$array['medico'] = $this->main_model->get_medico_by_id($post['sel_medico']);
 		//$array['sel_localidad'] = $_POST['sel_localidad'];
 		$array['sel_estado'] = "medico";
 		$array['obra_turno'] = $post['obra'];
@@ -686,7 +686,7 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 		$array['id_turno'] = $post['id_turno'];
 
 		$array['sel_consulta'] = $post['obra'];
-		$array['sel_medico'] = $post['medico'];
+		//$array['sel_medico'] = $post['sel_medico'];
 		$array['ficha_fact'] = $post['ficha'];
 		$array['sel_estado'] = "medico";
 		$array['fecha_fact'] = $post['fecha'];;

@@ -538,7 +538,7 @@
 											else {
 												$obj = $resultado_practicas[$value->practica_os];
 												$obj->cant++;
-												$obj->presupuesto += $value->presupuesto;
+												$obj->presupuestado += $value->presupuesto;
 												$obj->plus += $value->plus_paciente;
 												$obj->pagado += $value->pagado_paciente;
 											}

@@ -10,10 +10,10 @@ class Main_model extends CI_Model
 	
 	function turnos_del_dia($dia, $medico)
 	{
-		if ($medico == null)
+		if ($medico == "todos")
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' ORDER BY hora");
-		else if ($medico == "Otro")
-			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' AND medico LIKE '%Otro%' ORDER BY hora");
+		else if ($medico == "otro")
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' AND medico LIKE '%otro%' ORDER BY hora");
 		else	
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$dia' AND medico = '$medico' ORDER BY hora");
 
@@ -21,7 +21,9 @@ class Main_model extends CI_Model
 		{
 			foreach ($query->result() as $fila)
 			{
-				$data[] = $fila;
+				//$data[] = $fila;
+				$fila->medico_nombre = $this->get_medico_by_id($fila->medico)->nombre;
+				!isset($data[$fila->hora]) ? $data[$fila->hora] = array($fila) : array_push($data[$fila->hora],$fila);
 			}
 			return $data;
 		}
@@ -161,11 +163,12 @@ class Main_model extends CI_Model
 	}
 
 	function get_medico_by_id($id) {
-		$query = $this->db->query("SELECT nombre FROM medicos WHERE id_medico = '$id'");
+		$query = $this->db->query("SELECT * FROM medicos WHERE id_medico = '$id'");
 		if ($query->num_rows > 0 )
-			return $query->row()->nombre;
+			return $query->row();
+			//return $query->row()->nombre;
 		else
-			return NULL;
+			return null;
 	}
 	
 	function guardar_turno($array)
@@ -182,14 +185,48 @@ class Main_model extends CI_Model
 			$data['tel2'] = $array['tel2_1'].'-'.$array['tel2_2'];
 		}
 
-		$cadena = "";
-		$tipo = $array['tipo'];
+		// $cadena = "";
+		// $tipo = $array['tipo'];
 
-		for ($i=0; $i < sizeof($tipo); $i++) {
-			$cadena = $tipo[$i].','.' '.$cadena;
+		// for ($i=0; $i < sizeof($tipo); $i++) {
+		// 	$cadena = $tipo[$i].','.' '.$cadena;
+		// }
+		// $cadena = substr($cadena, 0, -2);
+
+		// $size = sizeof($array['practica']);
+
+		// $turno = array();
+
+		// foreach ($array['practica'] as $key) {
+		// 	array_push($turno, array(
+		// 		'id' => $key,
+		// 		'nombre' => $this->get_data_obra($key)->practica
+		// 		)
+		// 	);
+		// }
+
+		
+		$practicas = array();
+
+		foreach ($array['practica'] as $key => $value) {
+
+			array_push($practicas, array(
+					'medico_fact' => $this->get_default(),
+				 	'id_practica' => $value,
+				 	'nombre_practica' => ($this->get_practica_by($value) != null ? $this->get_practica_by($value)->practica : ""),
+				 	'id_obra' => $array['obra'],
+				 	'nombre_obra' => ($this->get_obra_by($array['obra']) != null ? $this->get_obra_by($array['obra'])->obra : ""),
+				 	"nro_afiliado" => "",
+					"plus" => "",
+					"debe_plus" => "",
+					"debe_ord" => "",
+					"factura" => ""
+				)
+			);
+
 		}
-		$cadena = substr($cadena, 0, -2);
 
+		$data['tipo'] = json_encode($practicas);
 
 		$nombre_1 = ucwords($array['nombre']);
 		$nombre_1 = ucwords(strtolower($nombre_1));
@@ -203,7 +240,7 @@ class Main_model extends CI_Model
 		$data['fecha'] = $array['fecha'];
 		$data['hora'] = $array['hora'].':'.$array['minutos'];
 		$data['citado'] = $array['hora_citado'].':'.$array['minutos_citado'];
-		$data['tipo'] = $cadena;
+		//$data['tipo'] = $cadena;
 		//if ($data['ficha'] == "") {
 		if ($array['ficha'] == "") {
 			$result = $this->get_ficha($data['nombre'], $data['apellido']);
@@ -216,20 +253,15 @@ class Main_model extends CI_Model
 			//$data['id_paciente'] = $array['id'];	
 		}		
 				
-		if ( ($array['medico'] == "Otro") & ($array['otro'] <> "")) {
+		// if ( ($array['medico'] == "otro") & ($array['otro'] <> "")) {
 
-			$medico_1 = ucwords($array['otro']);
-			$medico_1 = ucwords(strtolower($medico_1));
-
-			//if ( strpos($medico_1, 'Dr.') === false ) {
-			//	$medico_1 = 'Dr. '.$medico_1;
-			//}		
-
-			$data['medico'] = $array['medico'].' - '.$medico_1;
-		}
-		else {
-			$data['medico'] = $array['medico'];
-		}
+		// 	$medico_1 = ucwords($array['otro']);
+		// 	$medico_1 = ucwords(strtolower($medico_1));
+		// 	$data['medico'] = $array['medico'].' - '.$medico_1;
+		// }
+		// else {
+		$data['medico'] = $array['medico'];
+		// }
 
 		if (!isset($array['sel_estado']))
 			$data['estado'] = "";
@@ -372,11 +404,19 @@ class Main_model extends CI_Model
 
 		$query = $this->db->query("SELECT * FROM turnos WHERE id = '$id'");
 		
-		foreach ($query->result() as $resultado)
+		if ($query->num_rows()>0)
 		{
-			$data[] = $resultado;
+			$row = $query->row();
+			return $row;
 		}
-		return $data;
+		else
+			return null;
+
+		// foreach ($query->result() as $resultado)
+		// {
+		// 	$data[] = $resultado;
+		// }
+		// return $data;
 	}
 
 	function delete_turno($id)
@@ -424,28 +464,36 @@ class Main_model extends CI_Model
 	function cantidad_turnos_man($fecha,$medico_seleccionado) 
 	{
 		//$medico_seleccionado = $this->session->userdata('medico_seleccionado');
-		$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
+		// if ($medico_seleccionado == "todos")
+		// 	$medico = $this->main_model->get_medico_by_id($medico_seleccionado)->nombre;
+		// else
+		// 	$medico = "";
 
-		if ($medico == null)
+		if ($medico_seleccionado == "todos")
 			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
-		else {
-			//$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
-			$query = $this->db->query("SELECT * FROM turnos WHERE medico = '$medico' AND fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
-		}	
+		else if ($medico_seleccionado == "otro")
+			$query = $this->db->query("SELECT * FROM turnos WHERE medico LIKE '%otro%' AND fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
+		else
+			$query = $this->db->query("SELECT * FROM turnos WHERE medico = '$medico_seleccionado' AND fecha = '$fecha' AND hora <= '14:00:00' ORDER BY hora");
+
 		return $query->num_rows();
 	}
 
 	function cantidad_turnos_tarde($fecha, $medico_seleccionado) 
 	{
 		//$medico_seleccionado = $this->session->userdata('medico_seleccionado');
-		$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
+		// if ($medico_seleccionado == "todos")
+		// 	$medico = $this->main_model->get_medico_by_id($medico_seleccionado)->nombre;
+		// else
+		// 	$medico = "";
 
-		if ($medico == null)
-			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");	
-		else {
-			//$medico = $this->main_model->get_medico_by_id($medico_seleccionado);
-			$query = $this->db->query("SELECT * FROM turnos WHERE medico = '$medico' AND fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");
-		}
+		if ($medico_seleccionado == "todos")
+			$query = $this->db->query("SELECT * FROM turnos WHERE fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");
+		else if ($medico_seleccionado == "otro")
+			$query = $this->db->query("SELECT * FROM turnos WHERE medico LIKE '%otro%' AND fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");
+		else
+			$query = $this->db->query("SELECT * FROM turnos WHERE medico = '$medico_seleccionado' AND fecha = '$fecha' AND hora > '14:00:00' ORDER BY hora");
+
 		return $query->num_rows();
 	}
 
@@ -715,15 +763,17 @@ class Main_model extends CI_Model
 		
 		if ($query->num_rows()>0)
 		{
-			foreach ($query->result() as $fila)
-			{
-				$data[] = $fila;
-			}
-			return $data;
+			$row = $query->row();
+			return $row;
+			// foreach ($query->result() as $fila)
+			// {
+			// 	$data[] = $fila;
+			// }
+			// return $data;
 		}
 		else
 		{
-			return 0;
+			return null;
 		}	
 
 	}
@@ -937,7 +987,7 @@ class Main_model extends CI_Model
    			$cant_turnos_tarde = $this->cantidad_turnos_tarde($fecha, $medico_seleccionado);
    			$doble_jornada = 0;
 
-   			$medico_seleccionado = $this->session->userdata('medico_seleccionado');
+   			//$medico_seleccionado = $this->session->userdata('medico_seleccionado');
 
    			if ( date("l", strtotime($fecha)) == "Tuesday" )
    			{
@@ -1011,7 +1061,7 @@ class Main_model extends CI_Model
 	}
 */
 	function get_config_medico($medico) {
-		$query = $this->db->query("SELECT config FROM medicos WHERE nombre = '$medico'");
+		$query = $this->db->query("SELECT config FROM medicos WHERE id_medico = '$medico'");
 		 return $query->row();
 	}
 
@@ -1199,7 +1249,7 @@ class Main_model extends CI_Model
 		//$medico = $array['sel_medico'];
 
 		if (strpos($array['sel_medico'], 'Otro') === false)
-			$medico = $this->main_model->get_medico_by_id($array['sel_medico']);
+			$medico = $this->main_model->get_medico_by_id($array['sel_medico'])->nombre;
 		else
 			$medico = $array['sel_medico'];
 
@@ -1227,7 +1277,7 @@ class Main_model extends CI_Model
 		$estado = $array['estado'];
 
 		if (strpos($array['sel_medico'], 'Otro') === false)
-			$medico = $this->main_model->get_medico_by_id($array['sel_medico']);
+			$medico = $this->main_model->get_medico_by_id($array['sel_medico'])->nombre;
 		else
 			$medico = $array['sel_medico'];
 
@@ -1239,7 +1289,7 @@ class Main_model extends CI_Model
 		$query = $this->db->query("SELECT id FROM facturacion WHERE id_turno = '$id'");
 
 		if ($query->num_rows>0)
-			$this->db->query("UPDATE facturacion SET medico = '$medico', usuario = '$usuario', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', facturacion_localidad = '$fact_localidad', atendido_localidad = '$at_localidad', obra_turno = '$obra_turno' WHERE id_turno = '$id'");
+			$this->db->query("UPDATE facturacion SET medico = '$medico', usuario = '$usuario', datos = '$data', ordenes_pendientes = '$ordenes', estado = '$estado', facturacion_localidad = '$fact_localidad', atendido_localidad = '$at_localidad', obra_turno = '$obra_turno', fecha = '$fecha' WHERE id_turno = '$id'");
 		else
 			$this->db->query("INSERT INTO facturacion (id_turno,paciente,ficha,datos,ordenes_pendientes,medico,usuario,fecha,estado,facturacion_localidad,atendido_localidad,obra_turno) VALUES ('$id','$paciente','$ficha','$data','$ordenes','$medico','$usuario','$fecha','$estado','$fact_localidad','$at_localidad','$obra_turno') ");
 		/*
@@ -1263,7 +1313,10 @@ class Main_model extends CI_Model
 		$date_from = $array['fecha_desde'];
 		$date_to = $array['fecha_hasta'];
 
-		$medico = $this->get_medico_by_id($medico);
+		if ($medico != "todos")
+			$medico = $this->get_medico_by_id($medico)->nombre;
+		else
+			$medico = "";
 
 		if (($date_from != "") && ($date_to != ""))
 			$between = "AND (fecha BETWEEN '$date_from' AND '$date_to')";
@@ -1292,10 +1345,12 @@ class Main_model extends CI_Model
 			foreach ($query->result() as $fila)
 			{	
 				$var = $this->get_turno_by($fila->id_turno);
-				if ( is_null($var[0]) )
+				//if ( is_null($var[0]) )
+				if ( is_null($var) )	
 					$fila->id_paciente = "";
 				else
-					$fila->id_paciente = $var[0]->id_paciente;
+					$fila->id_paciente = $var->id_paciente;
+					//$fila->id_paciente = $var[0]->id_paciente;
 				
 				//print_r($var[0]);
 				//echo $var[0]->id_paciente;
@@ -1465,7 +1520,12 @@ class Main_model extends CI_Model
 
 		$obra = $array['sel_obra_'];
 		$practica = $array['sel_practica_'];
-		$medico = $this->get_medico_by_id($array['sel_medico_']);
+
+		if ($array['sel_medico_'] != "todos")
+			$medico = $this->get_medico_by_id($array['sel_medico_'])->nombre;
+		else
+			$medico = "";
+
 		$paciente = ucwords($array['busqueda_paciente']);
 		//$cirujano = $this->get_medico_by_id($_POST['sel_cirujano']);
 
@@ -1745,6 +1805,246 @@ class Main_model extends CI_Model
 		$this->db->query($str);
 
 	}
+
+	function fill_tabla($result, $medico) {
+
+		$var = json_decode($result['os'],true);
+		$obras = $var['ObrasSociales'];
+
+		$var = json_decode($result['pr'],true);
+		$practicas = $var['Nomenclador'];
+
+		$flag = true;
+
+		foreach ( $obras as $key => $value) {
+
+			$id = $value['ID'];
+			$nombre = $value['Nombre'];
+
+			$str = "INSERT INTO obras_sociales (id, obra, tipo, medicos) VALUES (
+									'$id',
+									'$nombre',
+									'AMR',
+									'$medico'
+								) ON DUPLICATE KEY UPDATE medicos = CONCAT(medicos, ';', '$medico')";
+
+			$flag = $flag && $this->db->query($str);
+		}
+
+		if ($flag != true)
+			echo "Fallo la actualización de obras sociales para ".$medico."<br>";
+		else
+			echo "Obras sociales actualizadas correctamente para ".$medico."<br>";
+
+
+		$flag = true;
+
+		foreach ( $practicas as $key => $value) {
+
+			$id = $value['ID'];
+			$nombre = $value['Nombre'];
+
+			$str = "INSERT INTO practicas (id, practica, medicos) VALUES (
+									'$id',
+									'$nombre',
+									'$medico'
+								) ON DUPLICATE KEY UPDATE medicos = CONCAT(medicos, ';', '$medico')";
+
+			$flag = $flag && $this->db->query($str);
+		}
+
+		if ($flag != true)
+			echo "Fallo la actualización de practicas para medico ".$medico."<br>";
+		else
+			echo "Practicas actualizadas correctamente para ".$medico."<br>";
+	
+	}
+
+	function get_obras_sociales_medico($id_medico, $depto) {
+
+		$string = "SELECT * FROM obras_sociales WHERE medicos LIKE '%".$id_medico."%' AND depto LIKE '%".$depto."%'";
+		
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+
+			return $data;
+		}
+		else
+			return null;
+	}
+
+	function get_practicas_medico($id_medico) {
+
+		$string = "SELECT * FROM practicas WHERE medicos LIKE '%".$id_medico."%'";
+		
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{
+				$data[] = $fila;
+			}
+
+			return $data;
+		}
+		else
+			return null;
+	}
+
+	function update_facturacion_2($data) {
+
+		$id_turno = $data['id_turno'];
+		$paciente = $data['paciente'];
+		$id_paciente = $data['id_paciente'];
+		$ficha = $data['ficha'];
+		$fecha_fact = $data['fecha_fact'];
+		$fecha_turno = $data['fecha_turno'];
+		$lugar_facturacion = $data['lugar_facturacion'];
+		$lugar_atencion = $data['lugar_atencion'];
+		$medico = $data['medico_sol'];
+		$turno = $data['turno'];
+		$nro_factura = $data['nro_factura'];
+		$tipo_factura = $data['tipo_factura'];
+		$importe_factura = $data['importe_factura'];
+		$usuario = $usuario = $this->session->userdata('apellido').', '.$this->session->userdata('nombre');
+		
+
+		$str = "INSERT INTO facturacion2 (id_turno, paciente, id_paciente, ficha, fecha_fact, fecha_turno, facturacion_localidad, atendido_localidad, medico_turno, datos, nro_factura, tipo_factura, importe_factura, usuario) VALUES (
+											'$id_turno',
+											'$paciente',
+											'$id_paciente',
+											'$ficha',
+											'$fecha_fact',
+											'$fecha_turno',
+											'$lugar_facturacion',
+											'$lugar_atencion',
+											'$medico',
+											'$turno',
+											'$nro_factura',
+											'$tipo_factura',
+											'$importe_factura',
+											'$usuario'
+										) ON DUPLICATE KEY UPDATE 	fecha_fact = '$fecha_fact',
+																	fecha_turno = '$fecha_turno',
+																	facturacion_localidad = '$lugar_facturacion',
+																	atendido_localidad = '$lugar_atencion',
+																	medico_turno = '$medico',
+																	datos = '$turno',
+																	nro_factura = '$nro_factura',
+																	tipo_factura = '$tipo_factura',
+																	importe_factura = '$importe_factura',
+																	usuario = '$usuario'";
+
+		$this->db->query($str);
+
+	}
+
+	function get_pacientes($term) {
+
+		if (ctype_alpha($term)) { 
+		    $string = "SELECT id, nombre, apellido, nroficha, obra_social, tel1, tel2 FROM pacientes WHERE apellido LIKE '".$term."%' ORDER BY id DESC LIMIT 10"; 
+		} 
+		else { 
+		    $string = "SELECT id, nombre, apellido, nroficha, obra_social, tel1, tel2 FROM pacientes WHERE nroficha LIKE '".$term."%' ORDER BY id DESC LIMIT 10"; 
+		} 
+
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			foreach ($query->result() as $fila)
+			{	
+				$fila->label 		= 	utf8_encode(stripslashes($fila->apellido)).', '.utf8_encode(stripslashes($fila->nombre));
+				$fila->value 		=	utf8_encode(stripslashes($fila->id));
+				$fila->ficha 		=	utf8_encode(stripslashes($fila->nroficha));
+				$fila->nombre 		=	utf8_encode(stripslashes($fila->nombre));
+				$fila->apellido 	=	utf8_encode(stripslashes($fila->apellido));
+				$fila->obra_social 	=	utf8_encode(stripslashes($fila->obra_social));
+
+				$data[] = $fila;
+			}
+
+			return $data;
+		}
+		else
+			return null;
+
+	}
+
+	function get_data_obra($id) {
+
+		$string = "SELECT * FROM practicas WHERE id = '".$id."'"; 
+
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			$row = $query->row();
+			return $row;
+		}
+		else
+			return null;
+	}
+
+	function get_facturacion_by_turno($id) {
+
+		$string = "SELECT * FROM facturacion2 WHERE id_turno = '".$id."'"; 
+
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			$row = $query->row();
+			return $row;
+		}
+		else
+			return null;
+
+	}
+
+	function get_practica_by($id) {
+
+		$string = "SELECT * FROM practicas WHERE id = '".$id."'"; 
+
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			$row = $query->row();
+			return $row;
+		}
+		else
+			return null;
+
+	}
+
+	function get_obra_by($id) {
+
+		$string = "SELECT * FROM obras_sociales WHERE id = '".$id."'"; 
+
+		$query = $this->db->query($string);
+
+		if ($query->num_rows()>0)
+		{
+			$row = $query->row();
+			return $row;
+		}
+		else
+			return null;
+
+	}
+
+	function get_default() {
+		return "marianj";
+	}
+
 }
 
 ?>

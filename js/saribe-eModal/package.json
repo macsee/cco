@@ -1,0 +1,40 @@
+{
+    "author": "Samuel Ribeiro Pinto",
+    "contributors": [
+        "Samuel Ribeiro"
+    ],
+    "dependencies": {
+        "jquery": "~2.0.0",
+        "bootstrap": "~3.3.5"
+    },
+    "description": "Easy Modal for bootstrap, is a simple way to create modal dialogs using javaScript.",
+    "keywords": [
+        "bootstrap",
+        "modal",
+        "dialog",
+        "iFrame",
+        "ajax",
+        "confirm",
+        "javaScript",
+        "easy"
+    ],
+    "license": "MIT",
+    "main": "eModal.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/saribe/eModal.git"
+    },
+    "version": "1.2.05",
+    "name": "emodal",
+    "bugs": {
+        "url": "https://github.com/saribe/eModal/issues"
+    },
+    "homepage": "https://github.com/saribe/eModal#readme",
+    "directories": {
+        "test": "test"
+    },
+    "devDependencies": { },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

@@ -69,7 +69,7 @@
 	<div id="dialog-confirm" title="¿Borrar turno?"></div>
 	
 	<?php
-	 	$data = $result[0];
+	 	$data = $result;
 		$fecha = $data->fecha;
 		$minutos = date('i', strtotime($data->hora));
 		$hora_completa = date('H:i', strtotime($data->hora));

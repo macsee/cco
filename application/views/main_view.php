@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="<?php echo base_url('js/jquery-1.8.2.min.js')?>"></script>
 	<script type="text/javascript" src="<?php echo base_url('js/jquery-ui-1.8.24.custom.min.js')?>"></script>
 	<link href="<?php echo base_url('css/jquery-ui.css')?>" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="<?php echo base_url('js/helper.js')?>"></script>
 	<style>
 	.ui-widget {
 		font-size: 14px;
@@ -60,13 +61,180 @@
 		width: 200px;
 	}
 
+	.row {
+		//overflow: auto;
+		height: 100px;
+		background-color: #F7F7F7;
+		margin-bottom: 5px;
+
+	}
+
+	#container {
+		height: 273px;
+		overflow-y: scroll;
+		margin-bottom: 20px;
+		border-top: 1px solid #CCC;
+		border-bottom: 1px solid #CCC;
+	}
+
+	#add {
+		font-size: 0.9em;
+	}
+
+	.cerrar {
+		font-size: 0.7em;
+		font-weight: bold;
+		cursor: pointer;
+	}
+
 	</style>
 	<script>
+	var base_url = '<?php echo base_url(); ?>';
 
 	var checks = ["cvc", "iol", "topo", "me", "oct", "rfgc", "rfg", "hrt", "obi", "paqui", "consulta", "laser", "yag"];
 
+	var rows = [];
+	var count = 0;
+	var values_paciente = [];
+
+
+	$(document).on("change",".get_data",function(){
+
+		var id = $(this).closest('.row').attr("id");
+		get_os_pr($("#"+id).find('select[name="obra[]"]'), $("#"+id).find('select[name="practica[]"]'), "", $("#"+id).find('select[name="medico_fact[]"]').val());
+
+	});
+
+	$(document).on("change","#lugar_facturacion",function(){
+
+		$.each(rows,function(key, value) 
+		{	
+			get_os_pr($("#"+id).find('select[name="obra[]"]'), $("#"+id).find('select[name="practica[]"]'), "", $("#"+id).find('select[name="medico_fact[]"]').val());
+			
+		});	
+	});
+
+	$(document).on("click",".cerrar",function(){
+		$(this).closest('.row').remove();
+
+		removeItem = $(this).closest('.row').attr('id');
+		rows.splice( $.inArray(removeItem,rows) ,1 );
+
+	});
+
+
+	$(document).on("click",".orden",function(){
+		if ($(this).prop("checked") == true)
+			$(this).closest('.row').find('input[name="debe_ord[]"]').val("SI");
+		else
+			$(this).closest('.row').find('input[name="debe_ord[]"]').val("NO");
+	});
+
+	$(document).on("click",".factura",function(){
+		if ($(this).prop("checked") == true)
+			$(this).closest('.row').find('input[name="factura[]"]').val("SI");
+		else
+			$(this).closest('.row').find('input[name="factura[]"]').val("NO");
+	});
+
+	function make_row(id,data) {
+
+		rows.push(id);
+
+		var medicos = '<?php echo json_encode($medicos); ?>';
+
+		var medicos = JSON.parse(medicos);
+
+		var html = "";
+
+		$.each( medicos, function( key, value ) {
+		    html += '<option value = "'+value['id_medico']+'">'+value['nombre']+'</option>';
+		});
+
+		$("#container").append(
+
+			'<div class = "row" id = "'+id+'">'+
+				'<input type = "hidden" name = "nombre_obra[]">'+
+				'<input type = "hidden" name = "nombre_practica[]">'+
+				'<div style = "float:left;margin-top:10px;margin-left:20px">'+
+					'<div style = "float:left;margin-right:50px">'+
+						'Datos: '+
+						'<select class = "get_data" name= "medico_fact[]" style = "width:140px">'+
+						html+
+						'</select>'+
+					'</div>'+
+					'<div style = "float:left;margin-right:20px">'+
+						'Práctica: '+
+						'<select name= "practica[]" style = "width:200px">'+
+						'</select>'+
+					'</div>'+
+					'<div style = "float:left;margin-right:20px">'+
+						'Obra Social: '+
+						'<select name= "obra[]" style = "width:200px">'+
+						'</select>'+
+					'</div>'+
+					'<div style = "float:left">'+
+						'<a href="#" class="cerrar" role="button">'+
+							'<span class="ui-icon ui-icon-closethick">close</span>'+
+						'</a>'+
+					'</div>'+
+				'</div>'+
+				'<div style = "float:left;margin-left:20px;margin-top:20px;margin-bottom:10px">'+
+					'<div style = "float:left;margin-right:50px">'+
+						'Nro Afiliado: <input name = "nro_afiliado[]" style = "width:120px" autocomplete="off">'+
+					'</div>'+
+					'<div style = "float:left;margin-right:20px">'+
+						'Paga Plus: <input name = "plus[]" style = "width:50px;margin-left:2px" autocomplete="off">'+
+					'</div>'+
+					'<div style = "float:left;margin-right:50px">'+
+						'Debe Plus: <input name="debe_plus[]" style="width:50px" autocomplete="off">'+
+					'</div>'+
+					'<div style = "float:left;margin-right:20px">'+
+						'Debe Orden <input type = "checkbox" class = "orden">'+
+						'<input type = "hidden" name = "debe_ord[]" value = "NO">'+
+					'</div>'+
+					'<div style = "float:left;">'+
+						'Factura <input type = "checkbox" class = "factura">'+
+						'<input type = "hidden" name = "factura[]" value = "NO">'+
+					'</div>'+
+				'</div>'+
+			'</div>');
+		
+
+		//data = values_turno[id];
+		//console.log(data['practica']);
+
+		if (data != null) {
+			get_os_pr($("#"+id).find('select[name="obra[]"]'), $("#"+id).find('select[name="practica[]"]'), "", $("#"+id).find('select[name="medico_fact[]"]').val(), function() {
+				$("#"+id).find('select[name="practica[]"]').val(data['practica']);
+				$("#"+id).find('select[name="obra[]"]').val(data['obra']);
+				$("#"+id).find('select[name="medico_fact[]"]').val(data['medico_fact']);
+				$("#"+id).find('input[name="nro_afiliado[]"]').val(data['nro_afiliado']);
+				$("#"+id).find('input[name="plus[]"]').val(data['plus']);
+				$("#"+id).find('input[name="debe_plus[]"]').val(data['debe_plus']);
+				$("#"+id).find('input[name="debe_ord[]"]').val(data['debe_ord']);
+				$("#"+id).find('input[name="factura[]"]').val(data['factura']);
+
+				if (data['debe_ord'] === "SI")
+					$("#"+id).find(".orden").prop('checked', true);
+
+				if (data['factura'] === "SI")
+					$("#"+id).find(".factura").prop('checked', true);
+			});
+		}
+		else {
+			get_os_pr($("#"+id).find('select[name="obra[]"]'), $("#"+id).find('select[name="practica[]"]'), "", values_paciente['medico'], function() {
+				$("#"+id).find('select[name="medico_fact[]"]').val(values_paciente['medico']);
+				$("#"+id).find('select[name="obra[]"]').val(values_paciente['obra_social']);	
+			});
+		}	
+
+		count = count + 1;
+	}
+
 	$(document).ready(function()
 	{	
+
 		$("#cita_hora").keyup(function() {
 			
    			if($(this).val().length == $(this).attr('maxlength')) {
@@ -80,32 +248,39 @@
 		{ 
 			var id = $(this).attr("id");
 			if ($("#detalles_"+id).is(":hidden")) {
+
 				$('[id^="detalles_"]').slideUp("slow"); 
 				$("#detalles_"+id).slideDown("slow");
 				
-				//$("#detalles_*").;
 			} 
 			else {
 				$("#detalles_"+id).slideUp("slow");
 			}		
 		});
-		
-		$('input[name="chk_turno[]"]').change(function(event) {
-      		// State has changed to checked/unchecked.
-      		var id = $(this).attr("id");
-      		var tipo = id.substring(0, id.indexOf("_"));
 
-      		if ($(this).prop("checked") == false) {
-				$("#sel_"+tipo).prop('disabled', true);
-				$("#coseguro_"+tipo).prop('disabled', true);
-				$("#"+tipo+"_ord_chk").prop('disabled', true);	
-			}
-			else {
-				$("#sel_"+tipo).removeAttr('disabled');
-				$("#coseguro_"+tipo).removeAttr('disabled');
-				$("#"+tipo+"_ord_chk").removeAttr('disabled');
-			}
+		$("#add").click(function(event) {
+
+			event.preventDefault();
+			make_row(count,null);
+		
 		});
+		
+		// $('input[name="chk_turno[]"]').change(function(event) {
+  //     		// State has changed to checked/unchecked.
+  //     		var id = $(this).attr("id");
+  //     		var tipo = id.substring(0, id.indexOf("_"));
+
+  //     		if ($(this).prop("checked") == false) {
+		// 		$("#sel_"+tipo).prop('disabled', true);
+		// 		$("#coseguro_"+tipo).prop('disabled', true);
+		// 		$("#"+tipo+"_ord_chk").prop('disabled', true);	
+		// 	}
+		// 	else {
+		// 		$("#sel_"+tipo).removeAttr('disabled');
+		// 		$("#coseguro_"+tipo).removeAttr('disabled');
+		// 		$("#"+tipo+"_ord_chk").removeAttr('disabled');
+		// 	}
+		// });
 
 		$( "#seleccion_medico" ).change(function () {
 			var base_url = '<?php echo base_url(); ?>';
@@ -210,143 +385,94 @@
 
    	function clear_all() {
 
-   		$.each( checks, function( i, val ) {
+  //  		$.each( checks, function( i, val ) {
 							
-			$("#"+val+"_chk").prop('checked',false);
-			$("#sel_"+val).val("");
-			$("#coseguro_"+val).val("");
-			$("#"+val+"_ord_chk").prop('checked', false);
+		// 	$("#"+val+"_chk").prop('checked',false);
+		// 	$("#sel_"+val).val("");
+		// 	$("#coseguro_"+val).val("");
+		// 	$("#"+val+"_ord_chk").prop('checked', false);
 
-			$("#sel_"+val).removeAttr('disabled');
-			$("#coseguro_"+val).removeAttr('disabled');
-			$("#"+val+"_ord_chk").removeAttr('disabled');
+		// 	$("#sel_"+val).removeAttr('disabled');
+		// 	$("#coseguro_"+val).removeAttr('disabled');
+		// 	$("#"+val+"_ord_chk").removeAttr('disabled');
 			
-			$("#sel_estado").removeAttr('disabled');
+		// 	$("#sel_estado").removeAttr('disabled');
+		// });
+
+		// $("#sincargo_chk").prop('checked',false);
+
+		$.each( rows, function( i, val ) {
+			$("#"+val).remove();
+			rows = [];
 		});
 
-		$("#sincargo_chk").prop('checked',false);
+		// $("#datos_paciente").html("");
+		// $("#datos_ficha").html("");	
    	};
 
-   	function confirmar(id) {
+   	function openForm(id) {
 
-   		var base_url = '<?php echo base_url(); ?>';
+   		clear_all();
    		
-   		var values = {
-            		'id': id,
-    	};
-
-    	clear_all();
-
         $.ajax({
-				type: 'POST',
-				url: base_url+"confirmar.php",
-				data: values,
-				dataType: 'json',
-				success:function(response)
-				{	
+			//type: 'POST',
+			url: base_url+"/index.php/main/get_info/"+id,
+			//data: values,
+			dataType: 'json',
+			success:function(response)
+			{	
+				values_turno = response['data_turno'];
+				values_paciente = response['data_paciente'];
 
-					$("#id_turno").val(id);
-					$("#ficha_fact").val(response["ficha"]);
-					$("#fecha_fact").val(response["fecha"]);
-					$("#apellido_fact").val(response["apellido"]);
-					$("#nombre_fact").val(response["nombre"]);
-					$("#obra_turno").val(response["obra_social"]);
+				$.each( values_turno, function(key,val) {
+					make_row(key, values_turno[key]);
+				});
 
-					$("#nombreApellido").html(response["apellido"]+", "+response["nombre"]);
-
-					//$("#nombreApellido").html(id);
-					$("#ficha").html(response["ficha"]);
-
-					if (response["estado"] == "ok") {
-						$('#sel_estado').append($("<option></option>").attr("value","ok").text("OK"));
-						$("#sel_estado").prop('disabled', true);
-					}
-					
-					$("#sel_estado").val(response["estado"]);
-					
-						
-					$("#sel_facturacion").val(response["fact_localidad"]);
-					$("#sel_atendido").val(response["at_localidad"]);
-
-					//$("#medico_fact").html(response["medico"]);
-					//$("#sel_medico").val(response["medico"]);
-					
-						
-					if (response["medico"].indexOf("Otro") >= 0) {
-						$('#sel_medico option[value="otro"]').remove();
-						$('#sel_medico').append($("<option></option>").attr("value",response["medico"]).text(response["medico"])); 
-					}	
-						
-					
-					$("#sel_medico option").filter(function() {
-						return this.text == response["medico"];
-					}).attr('selected', true);
-					
-
-					if (response["facturar"] == "SI") {
-
-						var json = JSON.parse(response['tipo']);
-						var orden = JSON.parse(response['orden']);
-
-						$.each( checks, function( i, val ) {
-							if (json[val] != "") {
-								$("#"+val+"_chk").prop('checked',true);
-								$("#sel_"+val).val(json[val]);
-								$("#coseguro_"+val).val(json[val+"_coseguro"]);
-								if (orden != null)
-									$("#"+val+"_ord_chk").prop('checked', orden[val+"_orden"] == "SI");
-							}	
-							else {
-								$("#sel_"+val).prop('disabled', true);
-								$("#coseguro_"+val).prop('disabled', true);
-								$("#"+val+"_ord_chk").prop('disabled', true);
-							}
-							
-						});
-						
-						$("#sincargo_chk").prop('checked',json.sin_cargo != "");
-
-					}
-					else {
-
-						$.each( checks, function( i, val ) {
-							if (response["tipo"].toLowerCase().indexOf(val) >= 0){
-								$("#"+val+"_chk").prop('checked',true);
-								$("#sel_"+val).val(response["obra_social"]);
-							}
-							else {
-								$("#sel_"+val).prop('disabled', true);
-								$("#coseguro_"+val).prop('disabled', true);
-								$("#"+val+"_ord_chk").prop('disabled', true);
-							}
-						});
-
-						if (response["tipo"].toLowerCase().indexOf('s/cargo') >= 0)
-							$("#sincargo_chk").prop('checked',true);
-						
-					}
-
-				},
-		});
-   		
-        $( "#confirmar_datos" ).dialog({
-			autoOpen: true,
-            resizable: false,
-			width: 1150,
-            height: 520,
-            modal: true,
-            buttons: {
-                "Confirmar": function() {
-					//var x = url+"/borrar_turno/"+data;
-					//location.href = x;
-					$("#form_facturacion").submit();
-                },
-				"Cancelar": function() {
-                    $( this ).dialog( "close" );
+				if (values_paciente["medico"].indexOf("Otro") >= 0) {
+					$('select[name="medico_sol"] option[value="otro"]').remove();
+					$('select[name="medico_sol"]').append($("<option></option>").attr("value",values_paciente["medico"]).text(values_paciente["medico"])); 
+				}	
+				else {
+					$('select[name="medico_sol"]').val(values_paciente["medico"]);
 				}
-            }
-        });
-        
+
+				$("#datos_paciente").html(values_paciente["paciente"]);
+				$("input[name='datos_paciente'").val(values_paciente["paciente"]);
+
+				$("#datos_ficha").html(values_paciente["ficha"]);
+				$("input[name='datos_ficha'").val(values_paciente["ficha"]);
+
+				$("input[name='datos_id_paciente'").val(values_paciente["id_paciente"]);
+				$("input[name='datos_id_turno'").val(values_paciente["id_turno"]);
+				$("input[name='datos_fecha_turno'").val(values_paciente["fecha_turno"]);
+
+				$("select[name='lugar_atencion']").val(values_paciente['lugar_atencion']);
+				$("select[name='lugar_facturacion']").val(values_paciente['lugar_facturacion']);
+
+				$("input[name='nro_factura']").val(values_paciente['nro_factura']);
+				$("input[name='importe_factura']").val(values_paciente['importe_factura']);
+				$("select[name='tipo_factura']").val(values_paciente['tipo_factura']);
+						
+				$( "#confirmar_datos" ).dialog({
+					autoOpen: true,
+		            resizable: false,
+					width: 930,
+		            height: 580,
+				    modal: true,
+		            buttons: {
+		                "Confirmar": function() {
+							//var x = url+"/borrar_turno/"+data;
+							//location.href = x;
+							$("#form_facturacion").submit();
+		                },
+						"Cancelar": function() {
+		                    $( this ).dialog( "close" );
+						}
+		            }
+		        }); 
+
+			},
+		});
    	};
 
    	function chequear(fecha,hora,minutos) {
@@ -379,7 +505,7 @@
                 }
             }
         });
-   };
+   	};
 
    function submitform() {
   		document.form_nuevo.submit();
@@ -424,19 +550,19 @@
 		<select id = "seleccion_medico" name="seleccion_medico">
 			<?php
 			
-					echo '<option value = "todos" selected>TODOS</option>';
-					foreach ($medicos as $med) {	
-						if ($medico_selected == $med->id_medico)
-							if ($med->nombre == "Otro")
-								echo '<option value ='.$med->id_medico.' selected>'.$med->nombre.'</option>';
-							else
-								echo '<option value ='.$med->id_medico.' selected>Dr. '.$med->nombre.'</option>';
+				echo '<option value = "todos" selected>TODOS</option>';
+				foreach ($medicos as $med) {	
+					if ($medico_selected == $med->id_medico)
+						if ($med->nombre == "Otro")
+							echo '<option value ='.$med->id_medico.' selected>'.$med->nombre.'</option>';
 						else
-							if ($med->nombre == "Otro")
-								echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
-							else
-								echo '<option value ='.$med->id_medico.'>Dr. '.$med->nombre.'</option>';
-					}
+							echo '<option value ='.$med->id_medico.' selected>Dr. '.$med->nombre.'</option>';
+					else
+						if ($med->nombre == "Otro")
+							echo '<option value ='.$med->id_medico.'>'.$med->nombre.'</option>';
+						else
+							echo '<option value ='.$med->id_medico.'>Dr. '.$med->nombre.'</option>';
+				}
 			?>
 		</select>	
 			<!--<option value = 0>TODOS</option>
@@ -458,14 +584,14 @@
 						
 						foreach ($filas as $fila) {
 
-							if (substr_count($fila->tipo, 'CVC') OR substr_count($fila->tipo, 'TOPO') OR substr_count($fila->tipo, 'IOL') OR substr_count($fila->tipo, 'ME') OR substr_count($fila->tipo, 'OCT') OR substr_count($fila->tipo, 'RFG') ) {
-								$cantidad_estudios++;
-							}
+							// if (substr_count($fila->tipo, 'CVC') OR substr_count($fila->tipo, 'TOPO') OR substr_count($fila->tipo, 'IOL') OR substr_count($fila->tipo, 'ME') OR substr_count($fila->tipo, 'OCT') OR substr_count($fila->tipo, 'RFG') ) {
+							// 	$cantidad_estudios++;
+							// }
 							
-							if ($fila->medico == $medico_selected) {
-								$cantidad++; 
-							}
-							else
+							if ($fila->medico == $medico_selected)
+								$cantidad++;
+
+							if ($medico_selected == "otro")
 								$cantidad++;
 
 						}
@@ -731,6 +857,7 @@
 					//echo '<div class = "clickeable" id = "'.$fila->id.'" style="cursor: pointer;">';
 
 						echo '<div class = "hora_ocupada">';
+
 							echo '<div class = "horario">';
 								if (strpos($this->session->userdata('funciones'), "Turnos") !== false )
 									echo '<a href="'.base_url("/index.php/main/nuevo_turno/".$fila->fecha.'/'.$hora.'/'.$minutos).'" name="'.$hora_completa.'">'.$hora_completa.'</a>';
@@ -750,28 +877,26 @@
 
 						echo '<div class = "clickeable" id = "'.$fila->id.'" style="cursor: pointer;">';
 
-						echo '<div class = "nombre_apellido">'; 	
-							echo $nombre = $fila->apellido.', '.$fila->nombre;
+							echo '<div class = "nombre_apellido">'; 	
+								echo $nombre = $fila->apellido.', '.$fila->nombre;
+							echo '</div>';
+
+							echo '<div class = "medico">';
+								$auxi = explode(' - ', $fila->medico);
+								$med = $auxi[0];
+								if ($med == "Otro") {
+									if (sizeof($auxi) > 1)
+										echo "Dr. ".$auxi[1];
+									else
+										echo "Otro";
+								}
+								else {
+									echo "Dr. ".$fila->medico;	
+								}
+							echo '</div>';
+
 						echo '</div>';
 
-						echo '<div class = "medico">';
-							$auxi = explode(' - ', $fila->medico);
-							$med = $auxi[0];
-							if ($med == "Otro") {
-								if (sizeof($auxi) > 1)
-									echo "Dr. ".$auxi[1];
-								else
-									echo "Otro";
-							}
-							else {
-								echo "Dr. ".$fila->medico;	
-							}
-						echo '</div>';
-
-						echo '<div class = "tipo_turno">';
-							echo $fila->tipo;
-						echo '</div>';
-					echo '</div>';	
 						echo '<div class = "valor_ficha">';
 							if ($fila->ficha == -1) {
 								//echo anchor('main/nuevo_paciente/'.$fila->nombre.'/'.$fila->apellido, 'Nuevo Paciente');	
@@ -817,7 +942,7 @@
 								else {
 
 									if ($fila->ya_facturado == 0)
-										echo '<a onclick = "return confirmar(\''.$fila->id.'\')">';
+										echo '<a onclick = "return openForm(\''.$fila->id.'\')">';
 									else
 										echo '<a onclick = "return error()">';
 								}	
@@ -841,6 +966,18 @@
 									
 						echo '</div>';
 
+					echo '</div>';
+					echo '<div class = "fila_inferior">';
+						// echo '<div style = "float:left;margin-left:10px;margin-right:32px;font-weight:bold">';
+						// 	echo "Practicas:";
+						// echo '</div>';
+						$practicas = json_decode($fila->tipo);
+						echo '<div class = "tipo_turno" style = "margin-left:105px">';
+							foreach ($practicas as $key => $value) {
+								echo "<li>".$value->nombre_practica."</li>";
+								//echo "<br>";
+							}
+						echo '</div>';
 					echo '</div>';
 					
 				echo '</div>';
@@ -1022,383 +1159,455 @@
 
 
 <div id="confirmar_datos" title="Actualizar datos turno" style = "display:none">
-<form id = "form_facturacion" action="<?php echo base_url('index.php/main/update_facturacion_turno/0')?>" method="post">
-	<div style = "float:left;font-weight:bold;margin-right:10px">Paciente:</div><div id = "nombreApellido" style = "float:left"></div>
-	<div style = "float:left;font-weight:bold;margin-right:10px;margin-left: 50px">Ficha: </div><div id = "ficha" style = "float:left"></div>
-	<div style = "float:left;width:100%">
-		<div style = "float:left;width:50%">
-			<table class= "confirm_tabla" style = "margin-top:40px">
-				<tr>
-					<td>
-						<input id = "cvc_chk" name = "chk_turno[]" value = "CVC" type = "checkbox"/> CVC 			
-					</td>
-					<td>
-						<select id = "sel_cvc" name="sel_cvc">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "cvc_ord_chk" name = "chk_ord[]" value = "ord_cvc" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_cvc" name = "coseguro_cvc" style = "width:40px" autocomplete="off"/>
-					</td>
-				<tr>
-				</tr>	
-					<td>
-						<input id = "iol_chk" name = "chk_turno[]" value = "IOL" type = "checkbox"/> IOL 			
-					</td>
-					<td>
-						<select id = "sel_iol" name="sel_iol">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "iol_ord_chk" name = "chk_ord[]" value = "ord_iol" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_iol" name = "coseguro_iol" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "oct_chk" name = "chk_turno[]" value = "OCT" type = "checkbox"/> OCT			
-					</td>
-					<td>
-						<select id = "sel_oct" name="sel_oct">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "oct_ord_chk" name = "chk_ord[]" value = "ord_oct" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_oct" name = "coseguro_oct" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "me_chk" name = "chk_turno[]" value = "ME" type = "checkbox"/> ME			
-					</td>
-					<td>
-						<select id = "sel_me" name="sel_me">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "me_ord_chk" name = "chk_ord[]" value = "ord_me" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_me" name = "coseguro_me" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "rfg_chk" name = "chk_turno[]" value = "RFG" type = "checkbox"/> RFG 			
-					</td>
-					<td>
-						<select id = "sel_rfg" name="sel_rfg">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "rfg_ord_chk" name = "chk_ord[]" value = "ord_rfg" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_rfg" name = "coseguro_rfg" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "rfgc_chk" name = "chk_turno[]" value = "RFG Color" type = "checkbox"/> RFG Color 			
-					</td>
-					<td>
-						<select id = "sel_rfgc" name="sel_rfgc">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "rfgc_ord_chk" name = "chk_ord[]" value = "ord_rfgc" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_rfgc" name = "coseguro_rfgc" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "consulta_chk" name = "chk_turno[]" value = "Consulta" type = "checkbox"/> Consulta
-					</td>
-					<td>
-						<select id = "sel_consulta" name="sel_consulta">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "consulta_ord_chk" name = "chk_ord[]" value = "ord_consulta" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_consulta" name = "coseguro_consulta" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div style = "float:left;">	
-			<table class= "confirm_tabla" style = "margin-top:40px">
-				<tr>
-					<td>
-						<input id = "hrt_chk" name = "chk_turno[]" value = "HRT" type = "checkbox"/> HRT			
-					</td>
-					<td>
-						<select id = "sel_hrt" name="sel_hrt">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "hrt_ord_chk" name = "chk_ord[]" value = "ord_hrt" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_hrt" name = "coseguro_hrt" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "obi_chk" name = "chk_turno[]" value = "OBI" type = "checkbox"/> OBI			
-					</td>
-					<td>
-						<select id = "sel_obi" name="sel_obi">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "obi_ord_chk" name = "chk_ord[]" value = "ord_obi" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_obi" name = "coseguro_obi" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "paqui_chk" name = "chk_turno[]" value = "PAQUI" type = "checkbox"/> PAQUI 			
-					</td>
-					<td>
-						<select id = "sel_paqui" name="sel_paqui">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "paqui_ord_chk" name = "chk_ord[]" value = "ord_paqui" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_paqui" name = "coseguro_paqui" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "laser_chk" name = "chk_turno[]" value = "Laser" type = "checkbox"/> Laser			
-					</td>
-					<td>
-						<select id = "sel_laser" name="sel_laser">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "laser_ord_chk" name = "chk_ord[]" value = "ord_laser" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_laser" name = "coseguro_laser" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "yag_chk" name = "chk_turno[]" value = "YAG" type = "checkbox"/> YAG
-					</td>
-					<td>
-						<select id = "sel_yag" name="sel_yag">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "yag_ord_chk" name = "chk_ord[]" value = "ord_yag" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_yag" name = "coseguro_yag" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>	
-					<td>
-						<input id = "topo_chk" name = "chk_turno[]" value = "TOPO" type = "checkbox"/> TOPO
-					</td>
-					<td>
-						<select id = "sel_topo" name="sel_topo">
-							<option></option>
-						<?php
-							foreach ($obras as $obra)
-								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
-						?>
-						</select>
-					</td>
-					<td style = "width: 110px;padding-left:10px">
-						<input id = "topo_ord_chk" name = "chk_ord[]" value = "ord_topo" type = "checkbox"/> Orden Pend.			
-					</td>
-					<td style = "text-align:right">
-						Coseguro:
-					</td>
-					<td>
-						<input id = "coseguro_topo" name = "coseguro_topo" style = "width:40px" autocomplete="off"/>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<input id = "sincargo_chk" name = "chk_turno[]" value = "S/Cargo" type = "checkbox"/> Sin Cargo
-					</td>	
-				</tr>	
-			</table>
-		</div>
-	</div>
-	<div style = "width:100%;float:left">
-		<div style = "width:100%;float:left">
-			<div style = "float:left;margin-top:20px;width:40%">
-				Estado Actual:
-				<select id = "sel_estado" name="sel_estado" style = "width:180px">
-					<option></option>
-					<option value = "estudios"> Espera para estudios </option>
-					<option value = "estudios_ok"> Estudios terminados</option>
-					<option value = "dilatacion"> En dilatación </option>
-					<option value = "medico"> Espera para médico </option>
-					<!--<option value = "ok"> OK </option>-->
-				</select>
-			</div>
-			<div style = "float:left;margin-top:20px;margin-left:20px">
-				<div style = "float:left">
-					Medico solicitante:
-					<select id = "sel_medico" name="sel_medico" style = "width:180px">
-					<?php 
-						foreach ($medicos as $med) {	
-							echo '<option value = "'.$med->id_medico.'">'.$med->nombre.'</option>';
-						}
-					?>
-					</select>
-				</div>
-				<!--<div id = "medico_fact" style = "font-weight:bold;float:left;margin-left:10px"></div>-->
-			</div>
-		</div>
-		<div style = "width:100%;float:left">	
-			<div style = "float:left;margin-top:20px;width:40%">
-				Lugar de atención:
-				<select id = "sel_atendido" name="sel_atendido" style = "width:180px">
-					<?php 
-						foreach ($localidades as $loc) {	
-							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
-						}
-					?>
-				</select>
-			</div>
-			<div style = "float:left;margin-top:20px;margin-left:20px">
-				Lugar de facturación:
-				<select id = "sel_facturacion" name="sel_facturacion" style = "width:180px">
-					<?php 
-						foreach ($localidades as $loc) {	
-							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
-						}
-					?>
-				</select>
-			</div>
-		</div>	
-		<input id = "id_turno" name = "id_turno" type = "hidden"/>
-		<input id = "ficha_fact" name = "ficha_fact" type = "hidden"/>
-		<input id = "fecha_fact" name = "fecha_fact" type = "hidden"/>
-		<input id = "apellido_fact" name = "apellido_fact" type = "hidden"/>
-		<input id = "nombre_fact" name = "nombre_fact" type = "hidden"/>
-		<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
-		<!--<input id = "sel_medico" name = "sel_medico" type = "hidden"/>-->
-		<!--<input id = "facturado" name = "facturado" value = 0 type = "hidden"/>-->
-	</div>	
-</form>
-</div>
+	<div style = "overflow: auto">
+		<!--<form id = "add_to_facturacion">-->
+		<!-- 	<form id = "form_facturacion" action="<?php echo base_url('index.php/main/update_facturacion_turno/0')?>" method="post">-->
+		<form id = "form_facturacion"  action="<?php echo base_url('index.php/main/process')?>" method="post">
+			<input type = "hidden" name = "datos_paciente">
+			<input type = "hidden" name = "datos_ficha">
+			<input type = "hidden" name = "datos_id_paciente">
+			<input type = "hidden" name = "datos_id_turno">
+			<input type = "hidden" name = "datos_fecha_turno">
 
+			<div style = "float:left;margin-bottom:10px;margin-left:20px">
+				<b style = "float:left">Paciente:</b>
+				<div id = "datos_paciente" style = "float:left;margin-right: 200px;margin-left:10px"></div>
+				<b style = "float:left">Ficha:</b>
+				<div <div id = "datos_ficha" style = "float:left;margin-left:10px"></div>
+			</div>	
+			<div style = "float:left;margin-bottom:20px;margin-top:10px">
+				<div style = "float:left;margin-bottom:20px;margin-left:20px;margin-top:10px">
+					<div style = "float:left">
+						Medico Solicitante:
+						<select name="medico_sol" style = "width:140px">
+						<?php 
+							foreach ($medicos as $med) {	
+								echo '<option value = "'.$med->id_medico.'">'.$med->nombre.'</option>';
+							}
+						?>
+						</select>
+					</div>
+					<div style = "float:left;margin-left:20px">
+						Atención:
+						<select name="lugar_atencion" style = "width:120px">
+						<?php 
+							foreach ($localidades as $loc) {	
+								echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+							}
+						?>
+						</select>
+					</div>
+					<div style = "float:left;margin-left:20px;">
+						Facturación:
+						<select id = "lugar_facturacion" name="lugar_facturacion" style = "width:100px">
+						<?php 
+							foreach ($localidades as $loc) {	
+								echo '<option value = "'.$loc->id_localidad.'">'.$loc->departamento.'</option>';
+							}
+						?>
+						</select>
+					</div>
+					<div style = "float:left;margin-left:20px;">
+						<button id = "add">Agregar Práctica</button>
+					</div>
+				</div>
+				<div style = "float:left;width:100%">
+					<div id = "container">
+						<!-- A llenar mediante confirmar() -->
+					</div>
+					<div style = "margin-left:20px;float:left;">
+						<div style = "float:left;margin-right:20px">
+							Nro Factura: <input name = "nro_factura" style = "width:100px" autocomplete="off">
+						</div>	
+						<div style = "float:left;margin-right:20px">
+							Importe Total: <input name = "importe_factura" style = "width:80px;margin-left:27px" autocomplete="off">
+						</div>
+						<div style = "float:left;margin-right:20px">
+							Tipo Factura :
+							<select name = "tipo_factura" style = "width:50px">
+								<option></option>
+								<option>A</option>
+								<option>B</option>
+							</select>
+						</div>	
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!-- 	<form id = "form_facturacion" action="<?php echo base_url('index.php/main/update_facturacion_turno/0')?>" method="post">
+			<div style = "float:left;font-weight:bold;margin-right:10px">Paciente:</div><div id = "nombreApellido" style = "float:left"></div>
+			<div style = "float:left;font-weight:bold;margin-right:10px;margin-left: 50px">Ficha: </div><div id = "ficha" style = "float:left"></div>
+			<div style = "float:left;width:100%">
+				<div style = "float:left;width:50%">
+					<table class= "confirm_tabla" style = "margin-top:40px">
+						<tr>
+							<td>
+								<input id = "cvc_chk" name = "chk_turno[]" value = "CVC" type = "checkbox"/> CVC 			
+							</td>
+							<td>
+								<select id = "sel_cvc" name="sel_cvc">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "cvc_ord_chk" name = "chk_ord[]" value = "ord_cvc" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_cvc" name = "coseguro_cvc" style = "width:40px" autocomplete="off"/>
+							</td>
+						<tr>
+						</tr>	
+							<td>
+								<input id = "iol_chk" name = "chk_turno[]" value = "IOL" type = "checkbox"/> IOL 			
+							</td>
+							<td>
+								<select id = "sel_iol" name="sel_iol">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "iol_ord_chk" name = "chk_ord[]" value = "ord_iol" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_iol" name = "coseguro_iol" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "oct_chk" name = "chk_turno[]" value = "OCT" type = "checkbox"/> OCT			
+							</td>
+							<td>
+								<select id = "sel_oct" name="sel_oct">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "oct_ord_chk" name = "chk_ord[]" value = "ord_oct" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_oct" name = "coseguro_oct" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "me_chk" name = "chk_turno[]" value = "ME" type = "checkbox"/> ME			
+							</td>
+							<td>
+								<select id = "sel_me" name="sel_me">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "me_ord_chk" name = "chk_ord[]" value = "ord_me" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_me" name = "coseguro_me" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "rfg_chk" name = "chk_turno[]" value = "RFG" type = "checkbox"/> RFG 			
+							</td>
+							<td>
+								<select id = "sel_rfg" name="sel_rfg">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "rfg_ord_chk" name = "chk_ord[]" value = "ord_rfg" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_rfg" name = "coseguro_rfg" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "rfgc_chk" name = "chk_turno[]" value = "RFG Color" type = "checkbox"/> RFG Color 			
+							</td>
+							<td>
+								<select id = "sel_rfgc" name="sel_rfgc">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "rfgc_ord_chk" name = "chk_ord[]" value = "ord_rfgc" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_rfgc" name = "coseguro_rfgc" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "consulta_chk" name = "chk_turno[]" value = "Consulta" type = "checkbox"/> Consulta
+							</td>
+							<td>
+								<select id = "sel_consulta" name="sel_consulta">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "consulta_ord_chk" name = "chk_ord[]" value = "ord_consulta" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_consulta" name = "coseguro_consulta" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div style = "float:left;">	
+					<table class= "confirm_tabla" style = "margin-top:40px">
+						<tr>
+							<td>
+								<input id = "hrt_chk" name = "chk_turno[]" value = "HRT" type = "checkbox"/> HRT			
+							</td>
+							<td>
+								<select id = "sel_hrt" name="sel_hrt">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "hrt_ord_chk" name = "chk_ord[]" value = "ord_hrt" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_hrt" name = "coseguro_hrt" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "obi_chk" name = "chk_turno[]" value = "OBI" type = "checkbox"/> OBI			
+							</td>
+							<td>
+								<select id = "sel_obi" name="sel_obi">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "obi_ord_chk" name = "chk_ord[]" value = "ord_obi" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_obi" name = "coseguro_obi" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "paqui_chk" name = "chk_turno[]" value = "PAQUI" type = "checkbox"/> PAQUI 			
+							</td>
+							<td>
+								<select id = "sel_paqui" name="sel_paqui">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "paqui_ord_chk" name = "chk_ord[]" value = "ord_paqui" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_paqui" name = "coseguro_paqui" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "laser_chk" name = "chk_turno[]" value = "Laser" type = "checkbox"/> Laser			
+							</td>
+							<td>
+								<select id = "sel_laser" name="sel_laser">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "laser_ord_chk" name = "chk_ord[]" value = "ord_laser" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_laser" name = "coseguro_laser" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "yag_chk" name = "chk_turno[]" value = "YAG" type = "checkbox"/> YAG
+							</td>
+							<td>
+								<select id = "sel_yag" name="sel_yag">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "yag_ord_chk" name = "chk_ord[]" value = "ord_yag" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_yag" name = "coseguro_yag" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>	
+							<td>
+								<input id = "topo_chk" name = "chk_turno[]" value = "TOPO" type = "checkbox"/> TOPO
+							</td>
+							<td>
+								<select id = "sel_topo" name="sel_topo">
+									<option></option>
+								<?php
+									foreach ($obras as $obra)
+										echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+								?>
+								</select>
+							</td>
+							<td style = "width: 110px;padding-left:10px">
+								<input id = "topo_ord_chk" name = "chk_ord[]" value = "ord_topo" type = "checkbox"/> Orden Pend.			
+							</td>
+							<td style = "text-align:right">
+								Coseguro:
+							</td>
+							<td>
+								<input id = "coseguro_topo" name = "coseguro_topo" style = "width:40px" autocomplete="off"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input id = "sincargo_chk" name = "chk_turno[]" value = "S/Cargo" type = "checkbox"/> Sin Cargo
+							</td>	
+						</tr>	
+					</table>
+				</div>
+			</div>
+			<div style = "width:100%;float:left">
+				<div style = "width:100%;float:left">
+					<div style = "float:left;margin-top:20px;width:40%">
+						Estado Actual:
+						<select id = "sel_estado" name="sel_estado" style = "width:180px">
+							<option></option>
+							<option value = "estudios"> Espera para estudios </option>
+							<option value = "estudios_ok"> Estudios terminados</option>
+							<option value = "dilatacion"> En dilatación </option>
+							<option value = "medico"> Espera para médico </option>
+						</select>
+					</div>
+					<div style = "float:left;margin-top:20px;margin-left:20px">
+						<div style = "float:left">
+							Medico solicitante:
+							<select id = "sel_medico" name="sel_medico" style = "width:180px">
+							<?php 
+								foreach ($medicos as $med) {	
+									echo '<option value = "'.$med->id_medico.'">'.$med->nombre.'</option>';
+								}
+							?>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div style = "width:100%;float:left">	
+					<div style = "float:left;margin-top:20px;width:40%">
+						Lugar de atención:
+						<select id = "sel_atendido" name="sel_atendido" style = "width:180px">
+							<?php 
+								foreach ($localidades as $loc) {	
+									echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+								}
+							?>
+						</select>
+					</div>
+					<div style = "float:left;margin-top:20px;margin-left:20px">
+						Lugar de facturación:
+						<select id = "sel_facturacion" name="sel_facturacion" style = "width:180px">
+							<?php 
+								foreach ($localidades as $loc) {	
+									echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
+								}
+							?>
+						</select>
+					</div>
+				</div>	
+				<input id = "id_turno" name = "id_turno" type = "hidden"/>
+				<input id = "ficha_fact" name = "ficha_fact" type = "hidden"/>
+				<input id = "fecha_fact" name = "fecha_fact" type = "hidden"/>
+				<input id = "apellido_fact" name = "apellido_fact" type = "hidden"/>
+				<input id = "nombre_fact" name = "nombre_fact" type = "hidden"/>
+				<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
+			</div>	
+		</form> -->
+	</div>
 </body>
 </html>

@@ -181,7 +181,7 @@
 
 			<div style = "float:left; margin-left:2%;">
 				<?php
-				echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d', strtotime($filas[0]->fecha))).'">';
+				echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d', strtotime($filas->fecha))).'">';
 					echo '<img src = "'.base_url('css/images/book_alt2_24x21.png').'"/>'; 
 				echo '</a>';
 				?>
@@ -205,7 +205,7 @@
 		<div id = "ul1">
 	    	<ul>
 	    		<?php
-	    			$var = explode(':', $filas[0]->citado);
+	    			$var = explode(':', $filas->citado);
 					$hora_cita = $var[0];
 					$minuto_cita = $var[1];
 					$cita = $hora_cita.':'.$minuto_cita;
@@ -217,19 +217,19 @@
 				
 	        	<li>
 	            	<label for="apellido"><font color = "red">* </font> Apellido: </label>
-	            	<input type="text" size = "20" name="apellido" autocomplete="off" value = "<?php echo $filas[0]->apellido ?>" style="text-transform:capitalize"required/>
+	            	<input type="text" size = "20" name="apellido" autocomplete="off" value = "<?php echo $filas->apellido ?>" style="text-transform:capitalize"required/>
 	        	</li>
 	        	<li>
 	            	<label for="nombre"><font color = "red">* </font> Nombre: </label>
-	            	<input type="text" size = "20" name="nombre" autocomplete="off" value = "<?php echo $filas[0]->nombre ?>" style="text-transform:capitalize" required />
+	            	<input type="text" size = "20" name="nombre" autocomplete="off" value = "<?php echo $filas->nombre ?>" style="text-transform:capitalize" required />
 	        	</li>
 	        	<li>
 					<?php
-						$aux = explode('-',$filas[0]->tel1);
+						$aux = explode('-',$filas->tel1);
 						$tel1_1 = $aux[0];
 						$tel1_2 = $aux[1]; 
 						
-						$aux2 = explode('-',$filas[0]->tel2);
+						$aux2 = explode('-',$filas->tel2);
 						$tel2_1 = $aux2[0];
 						if ($tel2_1 == "") 
 						{
@@ -250,14 +250,14 @@
 	            	<input type="text" size="3" maxlength = "5" name="tel2_1" id="tel2_1" value="<?php echo $tel2_1?>" autocomplete="off" pattern=".{3,}"/>
 					<input type="text" size = "8" maxlength = "10" name="tel2_2" id="tel2_2" value="<?php echo $tel2_2?>" autocomplete="off" pattern=".{6,}"/>
 					<input type="hidden" name="id" value="<?php echo $id?>"/>
-	        		<input type="hidden" name="fecha" value="<?php echo $filas[0]->fecha?>"/>
-	        		<input type="hidden" name="ficha" value="<?php echo $filas[0]->ficha?>"/>
+	        		<input type="hidden" name="fecha" value="<?php echo $filas->fecha?>"/>
+	        		<input type="hidden" name="ficha" value="<?php echo $filas->ficha?>"/>
 	        		<input type="hidden" name="hora" value="<?php echo $hora?>"/>
 	        	</li>
 
 	        	<li>
 	            	<label for="notas">Notas:</label>
-	            	<textarea name="notas" cols="40" rows="5"><?php echo $filas[0]->notas ?></textarea>
+	            	<textarea name="notas" cols="40" rows="5"><?php echo $filas->notas ?></textarea>
 	        	</li>
 		</div> 
 	    
@@ -266,7 +266,7 @@
 								
 				<li style = "min-height: 27px">
 					<?php 
-						$aux = explode(' - ', $filas[0]->medico);
+						$aux = explode(' - ', $filas->medico);
 						$med = $aux[0];
 					?>
 					<label for="medico"><font color = "red">* </font> Médico:</label>
@@ -306,7 +306,7 @@
 								<option value = ""></option>';
 							<?php
 								foreach ($obras as $value) {
-									if (!strcasecmp($filas[0]->obra_social,$value->obra))
+									if (!strcasecmp($filas->obra_social,$value->obra))
 										echo '<option value ="'.$value->obra.'" selected>'.$value->obra.'</option>';
 									else
 										echo '<option value ="'.$value->obra.'">'.$value->obra.'</option>';
@@ -315,7 +315,7 @@
 						</select>
 
 						<!--<div class="ui-widget">
-							<input type = "text" id="obra" size = "20" name = "obra" value = "<?php echo $filas[0]->obra_social?>" autocomplete="off" required>
+							<input type = "text" id="obra" size = "20" name = "obra" value = "<?php echo $filas->obra_social?>" autocomplete="off" required>
 						</div>-->
 				</li>
 	        </ul>
@@ -324,7 +324,7 @@
 		        <div id="tipo_turno"><font color = "red">* </font> Tipo de turno:</div>
 				<div id = "tabla">
 				<?php 
-					$cadena = $filas[0]->tipo;
+					$cadena = $filas->tipo;
 				?>
 					<div class = "fila">
 						<div class = "celda">
@@ -453,7 +453,7 @@
 	
 	<div id = "botones">
 		<button class="submit" type="submit">Actualizar</button>
-		<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/cambiar_dia/".$filas[0]->fecha)?>';">Cancelar</button>
+		<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/cambiar_dia/".$filas->fecha)?>';">Cancelar</button>
 	</div>
 	</form>
 	<span class="required_notification">* Campos obligatorios</span>

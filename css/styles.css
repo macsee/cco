@@ -42,14 +42,14 @@
 
 #ul1 {
 	float: left;
-	width: 50%;
+	width: 54%;
 	//margin-left: 20px
 }
 
 #ul2{
 	margin-left: 10px;
-	float: left;
-	width: 49.2%;
+	float: right;
+	//width: 49.2%;
 }
 
 #ul3{
@@ -57,7 +57,8 @@
 	background-color: #F7F7F7;
 	//background: url('images/background_stripes.gif');
 	float: left;
-	height: 177px;
+	height: 320px;
+	//width: 100%;
 }
 
 #ul4{
@@ -83,16 +84,17 @@
 #botones {
 	width: 40%;
 	float: left;
-	margin-top: 95px;
+	margin-top: 10px;
 }
 #tipo_turno {
-	width: 150px;
+	width: 100px;
 	float: left;
-	padding-left: 15px;
+	//padding-left: 15px;
 	margin-bottom: 30px;
 	margin-top: 10px;
 	font-family: Oswald;
 	font-size: 15px;
+	margin-left: 15px;
 }
 
 #nuevo {
@@ -214,7 +216,7 @@ body {
 
 /* === Form Elements === */
 .contact_form label {
-	width: 150px;
+	width: 100px;
 	margin-top: 3px;
 	display:inline-block;
 	float:left;
@@ -231,9 +233,9 @@ body {
 }
 
 .contact_form select {
-	height:28px;
-	width: 150px; 
-	font-size: 14px;
+	height:30px;
+	width: 250px; 
+	font-size: 15px;
 	font-family: Segoe;
 	padding:5px 8px;
 	margin-bottom: 4px;

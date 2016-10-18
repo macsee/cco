@@ -1,8 +1,8 @@
 <?php
-	
-	
+
+
 	$id = $_POST['id'];
-	
+
 	//echo $id;
 	//$datos = explode(",", $cadena);
 
@@ -22,11 +22,11 @@
 		$query = sprintf("UPDATE turnos SET estado = 'presente' WHERE id = '%d' ", $id);
 	else
 		$query = sprintf("UPDATE turnos SET estado = '' WHERE id = '%d' ", $id);
-	*/	
+	*/
 	// Perform Query
-	
+
 	mysql_set_charset("UTF8");
-	
+
 	$result_turno = mysql_query($query_turno)
 	or die("Error en la consulta SQL");
 
@@ -48,11 +48,11 @@
 		$array['fact_localidad'] = $result['facturacion_localidad'];
 		$array['at_localidad'] = $result['atendido_localidad'];
 		$array['obra_social'] = $result['obra_turno'];
-	}	
+	}
 	else {
 		$array = mysql_fetch_array ($result_turno);
 		$array['facturar'] = "NO";
-	}	
+	}
 
 	echo json_encode($array);
 

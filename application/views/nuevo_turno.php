@@ -22,25 +22,25 @@
 	    * html .ui-autocomplete {
 	        height: 100px;
 	    }
-		
+
 		.ui-widget {
 			font-size: 14px;
 		}
-		
+
 		.ui-dialog {
 			//position: relative;
 			margin: auto;
 			font-size: 14px;
 			text-align: center;
 		}
-		
-		.ui-dialog .ui-dialog-buttonpane { 
+
+		.ui-dialog .ui-dialog-buttonpane {
 		    text-align: center;
 		}
-		.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset { 
+		.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
 		    float: none;
 		}
-		
+
 	</style>
 	<script>
 
@@ -67,12 +67,12 @@
 		        $( "#ficha" ).val( ui.item.ficha );
 
 		        var tel1 = ui.item.tel1.split("-");
-			
+
 		       $( "#tel1_1" ).val( tel1[0] );
 		       $( "#tel1_2" ).val( tel1[1] );
 
 		        var tel2 = ui.item.tel2.split("-");
-		        
+
 		        $( "#tel2_1" ).val( tel2[0] );
 		        $( "#tel2_2" ).val( tel2[1] );
 
@@ -88,7 +88,7 @@
 	        	.append( "<a>" + item.label + "<div style = 'float:right'>" + item.ficha + "</div></a>" )
 	        	.appendTo( ul );
 	    	};
-		
+
 	   		$('#medico').change(function(){
 
 	 			var valorSeleccionado = $(this).val();
@@ -96,39 +96,39 @@
 	 				$('#test').fadeIn();
 	 			}
 	 			else{
-	 				$('#test').fadeOut(); 
-	 				return false;		
+	 				$('#test').fadeOut();
+	 				return false;
 	 			}
 			});
-			
-		
+
+
 			$("#contact_form").submit(function () {
-				  
+
 	    		var tel1 = $("#tel1_1").val();
 				var tel2 = $("#tel1_2").val();
-				
+
 				tel = tel1.length + tel2.length;
-				
+
 				var tel11 = $("#tel2_1").val();
 				var tel21 = $("#tel2_2").val();
-				
+
 				tel3 = tel11.length + tel21.length;
-				
+
 				var medico = $("#medico").val();
 				var otro = $("#otro").val();
-				
+
 	    		var check = $("input[type='checkbox']:checked").length;
-	
+
 				if (check == 0) {
 					mensaje_casillas();
-					return false;  
+					return false;
 				}
 
 				if (!( (tel == 11) || (tel == 13) )) {
 					mensaje_tel();
 					return false;
 				}
-				
+
 				if (tel3 != 0)
 				{
 					if (!( (tel3 == 11) || (tel3 == 13) )) {
@@ -136,18 +136,18 @@
 					  	return false;
 					}
 				}
-				
+
 				if (medico == "Otro" && otro == "")
 				{
-					mensaje_medico();	
+					mensaje_medico();
 				  	return false;
 				}
-									
-			});			
-			
-			  
+
+			});
+
+
 	});
-	
+
 	function mensaje_casillas() {
         $( "#mensaje_casillas" ).dialog({
 			autoOpen: true,
@@ -162,7 +162,7 @@
             }
         });
 	};
-	
+
 	function mensaje_tel() {
         $( "#mensaje_tel" ).dialog({
 			autoOpen: true,
@@ -177,7 +177,7 @@
           	}
 	     });
 	};
-		
+
 	function mensaje_medico() {
 	    $( "#mensaje_medico" ).dialog({
 			autoOpen: true,
@@ -193,17 +193,17 @@
 		});
 	};
 
-	
+
 
 /*	$(function() {
-       
+
         $( "#obra" ).autocomplete({
             source: "/clinica/scripts/search.php",
             minLength: 1,
         });
     });
-*/		  
-	</script>	
+*/
+	</script>
 </head>
 <body>
 <?php
@@ -217,7 +217,7 @@ $ficha = "";
 $id_paciente = "";
 $obra = "";
 
-			
+
 
 	if (isset($filas)) {
 		$apellido = $filas[0]->apellido;
@@ -228,45 +228,45 @@ $obra = "";
 
 		$aux = explode('-',$filas[0]->tel1);
 		$tel1_1 = $aux[0];
-		$tel1_2 = $aux[1]; 
-	
+		$tel1_2 = $aux[1];
+
 		$aux2 = explode('-',$filas[0]->tel2);
 		$tel2_1 = $aux2[0];
-		if ($tel2_1 == "") 
+		if ($tel2_1 == "")
 		{
 			$tel2_2 = "";
 		}
-		else 
+		else
 		{
 			$tel2_2 = $aux2[1];
 		}
 	}
-  
+
 ?>
-	
+
 <div id="mensaje_casillas" style="display:none"> Se debe marcar al menos una casilla </div>
 <div id="mensaje_tel" style="display:none"> El nro de teléfono no es correcto </div>
 <div id="mensaje_medico" style="display:none"> Se debe ingresar médico</div>
-	
+
 	<div class = "titulo">
 		<div id = "nuevo_turno">
 			Nuevo Turno
 		</div>
-		
+
 		<div id= "fecha1">
-			<?php 
+			<?php
 				echo $day." ".$daynum.", ".$month." ".$year;
 				$var = explode(':', $horario);
 				$hora = $var[0];
 				$minuto = $var[1];
 			?>
 		</div>
-		
+
      <!-- <span class="required_notification">* Campos obligatorios</span> -->
 	</div>
 
 	<form class="contact_form" action="<?php echo base_url('index.php/main/pro_nuevo_turno')?>" method="post" name="contact_form" id="contact_form">
-	
+
 		<div id = "ul1">
 	    	<ul>
 				<li style = "height:32px">
@@ -276,12 +276,12 @@ $obra = "";
 		            		echo '<input type="text" size = "1" name="hora" pattern="[0-9].{1,}" autocomplete="off" maxlength = "2" required value='. $hora.'> : <input type="text" size = "1" name="minutos" required pattern="[0-9].{1,}" autocomplete="off" maxlength = "2" autofocus value='. $minuto.'>';
 						?>
 					</div>
-					<div style = "float: left">	
+					<div style = "float: left">
 						<label for="hora_citado" style = "width:50px"> Citado: </label>
 						<?php
 		            		echo '<input type="text" size = "1" name="hora_citado" pattern="[0-9].{1,}" autocomplete="off" maxlength = "2" value='. $hora.'> : <input type="text" size = "1" name="minutos_citado" pattern="[0-9].{1,}" autocomplete="off" maxlength = "2" value='. $minuto.'>';
 						?>
-					</div>	
+					</div>
 	        	</li>
 	        	<li>
 	            	<label for="apellido"><font color = "red">* </font> Apellido:</label>
@@ -291,7 +291,7 @@ $obra = "";
 	            	<label for="nombre"><font color = "red">* </font> Nombre:</label>
 	            	<input type="text" size = "20" id = "nombre" name="nombre" autocomplete="off" value = "<?php echo $nombre ?>" style="text-transform:capitalize" required />
 	        	</li>
-	        	<li>	
+	        	<li>
 	            	<label for="tel1_1"><font color = "red">* </font> Teléfono 1:</label>
 	            	<input type="text" size="3" maxlength = "5" name="tel1_1" id="tel1_1" autocomplete="off" value = "<?php echo $tel1_1 ?>" required pattern="[0-9].{2,}"/>
 			    	<input type="text" size = "8" maxlength = "10" name="tel1_2" id="tel1_2" autocomplete="off" value = "<?php echo $tel1_2 ?>" required pattern="[0-9].{5,}"/>
@@ -311,7 +311,7 @@ $obra = "";
 		 	</ul>
 		</div>
 
-		<div id = "ul2">	
+		<div id = "ul2">
 			<ul>
 
 				<li style = "min-height: 32px">
@@ -334,7 +334,7 @@ $obra = "";
 						</select>
 						<div id = "test" style = "margin-bottom: 22px; display: none">
 							Dr. <input type="text" size = "14" name="otro" id = "otro" style="text-transform:capitalize" autocomplete="off"/>
-						</div>		
+						</div>
 				</li>
 				<li>
 					<label for="obra"><font color = "red">* </font> Obra social:</label>
@@ -349,7 +349,7 @@ $obra = "";
 										echo '<option value ="'.$value->obra.'">'.$value->obra.'</option>';
 								}
 							?>
-							</select>	
+							</select>
 						</div>
 						<!--<div class="ui-widget">
 							<input type="text" size = "20" id="obra" name ="obra" required autocomplete="off" value = "<?php echo $obra ?>" >
@@ -358,63 +358,74 @@ $obra = "";
 			</ul>
 
 			<div id = "ul3">
-		
+
 				<div id="tipo_turno"><font color = "red">* </font> Tipo de turno:</div>
-				
+
 				<div id = "tabla">
 					<div class = "fila">
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "CVC" id = "CVC"/> CVC 		
-						</div>
-						<div class = "celda_2">	
-							<input type="checkbox" name="tipo[]" value = "TOPO" id = "TOPO"/> TOPO	
-						</div>
-						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "IOL"id = "IOL"/> IOL 
-						</div>
-						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "ME" id = "ME"/> ME 
-						</div>	
-					</div>
-					<div class = "fila">
-						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "RFG"id = "RFG"/> RFG 
+							<input type="checkbox" name="tipo[]" value = "CVC" id = "CVC"/> CVC
 						</div>
 						<div class = "celda_2">
-							<input type="checkbox" name="tipo[]" value = "RFG-Color" id = "RFG-Color"/> RFG-Color 
-						</div>			
-						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "OCT" id = "OCT"/> OCT 
+							<input type="checkbox" name="tipo[]" value = "TOPO" id = "TOPO"/> TOPO
 						</div>
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "PAQUI"id = "PAQUI"/> PAQUI 
+							<input type="checkbox" name="tipo[]" value = "IOL"id = "IOL"/> IOL
+						</div>
+						<div class = "celda">
+							<input type="checkbox" name="tipo[]" value = "ME" id = "ME"/> ME
 						</div>
 					</div>
 					<div class = "fila">
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "OBI" id = "OBI"/> OBI  
-						</div>			
-						<div class = "celda_2">	
+							<input type="checkbox" name="tipo[]" value = "RFG"id = "RFG"/> RFG
+						</div>
+						<div class = "celda_2">
+							<input type="checkbox" name="tipo[]" value = "RFG-Color" id = "RFG-Color"/> RFG-Color
+						</div>
+						<div class = "celda">
+							<input type="checkbox" name="tipo[]" value = "OCT" id = "OCT"/> OCT
+						</div>
+						<div class = "celda">
+							<input type="checkbox" name="tipo[]" value = "PAQUI"id = "PAQUI"/> PAQUI
+						</div>
+					</div>
+					<div class = "fila">
+						<div class = "celda">
+							<input type="checkbox" name="tipo[]" value = "OBI" id = "OBI"/> OBI
+						</div>
+						<div class = "celda_2">
 							<input type="checkbox" name="tipo[]" value = "YAG" id = "YAG"/> YAG
 						</div>
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "Laser" id = "LASER"/> LASER 
+							<input type="checkbox" name="tipo[]" value = "Laser" id = "LASER"/> LASER
 						</div>
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "Consulta" id = "CONSULTA"/> Consulta  
-						</div>			
+							<input type="checkbox" name="tipo[]" value = "Consulta" id = "CONSULTA"/> Consulta
+						</div>
 					</div>
 					<div class = "fila">
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "HRT" id = "HRT"/> HRT 	
+							<input type="checkbox" name="tipo[]" value = "HRT" id = "HRT"/> HRT
+						</div>
+						<div class = "celda_2">
+							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo"/> Sin Cargo
 						</div>
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo"/> Sin Cargo 	
-						</div>				
+							<input type="checkbox" name="tipo[]" value = "ARM" id = "ARM"/> ARM
+						</div>
+						<div class = "celda">
+							<input type="checkbox" name="tipo[]" value = "TONO" id = "TONO"/> Tonom.
+						</div>
+					</div>
+					<div class = "fila">
+						<div class = "celda">
+							<input type="checkbox" name="tipo[]" value = "EXO" id = "EXO"/> EXO
+						</div>
 					</div>
 				</div>
-			</div>		
-		</div>    	  
+			</div>
+		</div>
 	    <div id = "botones">
 	        		<button class="submit" type="submit">Guardar</button>
 					<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/cambiar_dia/$fecha")?>';">Cancelar</button>

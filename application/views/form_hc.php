@@ -191,7 +191,7 @@
 				$("#od_k1_krt").keyup(function() {
         			val1 = parseFloat($(this).val());
         			val2 = parseFloat($("#od_k2_krt").val());
-  
+
         			if (!$.isNumeric(val1))
         					val1 = 0;
 
@@ -204,7 +204,7 @@
 	        			$("#od_ave_krt").val(parseFloat(val1 + val2).toFixed(2));
 	        		if ( ($("#od_k1_krt").val() == "") && ($("#od_k2_krt").val() == ""))
 	        			$("#od_ave_krt").val("");
-        			
+
         		 });
 
 				$("#od_k2_krt").keyup(function() {
@@ -223,7 +223,7 @@
 	        			$("#od_ave_krt").val(parseFloat(val1 + val2).toFixed(2));
 	        		if ( ($("#od_k1_krt").val() == "") && ($("#od_k2_krt").val() == ""))
 	        			$("#od_ave_krt").val("");
-        			
+
         		 });
 
 				$("#os_k1_krt").keyup(function() {
@@ -242,7 +242,7 @@
 	        			$("#os_ave_krt").val(parseFloat(val1 + val2).toFixed(2));
 	        		if ( ($("#os_k1_krt").val() == "") && ($("#os_k2_krt").val() == ""))
 	        			$("#os_ave_krt").val("");
-        			
+
         		 });
 
 				$("#os_k2_krt").keyup(function() {
@@ -261,7 +261,7 @@
 	        			$("#os_ave_krt").val(parseFloat(val1 + val2).toFixed(2));
 	        		if ( ($("#os_k1_krt").val() == "") && ($("#os_k2_krt").val() == ""))
 	        			$("#os_ave_krt").val("");
-        			
+
         		 });
 
     			$("#adding").keyup(function() {
@@ -271,13 +271,13 @@
 
             		if ($("#od_esf_subj_lejos").val() == "")
             			od_esf_lejos = 0;
-            		else 
+            		else
             			od_esf_lejos = $("#od_esf_subj_lejos").val();
 
-            	
+
             		if ($("#os_esf_subj_lejos").val() == "")
             			os_esf_lejos = 0;
-            		else 
+            		else
             			os_esf_lejos = $("#os_esf_subj_lejos").val();
 
             		val_od = parseFloat(parseFloat(val)+parseFloat(od_esf_lejos)).toFixed(2);
@@ -293,7 +293,7 @@
     					$("#os_esf_subj_cerca").val( val_os );
     					$("#os_cil_subj_cerca").val($("#os_cil_subj_lejos").val());
     					$("#os_eje_subj_cerca").val($("#os_eje_subj_lejos").val());
-    				//}	
+    				//}
     			});
 
     			$("#od_k1_eje_krt").keyup(function() {
@@ -335,7 +335,7 @@
 				$.each(borrador, function( index, value ) {
   					lista.push(value);
 				});
-				
+
     			$('#txt_diag')
 				.textext({
 	            	plugins : 'tags autocomplete prompt',
@@ -620,7 +620,7 @@
 		                { result : textext.itemManager().filter(list, query) }
 		            );
 	       		});
-							
+
 				$('#form_registro').submit(function( event ) {
 					//event.preventDefault();
 
@@ -677,13 +677,13 @@
 					if (txt != "") {
 						alert(txt);
 						event.preventDefault();
-					}	
+					}
 					//$('#ladder-meters').removeAttr('required');
-  					
+
 				});
 
 			});
-			
+
 		</script>
 	</head>
 	<body>
@@ -701,7 +701,7 @@
 						<table class ="tabla_ref">
 		  					<tr>
 		  						<th style = "border:none"></th>
-		    					<th colspan = "3">ARM Sin Dilatación</th> 
+		    					<th colspan = "3">ARM Sin Dilatación</th>
 		  					</tr>
 		  					<tr>
 		  						<td></td>
@@ -725,7 +725,7 @@
 					</div>
 					<div style ="float:left">
 						<div style = "margin-top: 60px; margin-left:10px;font-family: Oswald">
-							<?php 
+							<?php
 								$status = "";
 								if (isset($json->od_chk_arm_sd)) {
 									if ($json->od_chk_arm_sd != "")
@@ -734,22 +734,22 @@
 							<input name = "od_chk_arm_sd" type = "checkbox" <?php echo $status ?>/> No medido
 						</div>
 						<div style = "margin-top: 5px; margin-left:10px;font-family: Oswald">
-							<?php 
+							<?php
 								$status = "";
 								if (isset($json->os_chk_arm_sd)) {
 									if ($json->os_chk_arm_sd != "")
 										$status = "checked";
 							}?>
 							<input name = "os_chk_arm_sd" type = "checkbox" <?php echo $status ?>/> No medido
-						</div>	
-					</div>	
+						</div>
+					</div>
 				</div>
 				<div class = "panel_der">
 					<div style = "float:left">
 						<table class ="tabla_ref">
 		  					<tr>
 		  						<th style = "border:none"></th>
-		    					<th colspan = "3">ARM Con Dilatación</th> 
+		    					<th colspan = "3">ARM Con Dilatación</th>
 		  					</tr>
 		  					<tr>
 		  						<td></td>
@@ -773,7 +773,7 @@
 					</div>
 					<div style ="float:left">
 						<div style = "margin-top: 60px; margin-left:10px;font-family: Oswald">
-							<?php 
+							<?php
 								$status = "";
 								if (isset($json->od_chk_arm_cd)) {
 									if ($json->od_chk_arm_cd != "")
@@ -782,21 +782,21 @@
 							<input name = "od_chk_arm_cd" type = "checkbox" <?php echo $status ?>/> No medido
 						</div>
 						<div style = "margin-top: 5px; margin-left:10px;font-family: Oswald">
-							<?php 
+							<?php
 								$status = "";
 								if (isset($json->os_chk_arm_cd)) {
 									if ($json->os_chk_arm_cd != "")
 										$status = "checked";
 							}?>
 							<input name = "os_chk_arm_cd" type = "checkbox" <?php echo $status ?>/> No medido
-						</div>	
-					</div>			
+						</div>
+					</div>
 				</div>
 				<div class = "panel_izq" style = "margin-left:62px">
 					<div style = "float:left">
 						<table class = "tabla_ref" style ="width:190px">
 		  					<tr>
-		    					<th colspan = "4">KRT OD</th> 
+		    					<th colspan = "4">KRT OD</th>
 		  					</tr>
 		  					<tr>
 		    					<td style = "background-color:#4289b8;color:white;border:2px solid #F7F7F7">K1</td>
@@ -817,20 +817,20 @@
 						</table>
 					</div>
 					<div style = "float:left;margin-top: 90px; margin-left:10px;font-family: Oswald">
-							<?php 
+							<?php
 								$status = "";
 								if (isset($json->od_chk_krt)) {
 									if ($json->od_chk_krt != "")
 										$status = "checked";
 							}?>
 						<input name = "od_chk_krt" type = "checkbox" <?php echo $status ?>/> No medido
-					</div>		
+					</div>
 				</div>
 				<div class = "panel_der">
 					<div style = "float:left">
 						<table class = "tabla_ref" style ="width:190px">
 		  					<tr>
-		    					<th colspan = "4">KRT OS</th> 
+		    					<th colspan = "4">KRT OS</th>
 		  					</tr>
 		  					<tr>
 		    					<td style = "background-color:#4289b8;color:white;border:2px solid #F7F7F7">K1</td>
@@ -851,7 +851,7 @@
 						</table>
 					</div>
 					<div style = "float:left;margin-top: 90px; margin-left:10px;font-family: Oswald">
-							<?php 
+							<?php
 								$status = "";
 								if (isset($json->os_chk_krt)) {
 									if ($json->os_chk_krt != "")
@@ -889,7 +889,7 @@
 		    										else
 		    											echo "<option>".$value."</option>";
 		    									else
-		    										echo "<option>".$value."</option>";	
+		    										echo "<option>".$value."</option>";
 		    								}
 		    							?>
 		    						</select>
@@ -901,7 +901,7 @@
 		    					<td>
 		    						<select name = "os_select_sc_lejos">
 		    							<option></option>
-		    							<?php 
+		    							<?php
 		    								foreach ($list_lejos as $value) {
 		    									if (isset($json->os_select_sc_lejos))
 		    										if ($value == $json->os_select_sc_lejos)
@@ -909,7 +909,7 @@
 		    										else
 		    											echo "<option>".$value."</option>";
 		    									else
-		    										echo "<option>".$value."</option>";	
+		    										echo "<option>".$value."</option>";
 		    								}
 		    							?>
 		    						</select>
@@ -945,7 +945,7 @@
 		    										else
 		    											echo "<option>".$value."</option>";
 		    									else
-		    										echo "<option>".$value."</option>";	
+		    										echo "<option>".$value."</option>";
 		    								}
 		    							?>
 		    						</select>
@@ -977,7 +977,7 @@
 		    										else
 		    											echo "<option>".$value."</option>";
 		    									else
-		    										echo "<option>".$value."</option>";	
+		    										echo "<option>".$value."</option>";
 		    								}
 		    							?>
 		    						</select>
@@ -989,7 +989,7 @@
 				<div id = "label" style = "float:left;height: 140px;width:25px;background-color:#97d0d9">
 					<p style ="width: 150px;transform: rotate(-90deg);margin-left: -65px;margin-top: 60px;text-align: center;font-family:Oswald;font-weight:bold;color:white;font-size:14pt"/>Corrección Paciente</p>
 				</div>
-				<div style ="height:140px;margin-bottom:2px">	
+				<div style ="height:140px;margin-bottom:2px">
 					<div class = "panel_izq">
 						<div style = "float:left;margin-top:25px;margin-right:10px">
 							<table class = "av_tabla">
@@ -1019,9 +1019,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-			    							?>			    							
+			    							?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1051,9 +1051,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-		    								?>		
+		    								?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1077,7 +1077,7 @@
 			    					<td><input name = "os_eje_cc_lejos" id = "os_eje_cc_lejos" pattern ="[0-9-]{1,3}" title="Se requiere un numero entre 0 - 180. Ej: 100" autocomplete = "off" value = "<?php echo (isset($json->os_eje_cc_lejos)) ? $json->os_eje_cc_lejos:""; ?>"/></td>
 			  					</tr>
 							</table>
-						</div>	
+						</div>
 					</div>
 					<div class = "panel_der">
 						<div style = "float:left;margin-top:25px;margin-right:10px">
@@ -1108,9 +1108,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-		    								?>	
+		    								?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1140,9 +1140,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-		    								?>	
+		    								?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1166,7 +1166,7 @@
 			    					<td><input name = "os_eje_cc_cerca" id = "os_eje_cc_cerca" pattern ="[0-9-]{1,3}" title="Se requiere un numero entre 0 - 180. Ej: 100" autocomplete = "off" value = "<?php echo (isset($json->os_eje_cc_cerca)) ? $json->os_eje_cc_cerca:""; ?>"/></td>
 			  					</tr>
 							</table>
-						</div>	
+						</div>
 					</div>
 				</div>
 				<div id = "label" style = "float:left;height: 250px;width:25px;background-color:#97afd9">
@@ -1202,9 +1202,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-		    								?>	
+		    								?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1234,9 +1234,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-		    								?>	
+		    								?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1260,7 +1260,7 @@
 			    					<td><input name = "os_eje_subj_lejos" id = "os_eje_subj_lejos" pattern ="[0-9-]{1,3}" title="Se requiere un numero entre 0 - 180. Ej: 100" autocomplete = "off" value = "<?php echo (isset($json->os_eje_subj_lejos)) ? $json->os_eje_subj_lejos:""; ?>"/></td>
 			  					</tr>
 							</table>
-						</div>	
+						</div>
 					</div>
 					<div class = "panel_der" style = "width:45%">
 						<div style = "float:left;margin-top:25px;margin-right:10px">
@@ -1292,9 +1292,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-		    								?>	
+		    								?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1325,7 +1325,7 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
 		    								?>
 			    						</select>
@@ -1336,7 +1336,7 @@
 			  						<td></td>
 			  						<td>Add:</td>
 			  						<td><input id = "adding" style ="border:3px solid #e0a8bc" pattern ="[0-9-]+.[0-9]{2}"title="Se requiere un numero de hasta dos digitos con dos decimales. Ej: 2.00 o -2.00" autocomplete = "off"/></td>
-			  					</tr>	
+			  					</tr>
 							</table>
 						</div>
 						<div style ="float:left">
@@ -1357,11 +1357,11 @@
 			    					<td><input name = "os_eje_subj_cerca" id = "os_eje_subj_cerca" pattern ="[0-9-]{1,3}" title="Se requiere un numero entre 0 - 180. Ej: 100" autocomplete = "off" value = "<?php echo (isset($json->os_eje_subj_cerca)) ? $json->os_eje_subj_cerca:""; ?>"/></td>
 			  					</tr>
 							</table>
-						</div>	
+						</div>
 					</div>
 					<div class = "panel_izq">
 						<h3 style = "margin-right:10px;">Observaciones:</h3> <textarea name = "obs_subj" style = "margin-top:25px;width:60%;height:65px;font-size:12pt"><?php echo (isset($json->obs_subj)) ? $json->obs_subj:""; ?></textarea>
-					</div>	
+					</div>
 					<div class = "panel_der">
 						<div style = "float:left;margin-top:25px;margin-right:10px">
 							<?php
@@ -1374,7 +1374,7 @@
 			    					<td>
 			    						<select name = "od_select_subj_media">
 			    							<option></option>
-			    							<?php 
+			    							<?php
 		    									//$list = array("10/10","9/10","8/10","7/10","6/10","5/10","4/10","3/10","2/10","1/10");
 			    								foreach ($list_media as $value) {
 			    									if (isset($json->od_select_subj_media))
@@ -1383,9 +1383,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-		    								?>	
+		    								?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1415,9 +1415,9 @@
 			    										else
 			    											echo "<option>".$value."</option>";
 			    									else
-			    										echo "<option>".$value."</option>";	
+			    										echo "<option>".$value."</option>";
 			    								}
-		    								?>	
+		    								?>
 			    						</select>
 			    					</td>
 			  					</tr>
@@ -1441,9 +1441,9 @@
 			    					<td><input name = "os_eje_subj_media" id = "os_eje_subj_media" pattern ="[0-9-]{1,3}" title="Se requiere un numero entre 0 - 180. Ej: 100" autocomplete = "off" value = "<?php echo (isset($json->os_eje_subj_media)) ? $json->os_eje_subj_media:""; ?>"/></td>
 			  					</tr>
 							</table>
-						</div>	
+						</div>
 					</div>
-				</div>			
+				</div>
 			</div>
 			<div class = "separador">
 				<div class = "titulo" style ="margin-top:-25px">
@@ -1528,38 +1528,38 @@
 					<table class = "solicitud_tabla">
 						<tr>
 							<td>
-								<input name = "chk_sol[]" value = "CVC" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("CVC", $json->chk_sol)) { echo "checked";} }?>/> CVC 			
+								<input name = "chk_sol[]" value = "CVC" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("CVC", $json->chk_sol)) { echo "checked";} }?>/> CVC
 							</td>
 							<td>
-								<input name = "chk_sol[]" value = "IOL" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("IOL", $json->chk_sol)) { echo "checked";} }?>/> IOL 			
+								<input name = "chk_sol[]" value = "IOL" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("IOL", $json->chk_sol)) { echo "checked";} }?>/> IOL
 							</td>
 							<td>
-								<input name = "chk_sol[]" value = "OCT" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("OCT", $json->chk_sol)) { echo "checked";} }?>/> OCT			
+								<input name = "chk_sol[]" value = "OCT" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("OCT", $json->chk_sol)) { echo "checked";} }?>/> OCT
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<input name = "chk_sol[]" value = "ME" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("ME", $json->chk_sol)) { echo "checked";} }?>/> ME			
+								<input name = "chk_sol[]" value = "ME" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("ME", $json->chk_sol)) { echo "checked";} }?>/> ME
 							</td>
 							<td>
-								<input name = "chk_sol[]" value = "RFG" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("RFG", $json->chk_sol)) { echo "checked";} }?>/> RFG 			
+								<input name = "chk_sol[]" value = "RFG" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("RFG", $json->chk_sol)) { echo "checked";} }?>/> RFG
 							</td>
 							<td>
-								<input name = "chk_sol[]" value = "RFG Color" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("RFG Color", $json->chk_sol)) { echo "checked";} }?>/> RFG Color 			
+								<input name = "chk_sol[]" value = "RFG Color" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("RFG Color", $json->chk_sol)) { echo "checked";} }?>/> RFG Color
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<input name = "chk_sol[]" value = "HRT" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("HRT", $json->chk_sol)) { echo "checked";} }?>/> HRT			
+								<input name = "chk_sol[]" value = "HRT" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("HRT", $json->chk_sol)) { echo "checked";} }?>/> HRT
 							</td>
 							<td>
-								<input name = "chk_sol[]" value = "OBI" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("OBI", $json->chk_sol)) { echo "checked";} }?>/> OBI			
+								<input name = "chk_sol[]" value = "OBI" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("OBI", $json->chk_sol)) { echo "checked";} }?>/> OBI
 							</td>
 							<td>
-								<input name = "chk_sol[]" value = "PAQUI" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("PAQUI", $json->chk_sol)) { echo "checked";} }?>/> PAQUI 			
+								<input name = "chk_sol[]" value = "PAQUI" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("PAQUI", $json->chk_sol)) { echo "checked";} }?>/> PAQUI
 							</td>
 						</tr>
-						<tr>	
+						<tr>
 							<td>
 								<input name = "chk_sol[]" value = "Laser" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("Laser", $json->chk_sol)) { echo "checked";} }?>/> Laser			
 							</td>
@@ -1574,13 +1574,24 @@
 							<td>
 								<input name = "chk_sol[]" value = "Ecografía" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("Ecografía", $json->chk_sol)) { echo "checked";} }?>/> Ecografía
 							</td>
-						</tr>	
+							<td>
+								<input name = "chk_sol[]" value = "ARM" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("ARM", $json->chk_sol)) { echo "checked";} }?>/> ARM
+							</td>
+							<td>
+								<input name = "chk_sol[]" value = "Tonom" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("Tonom", $json->chk_sol)) { echo "checked";} }?>/> Tonom.
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input name = "chk_sol[]" value = "EXO" type = "checkbox" <?php if (isset($json->chk_sol)) { if (in_array("EXO", $json->chk_sol)) { echo "checked";} }?>/> EXO
+							</td>
+						</tr>
 					</table>
 				</div>
 				<div class ="panel_der">
 					<h3 style = "margin-right:10px">Otros:</h3>
 	    			<textarea name = "obs_sol" style = "margin-top:25px;height:100px;width:75%;font-size:12pt"><?php echo (isset($json->obs_sol)) ? $json->obs_sol:""; ?></textarea>
-				</div>	
+				</div>
 			</div>
 			<div class = "separador">
 				<div class = "titulo">
@@ -1607,10 +1618,10 @@
 				<button id = "reg_guardar" style = "background-image: url(<?php echo base_url('css/images/guardar.png')?>)" class = "myboton" type="submit" title = "Guardar Registro" formaction="<?php echo base_url('/index.php/main/submit_data/registro')?>"></button>
 				<button id = "reg_borrador" style = "background-image: url(<?php echo base_url('css/images/guardar_borrador.png')?>);margin-right:20px" class = "myboton" type="submit" type="submit" title = "Guardar Borrador" formaction="<?php echo base_url('index.php/main/guardar_borrador/registro')?>"></button>
 				<button id = "reg_eliminar" style = "background-image: url(<?php echo base_url('css/images/eliminar_borrador.png')?>)" class = "myboton" type="submit" title = "Eliminar Borrador" formaction="<?php echo base_url('index.php/main/eliminar_borrador/registro')?>"></button>
-				
+
 			</div>
 			<!--formaction = "<?php echo base_url('/index.php/main/submit_data/')?>" target = "_parent"-->
-			
-		</form>	
-	</body>	
-</html>		
+
+		</form>
+	</body>
+</html>

@@ -63,33 +63,34 @@
 	</style>
 	<script>
 
-	var checks = ["cvc", "iol", "topo", "me", "oct", "rfgc", "rfg", "hrt", "obi", "paqui", "consulta", "laser", "yag"];
+	var checks = ["cvc", "iol", "topo", "me", "oct", "rfgc", "rfg", "hrt", "obi", "paqui", "consulta", "laser", "yag", "arm", "tonom", "exo"];
+	// var checks = ["cvc", "iol", "topo", "me", "oct", "rfgc", "rfg", "hrt", "obi", "paqui", "consulta", "laser", "yag"];
 
 	$(document).ready(function()
-	{	
+	{
 		$("#cita_hora").keyup(function() {
-			
+
    			if($(this).val().length == $(this).attr('maxlength')) {
         		$("#cita_minutos").focus();
     		}
-			
+
 		});
-		
-		
+
+
 		$(".clickeable").click(function()
-		{ 
+		{
 			var id = $(this).attr("id");
 			if ($("#detalles_"+id).is(":hidden")) {
-				$('[id^="detalles_"]').slideUp("slow"); 
+				$('[id^="detalles_"]').slideUp("slow");
 				$("#detalles_"+id).slideDown("slow");
-				
+
 				//$("#detalles_*").;
-			} 
+			}
 			else {
 				$("#detalles_"+id).slideUp("slow");
-			}		
+			}
 		});
-		
+
 		$('input[name="chk_turno[]"]').change(function(event) {
       		// State has changed to checked/unchecked.
       		var id = $(this).attr("id");
@@ -98,7 +99,7 @@
       		if ($(this).prop("checked") == false) {
 				$("#sel_"+tipo).prop('disabled', true);
 				$("#coseguro_"+tipo).prop('disabled', true);
-				$("#"+tipo+"_ord_chk").prop('disabled', true);	
+				$("#"+tipo+"_ord_chk").prop('disabled', true);
 			}
 			else {
 				$("#sel_"+tipo).removeAttr('disabled');
@@ -149,7 +150,7 @@
             buttons: {
                 "Si": function() {
                 	if ($("#motivo").val() == "")
-                		$("#error_motivo").html("Debe escribir un motivo.");	
+                		$("#error_motivo").html("Debe escribir un motivo.");
                 	else
 						$("#form_bloquear").submit();
                 },
@@ -211,7 +212,7 @@
    	function clear_all() {
 
    		$.each( checks, function( i, val ) {
-							
+
 			$("#"+val+"_chk").prop('checked',false);
 			$("#sel_"+val).val("");
 			$("#coseguro_"+val).val("");
@@ -220,7 +221,7 @@
 			$("#sel_"+val).removeAttr('disabled');
 			$("#coseguro_"+val).removeAttr('disabled');
 			$("#"+val+"_ord_chk").removeAttr('disabled');
-			
+
 			$("#sel_estado").removeAttr('disabled');
 		});
 
@@ -230,7 +231,7 @@
    	function confirmar(id) {
 
    		var base_url = '<?php echo base_url(); ?>';
-   		
+
    		var values = {
             		'id': id,
     	};
@@ -243,8 +244,7 @@
 				data: values,
 				dataType: 'json',
 				success:function(response)
-				{	
-
+				{
 					$("#id_turno").val(id);
 					$("#ficha_fact").val(response["ficha"]);
 					$("#fecha_fact").val(response["fecha"]);
@@ -261,27 +261,27 @@
 						$('#sel_estado').append($("<option></option>").attr("value","ok").text("OK"));
 						$("#sel_estado").prop('disabled', true);
 					}
-					
+
 					$("#sel_estado").val(response["estado"]);
-					
-						
+
+
 					$("#sel_facturacion").val(response["fact_localidad"]);
 					$("#sel_atendido").val(response["at_localidad"]);
 
 					//$("#medico_fact").html(response["medico"]);
 					//$("#sel_medico").val(response["medico"]);
-					
-						
+
+
 					if (response["medico"].indexOf("Otro") >= 0) {
 						$('#sel_medico option[value="otro"]').remove();
-						$('#sel_medico').append($("<option></option>").attr("value",response["medico"]).text(response["medico"])); 
-					}	
-						
-					
+						$('#sel_medico').append($("<option></option>").attr("value",response["medico"]).text(response["medico"]));
+					}
+
+
 					$("#sel_medico option").filter(function() {
 						return this.text == response["medico"];
 					}).attr('selected', true);
-					
+
 
 					if (response["facturar"] == "SI") {
 
@@ -295,15 +295,15 @@
 								$("#coseguro_"+val).val(json[val+"_coseguro"]);
 								if (orden != null)
 									$("#"+val+"_ord_chk").prop('checked', orden[val+"_orden"] == "SI");
-							}	
+							}
 							else {
 								$("#sel_"+val).prop('disabled', true);
 								$("#coseguro_"+val).prop('disabled', true);
 								$("#"+val+"_ord_chk").prop('disabled', true);
 							}
-							
+
 						});
-						
+
 						$("#sincargo_chk").prop('checked',json.sin_cargo != "");
 
 					}
@@ -323,17 +323,17 @@
 
 						if (response["tipo"].toLowerCase().indexOf('s/cargo') >= 0)
 							$("#sincargo_chk").prop('checked',true);
-						
+
 					}
 
 				},
 		});
-   		
+
         $( "#confirmar_datos" ).dialog({
 			autoOpen: true,
             resizable: false,
 			width: 1150,
-            height: 520,
+            height: 620,
             modal: true,
             buttons: {
                 "Confirmar": function() {
@@ -346,7 +346,7 @@
 				}
             }
         });
-        
+
    	};
 
    	function chequear(fecha,hora,minutos) {
@@ -384,8 +384,8 @@
    function submitform() {
   		document.form_nuevo.submit();
 	}
-		
-	</script>	
+
+	</script>
 </head>
 <body>
 
@@ -393,7 +393,7 @@
 <div id = "main_header">
 <div id = "menu">
 	<div id = "dia_anterior">
-		<?php 
+		<?php
 			$dia_anterior = strtotime("-1 day", strtotime($fecha));
 			echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_anterior)).'">';
 				echo '<img src = "'.base_url('css/images/arrow_left_24x24.png').'"/>';
@@ -401,21 +401,21 @@
 		?>
 	</div>
 	<div id = "hoy">
-		<?php 
+		<?php
 			echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d')).'">';
 				echo '<img src = "'.base_url('css/images/hash_21x24.png').'"/>';
 			echo '</a>';
-		?>	
+		?>
 	</div>
 	<div id = "dia_siguiente">
-		<?php 
+		<?php
 			$dia_siguiente = strtotime("+1 day", strtotime($fecha));
 			echo '<a href="'.base_url('index.php/main/cambiar_dia/'.date('Y-m-d',$dia_siguiente)).'">';
 				echo '<img src = "'.base_url('css/images/arrow_right_24x24.png').'"/>';
 			echo '</a>';
 		?>
 	</div>
-	
+
 	<div id = "fecha_dia">
 		<?php echo $day." ".$daynum.', '.$month." ".$year ?>
 	</div>
@@ -423,9 +423,9 @@
 	<div id = "select_medico">
 		<select id = "seleccion_medico" name="seleccion_medico">
 			<?php
-			
+
 					echo '<option value = "todos" selected>TODOS</option>';
-					foreach ($medicos as $med) {	
+					foreach ($medicos as $med) {
 						if ($medico_selected == $med->id_medico)
 							if ($med->nombre == "Otro")
 								echo '<option value ='.$med->id_medico.' selected>'.$med->nombre.'</option>';
@@ -438,13 +438,13 @@
 								echo '<option value ='.$med->id_medico.'>Dr. '.$med->nombre.'</option>';
 					}
 			?>
-		</select>	
+		</select>
 			<!--<option value = 0>TODOS</option>
     		<option value = 1>Dr. Jelusich M</option>
     		<option value = 2>Dr. Jelusich G</option>
     		<option value = 3>Dr. Bosio</option>
     		<option value = 17>OTROS</option>-->
- 		
+
 	</div>
 
 	<div class="count">
@@ -455,15 +455,15 @@
 					else {
 						$cantidad = 0;
 						$cantidad_estudios = 0;
-						
+
 						foreach ($filas as $fila) {
 
-							if (substr_count($fila->tipo, 'CVC') OR substr_count($fila->tipo, 'TOPO') OR substr_count($fila->tipo, 'IOL') OR substr_count($fila->tipo, 'ME') OR substr_count($fila->tipo, 'OCT') OR substr_count($fila->tipo, 'RFG') ) {
+							if (substr_count($fila->tipo, 'CVC') OR substr_count($fila->tipo, 'TOPO') OR substr_count($fila->tipo, 'IOL') OR substr_count($fila->tipo, 'ME') OR substr_count($fila->tipo, 'OCT') OR substr_count($fila->tipo, 'RFG') OR substr_count($fila->tipo, 'ARM') OR substr_count($fila->tipo, 'Tonom') OR substr_count($fila->tipo, 'EXO') ) {
 								$cantidad_estudios++;
 							}
-							
+
 							if ($fila->medico == $medico_selected) {
-								$cantidad++; 
+								$cantidad++;
 							}
 							else
 								$cantidad++;
@@ -474,13 +474,13 @@
 			?>
 	</div>
 	<div class="count" style = "background-color:white; color: #D83C3C;">
-			<?php 	
+			<?php
 				echo $cantidad_estudios;
 			?>
 	</div>
 	<div style = "float:left;margin-top:8px;margin-left:50px;">
 		<?php
-		echo '<a href="'.base_url('index.php').'">'; 
+		echo '<a href="'.base_url('index.php').'">';
 			echo '<img src = "'.base_url('css/images/home_24x24.png').'"/>';
 		echo '</a>';
 		?>
@@ -488,7 +488,7 @@
 	<div style = "float:left;margin-top:8px;margin-left:5px">
 		<?php
 		echo '<a target= "_blank" href="'.base_url('index.php/main/buscar_paciente').'">';
-			echo '<img src = "'.base_url('css/images/user_18x24.png').'"/>'; 
+			echo '<img src = "'.base_url('css/images/user_18x24.png').'"/>';
 		echo '</a>';
 		?>
 	</div>
@@ -496,32 +496,32 @@
 		echo '<div id = "bloquear" style="float:left;margin-top:11px;margin-left:5px">';
 			if ($bloqueado != null) {
 				echo '<a href="#" onclick = "return desbloquear()">';
-					echo '<img src = "'.base_url('css/images/lock.png').'"/>'; 
-				echo '</a>';	
+					echo '<img src = "'.base_url('css/images/lock.png').'"/>';
+				echo '</a>';
 			}
 			else {
 				echo '<a href="#" onclick = "return bloquear()">';
-					echo '<img src = "'.base_url('css/images/unlock.png').'"/>'; 
-				echo '</a>';	
+					echo '<img src = "'.base_url('css/images/unlock.png').'"/>';
+				echo '</a>';
 			}
-		echo '</div>';	
-		}			
+		echo '</div>';
+		}
 	?>
 	<div style = "float:left;margin-left:5px;margin-top:8px">
 	<?php
 		echo '<a href="'.base_url('index.php/login/desconectar').'">';
-			echo '<img src = "'.base_url('css/images/logout.png').'"/>'; 
+			echo '<img src = "'.base_url('css/images/logout.png').'"/>';
 		echo '</a>';
 	?>
 	</div>
-		
+
 </div>
 
 <div id = "busqueda">
 	<form class="form_busqueda" action="<?php echo base_url('index.php/main/busqueda')?>" method="post" name="search_form" id="search_form">
 		<input type="text" name="busqueda_texto" id = "busqueda_texto" autocomplete="off" placeholder="Busqueda de turnos..." required/>
 		<button type="submit"> Buscar </button>
-	</form>	
+	</form>
 </div>
 
 </div>
@@ -556,7 +556,7 @@
 		<input name = "fecha" type = "hidden" value = "<?php echo $fecha?>"/>
 		<input name = "medico" type = "hidden" value = "<?php echo $medico_selected?>"/>
 	</form>
-</div>	
+</div>
 <div id="bloquear_dia" title="¿Bloquear agenda?" style = "display:none">
 	<form id = "form_bloquear" action="<?php echo base_url('index.php/main/bloquear_dia/')?>" method="post">
 		<input name = "fecha" type = "hidden" value = "<?php echo $fecha?>"/>
@@ -566,7 +566,7 @@
 		<?php }
 			else {?>
 			<div style = "margin-bottom:15px;margin-top:5px">Bloquear agenda para <b>Dr. <?php echo $medico_selected_name?></b>?</div>
-		<?php }?>	
+		<?php }?>
 		Motivo: <textarea id = "motivo" name = "motivo" style = "width:250px;height:50px;float:right" required/></textarea>
 		<div id = "error_motivo" style ="color:red;float:left;width:100%"></div>
 	</form>
@@ -578,7 +578,7 @@
 	<div id = "titulo_superior">
 		<div class = "uno">
 			Hora
-		</div>	
+		</div>
 		<div class = "dos">
 			Paciente
 		</div>
@@ -634,7 +634,7 @@
 
 		if ($filas <> 0) {
 
-			$i = 0;	
+			$i = 0;
 			foreach ($filas as $fila) {
 
 				$hora_comp_turno = date('H:i', strtotime($fila->hora));
@@ -648,8 +648,8 @@
 				$hora_comp = date('H:i', strtotime($esta->hora));
 				if (!in_array($hora_comp, $array)) {
 					$array[$i] = $hora_comp;
-					$i++;	
-				}			
+					$i++;
+				}
 			}
 
 			asort($array);
@@ -669,8 +669,8 @@
 
 				}
 
-			}		
-			
+			}
+
 		}
 
 		else {
@@ -680,33 +680,33 @@
 
 				$hora_comp = date('H:i', strtotime($esta->hora));
 					$array[$i] = $hora_comp;
-					$i++;				
+					$i++;
 			}
 		}
 
 	/*
 	 	foreach ($horario as $esta) {
-		
+
 			$hora_completa = date('H:i', strtotime($esta->hora));
 			$array[$hora_completa] = $hora_completa;
-			
+
 		}
-		
+
 		if ($filas <> 0) {
 
 			foreach ($filas as $fila) {
 				$hora_completa = date('H:i', strtotime($fila->hora));
 				$array[$hora_completa] = $fila;
 			}
-			
+
 		}
-		
+
 		ksort($array);
-	*/	
+	*/
 		foreach ($array as $fila) {
-			
+
 			if (is_object($fila)) {
-				
+
 				$hora = date('H', strtotime($fila->hora));
 				$minutos = date('i', strtotime($fila->hora));
 				$data = $fecha.'/'.$hora.'/'.$minutos;
@@ -718,10 +718,10 @@
 					$color = "#FFD9B5";//#FFCDCD";
 				else
 					$color = $config->config;
-				
+
 				//echo '<div class = "fila_ocupada" onclick = "location.href=\''.base_url("/index.php/main/vista_turno/".$fila->id).'\';" style="cursor: pointer;">';
 				//if ($fila->medico == "Dr. Jelusich") {
-					echo '<div class = "fila_ocupada" style = "background-color:'.$color.'">'; 
+					echo '<div class = "fila_ocupada" style = "background-color:'.$color.'">';
 				//}
 				//else {
 				//	echo '<div class = "fila_ocupada2">';
@@ -738,19 +738,19 @@
 									echo '<a href="#" name="'.$hora_completa.'">'.$hora_completa.'</a>';
 							echo '</div>';
 
-							echo '<div class = "hora_cita">';	
-								if (($cita <> '00:00') && ($cita <> $hora_completa)) 
+							echo '<div class = "hora_cita">';
+								if (($cita <> '00:00') && ($cita <> $hora_completa))
 								{
 									echo '<a>cita: '.$cita.'</a>';
-							
+
 								}
-							echo '</div>';	
-							
+							echo '</div>';
+
 						echo '</div>';
 
 						echo '<div class = "clickeable" id = "'.$fila->id.'" style="cursor: pointer;">';
 
-						echo '<div class = "nombre_apellido">'; 	
+						echo '<div class = "nombre_apellido">';
 							echo $nombre = $fila->apellido.', '.$fila->nombre;
 						echo '</div>';
 
@@ -764,17 +764,17 @@
 									echo "Otro";
 							}
 							else {
-								echo "Dr. ".$fila->medico;	
+								echo "Dr. ".$fila->medico;
 							}
 						echo '</div>';
 
 						echo '<div class = "tipo_turno">';
 							echo $fila->tipo;
 						echo '</div>';
-					echo '</div>';	
+					echo '</div>';
 						echo '<div class = "valor_ficha">';
 							if ($fila->ficha == -1) {
-								//echo anchor('main/nuevo_paciente/'.$fila->nombre.'/'.$fila->apellido, 'Nuevo Paciente');	
+								//echo anchor('main/nuevo_paciente/'.$fila->nombre.'/'.$fila->apellido, 'Nuevo Paciente');
 							echo '<form action="'.base_url('index.php/main/nuevo_paciente').'" method="post" name="form_nuevo" id="form_nuevo">';
 
 								echo '<input type="hidden" name="nombre" value="'.$fila->nombre.'">';
@@ -786,13 +786,13 @@
 								echo '<input type="hidden" name="id_turno" value="'.$fila->id.'">';
 
 								echo '<a href="#" onclick="$(this).closest(\'form\').submit(); return false;">Nuevo Paciente</a>';
-							
+
 								//<a href="#" onclick="$(this).closest('form').submit(); return false;">Nuevo Paciente</a>
 							echo '</form>';
-							
-							}	
+
+							}
 							else if ($fila->ficha == -2) {
-								echo anchor('main/buscar_paciente/'.$fila->apellido.'/'.$fila->nombre.'/'.$fila->id, "Buscar..");	
+								echo anchor('main/buscar_paciente/'.$fila->apellido.'/'.$fila->nombre.'/'.$fila->id, "Buscar..");
 								//echo anchor('main/buscar_paciente', 'Buscar..');
 							}
 							else {
@@ -803,10 +803,10 @@
 										echo '<input type="hidden" name="fecha_turno" value="'.$fecha.'">';
 									echo '<a href="#" onclick="$(this).closest(\'form\').submit(); return false;">'.$fila->ficha.'</a>';
 									echo '</form>';
-								}	
+								}
 
 									//echo anchor('main/editar_paciente/'.$fila->id_paciente, $fila->ficha);
-							}		
+							}
 						echo '</div>';
 
 						echo '<div class = "estado" id = "'.$fila->id.'" style="cursor: pointer;">';
@@ -820,7 +820,7 @@
 										echo '<a onclick = "return confirmar(\''.$fila->id.'\')">';
 									else
 										echo '<a onclick = "return error()">';
-								}	
+								}
 
 							}
 							else
@@ -828,21 +828,21 @@
 
 							if ($fila->estado == "")
 								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_16x13.png').'" title = "Paciente Ausente"/></a>';
-							else if ($fila->estado == "estudios")	
-								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios.png').'" title = "Paciente realizando estudios"/></a>'; 
-							else if ($fila->estado == "estudios_ok")	
+							else if ($fila->estado == "estudios")
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios.png').'" title = "Paciente realizando estudios"/></a>';
+							else if ($fila->estado == "estudios_ok")
 								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/estudios_ok.png').'" title = "Paciente con estudios finalizados"/></a>';
-							else if ($fila->estado == "medico")	
+							else if ($fila->estado == "medico")
 								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/medico.png').'" title = "Paciente listo para ser atendido"/></a>';
-							else if ($fila->estado == "dilatacion")	
+							else if ($fila->estado == "dilatacion")
 								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/dilatacion.png').'" title = "Paciente dilatando"/></a>';
 							else
-								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'" title = "Paciente atendido"/></a>';								
-									
+								echo '<img class = "check" id = "'.$fila->id.'" src = "'.base_url('css/images/check_alt_24x24.png').'" title = "Paciente atendido"/></a>';
+
 						echo '</div>';
 
 					echo '</div>';
-					
+
 				echo '</div>';
 
 				// Genero un objeto vacio para los pacientes que todavía no tienen ficha.
@@ -850,7 +850,7 @@
 					$paciente = $datos_paciente[$fila->id_paciente][0];
 				else
 					$paciente = new datosPaciente();
-				
+
 				echo '<div id = "detalles_'.$fila->id.'" class="detalles" style = "display:none;">';
 					echo '<div style = "float:left;width:40%">';
 						echo '<table class = "detalle_1">';
@@ -875,8 +875,8 @@
 							echo '</tr>';
 						echo '</table>';
 					echo '</div>';
-					echo '<div style = "float:left;width:40%">';	
-						echo '<table class = "detalle_1">';	
+					echo '<div style = "float:left;width:40%;white-space:nowrap;overflow:hidden">';
+						echo '<table class = "detalle_1">';
 							echo '<tr>';
 								echo '<td class = "detalles_izq">Teléfono 1:</td>';
 								echo '<td class = "detalles_der">'.$fila->tel1.'</td>';
@@ -887,7 +887,7 @@
 							echo '</tr>';
 							echo '<tr>';
 								echo '<td class = "detalles_izq">Obra Social:</td>';
-								echo '<td class = "detalles_der">'.$fila->obra_social.'</td>';
+								echo '<td title = "'.$fila->obra_social.'" class = "detalles_der">'.$fila->obra_social.'</td>';
 							echo '</tr>';
 							echo '<tr>';
 								echo '<td class = "detalles_izq">Nro. Afiliado:</td>';
@@ -903,12 +903,12 @@
 						echo "<b>Teléfono :</b>  ".$fila->tel1;
 					echo '</div>';
 					echo '<div id = "detalle_1">';
-							echo "<b>Teléfono 2 :</b>  ".$fila->tel2; 				
+							echo "<b>Teléfono 2 :</b>  ".$fila->tel2;
 					echo '</div>';
 					*/
 					echo '<div id = "detalle_nota">';
 						if ($fila->notas == "") {
-							echo "<b>Notas :  </b> <i>No hay notas para mostrar</i>"; 
+							echo "<b>Notas :  </b> <i>No hay notas para mostrar</i>";
 						}
 						else {
 							echo "<b>Notas: </b>".$fila->notas;
@@ -919,23 +919,23 @@
 						echo '<div id = "botones">';
 							if ($fila->estado == "") {
 								echo '<a href="'.base_url('index.php/main/editar_turno/'.$fila->id).'">';
-									echo '<img src = "'.base_url('css/images/pencil_icon&16.png').'"/>';  	
+									echo '<img src = "'.base_url('css/images/pencil_icon&16.png').'"/>';
 								echo '</a>';
-								echo '<a style="cursor: pointer;" onclick = "return borrar(\''.base_url("/index.php/main/").'\', \''.$fila->id.'\');">'; 
-									echo '<img src = "'.base_url('css/images/delete_icon&16.png').'"/>';  
-								echo '</a>';	
+								echo '<a style="cursor: pointer;" onclick = "return borrar(\''.base_url("/index.php/main/").'\', \''.$fila->id.'\');">';
+									echo '<img src = "'.base_url('css/images/delete_icon&16.png').'"/>';
+								echo '</a>';
 								echo '<a href="'.base_url('index.php/main/set_cambio/'.$fecha.'/'.$fila->id.'/'.$fila->nombre.'/'.$fila->apellido).'">';
-									echo '<img src = "'.base_url('css/images/refresh_icon&16.png').'"/>';  
+									echo '<img src = "'.base_url('css/images/refresh_icon&16.png').'"/>';
 								echo '</a>';
-							}	
+							}
 							echo '<a href="'.base_url('index.php/main/set_turno/'.$fecha.'/'.$fila->id).'">';
-								echo '<img src = "'.base_url('css/images/plus_black_16x16.png').'"/>';  
-							echo '</a>';	
+								echo '<img src = "'.base_url('css/images/plus_black_16x16.png').'"/>';
+							echo '</a>';
 						echo '</div>';
 					}
 					echo '<div style = "font-style:italic;float:right;font-size:12px;margin-right:10px">';
 						echo 'Ultima edición: '.date('d-m-Y@H:i', strtotime($fila->last_update)).' por <bold>'.$fila->usuario.'<bold>';
-					echo '</div>';	
+					echo '</div>';
 				echo '</div>';
 			}
 			else {
@@ -943,23 +943,23 @@
 				$minutos = date('i', strtotime($fila));
 				$data = $fecha.'/'.$hora.'/'.$minutos;
 				if (strpos($this->session->userdata('funciones'), "Turnos") !== false ) {
-				
+
 					if ($id_turno <> NULL)
-					{	
+					{
 						if ($nuevo_turno == 1)
 							echo '<div class = "fila_vacia" onclick = "location.href=\''.base_url("/index.php/main/asignar_turno/".$fecha.'/'.$hora.'/'.$minutos).'\';" style="cursor: pointer;">';
 						else
 							echo '<div class = "fila_vacia" style="cursor: pointer" onclick = "return chequear(\''.$fecha.'\', \''.$hora.'\', \''.$minutos.'\');">';
 
-					}	
+					}
 					else
 						echo '<div class = "fila_vacia" onclick = "location.href=\''.base_url("/index.php/main/nuevo_turno/".$fecha.'/'.$hora.'/'.$minutos).'\';" style="cursor: pointer;">';
 				}
-				else 
+				else
 					echo '<div class = "fila_vacia">';
-						echo '<div class = "hora">'; 
+						echo '<div class = "hora">';
 							echo '<a name="'.$fila.'">'.$fila.'</a>';
-						echo '</div>';	 
+						echo '</div>';
 				echo '</div>';
 			}
 		}
@@ -983,15 +983,15 @@
 	</div>
 </div>
 
-<div id = "notas_dia"> 
+<div id = "notas_dia">
 	Notas del día
 	<div id = "add_notas">
 		<?php
-		echo '<a href="'.base_url('index.php/main/add_notas/'.$fecha).'">'; 
-			echo '<img src = "'.base_url('css/images/plus_alt_16x16.png').'"/>';  
+		echo '<a href="'.base_url('index.php/main/add_notas/'.$fecha).'">';
+			echo '<img src = "'.base_url('css/images/plus_alt_16x16.png').'"/>';
 		echo '</a>';
 		?>
-	</div>	
+	</div>
 </div>
 <div id = "notas">
 	<ul>
@@ -1001,12 +1001,12 @@
 				echo '<li>';
 				echo anchor('main/edit_notas/'.$nota->id, $nota->nota);
 				echo '<p style = "font-size:12px;font-style:italic;float:right;margin-top:20px">'.date('d-m-Y@H:i', strtotime($nota->last_update)).' - '.$nota->usuario.'</p>';
-				echo '</li>';		
+				echo '</li>';
 			}
 		}
 		else {
 			echo "<i> No hay notas para este día </i>";
-		}	
+		}
 	?>
 	</ul>
 </div>
@@ -1030,7 +1030,7 @@
 			<table class= "confirm_tabla" style = "margin-top:40px">
 				<tr>
 					<td>
-						<input id = "cvc_chk" name = "chk_turno[]" value = "CVC" type = "checkbox"/> CVC 			
+						<input id = "cvc_chk" name = "chk_turno[]" value = "CVC" type = "checkbox"/> CVC
 					</td>
 					<td>
 						<select id = "sel_cvc" name="sel_cvc">
@@ -1042,7 +1042,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "cvc_ord_chk" name = "chk_ord[]" value = "ord_cvc" type = "checkbox"/> Orden Pend.			
+						<input id = "cvc_ord_chk" name = "chk_ord[]" value = "ord_cvc" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1051,9 +1051,9 @@
 						<input id = "coseguro_cvc" name = "coseguro_cvc" style = "width:40px" autocomplete="off"/>
 					</td>
 				<tr>
-				</tr>	
+				</tr>
 					<td>
-						<input id = "iol_chk" name = "chk_turno[]" value = "IOL" type = "checkbox"/> IOL 			
+						<input id = "iol_chk" name = "chk_turno[]" value = "IOL" type = "checkbox"/> IOL
 					</td>
 					<td>
 						<select id = "sel_iol" name="sel_iol">
@@ -1065,7 +1065,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "iol_ord_chk" name = "chk_ord[]" value = "ord_iol" type = "checkbox"/> Orden Pend.			
+						<input id = "iol_ord_chk" name = "chk_ord[]" value = "ord_iol" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1074,9 +1074,9 @@
 						<input id = "coseguro_iol" name = "coseguro_iol" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
-						<input id = "oct_chk" name = "chk_turno[]" value = "OCT" type = "checkbox"/> OCT			
+						<input id = "oct_chk" name = "chk_turno[]" value = "OCT" type = "checkbox"/> OCT
 					</td>
 					<td>
 						<select id = "sel_oct" name="sel_oct">
@@ -1088,7 +1088,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "oct_ord_chk" name = "chk_ord[]" value = "ord_oct" type = "checkbox"/> Orden Pend.			
+						<input id = "oct_ord_chk" name = "chk_ord[]" value = "ord_oct" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1097,9 +1097,9 @@
 						<input id = "coseguro_oct" name = "coseguro_oct" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
-						<input id = "me_chk" name = "chk_turno[]" value = "ME" type = "checkbox"/> ME			
+						<input id = "me_chk" name = "chk_turno[]" value = "ME" type = "checkbox"/> ME
 					</td>
 					<td>
 						<select id = "sel_me" name="sel_me">
@@ -1111,7 +1111,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "me_ord_chk" name = "chk_ord[]" value = "ord_me" type = "checkbox"/> Orden Pend.			
+						<input id = "me_ord_chk" name = "chk_ord[]" value = "ord_me" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1120,9 +1120,9 @@
 						<input id = "coseguro_me" name = "coseguro_me" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
-						<input id = "rfg_chk" name = "chk_turno[]" value = "RFG" type = "checkbox"/> RFG 			
+						<input id = "rfg_chk" name = "chk_turno[]" value = "RFG" type = "checkbox"/> RFG
 					</td>
 					<td>
 						<select id = "sel_rfg" name="sel_rfg">
@@ -1134,7 +1134,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "rfg_ord_chk" name = "chk_ord[]" value = "ord_rfg" type = "checkbox"/> Orden Pend.			
+						<input id = "rfg_ord_chk" name = "chk_ord[]" value = "ord_rfg" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1143,9 +1143,9 @@
 						<input id = "coseguro_rfg" name = "coseguro_rfg" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
-						<input id = "rfgc_chk" name = "chk_turno[]" value = "RFG Color" type = "checkbox"/> RFG Color 			
+						<input id = "rfgc_chk" name = "chk_turno[]" value = "RFG Color" type = "checkbox"/> RFG Color
 					</td>
 					<td>
 						<select id = "sel_rfgc" name="sel_rfgc">
@@ -1157,7 +1157,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "rfgc_ord_chk" name = "chk_ord[]" value = "ord_rfgc" type = "checkbox"/> Orden Pend.			
+						<input id = "rfgc_ord_chk" name = "chk_ord[]" value = "ord_rfgc" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1166,7 +1166,7 @@
 						<input id = "coseguro_rfgc" name = "coseguro_rfgc" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
 						<input id = "consulta_chk" name = "chk_turno[]" value = "Consulta" type = "checkbox"/> Consulta
 					</td>
@@ -1180,7 +1180,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "consulta_ord_chk" name = "chk_ord[]" value = "ord_consulta" type = "checkbox"/> Orden Pend.			
+						<input id = "consulta_ord_chk" name = "chk_ord[]" value = "ord_consulta" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1191,11 +1191,11 @@
 				</tr>
 			</table>
 		</div>
-		<div style = "float:left;">	
+		<div style = "float:left;">
 			<table class= "confirm_tabla" style = "margin-top:40px">
 				<tr>
 					<td>
-						<input id = "hrt_chk" name = "chk_turno[]" value = "HRT" type = "checkbox"/> HRT			
+						<input id = "hrt_chk" name = "chk_turno[]" value = "HRT" type = "checkbox"/> HRT
 					</td>
 					<td>
 						<select id = "sel_hrt" name="sel_hrt">
@@ -1207,7 +1207,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "hrt_ord_chk" name = "chk_ord[]" value = "ord_hrt" type = "checkbox"/> Orden Pend.			
+						<input id = "hrt_ord_chk" name = "chk_ord[]" value = "ord_hrt" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1216,9 +1216,9 @@
 						<input id = "coseguro_hrt" name = "coseguro_hrt" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
-						<input id = "obi_chk" name = "chk_turno[]" value = "OBI" type = "checkbox"/> OBI			
+						<input id = "obi_chk" name = "chk_turno[]" value = "OBI" type = "checkbox"/> OBI
 					</td>
 					<td>
 						<select id = "sel_obi" name="sel_obi">
@@ -1230,7 +1230,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "obi_ord_chk" name = "chk_ord[]" value = "ord_obi" type = "checkbox"/> Orden Pend.			
+						<input id = "obi_ord_chk" name = "chk_ord[]" value = "ord_obi" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1239,9 +1239,9 @@
 						<input id = "coseguro_obi" name = "coseguro_obi" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
-						<input id = "paqui_chk" name = "chk_turno[]" value = "PAQUI" type = "checkbox"/> PAQUI 			
+						<input id = "paqui_chk" name = "chk_turno[]" value = "PAQUI" type = "checkbox"/> PAQUI
 					</td>
 					<td>
 						<select id = "sel_paqui" name="sel_paqui">
@@ -1253,7 +1253,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "paqui_ord_chk" name = "chk_ord[]" value = "ord_paqui" type = "checkbox"/> Orden Pend.			
+						<input id = "paqui_ord_chk" name = "chk_ord[]" value = "ord_paqui" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1262,9 +1262,9 @@
 						<input id = "coseguro_paqui" name = "coseguro_paqui" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
-						<input id = "laser_chk" name = "chk_turno[]" value = "Laser" type = "checkbox"/> Laser			
+						<input id = "laser_chk" name = "chk_turno[]" value = "Laser" type = "checkbox"/> Laser
 					</td>
 					<td>
 						<select id = "sel_laser" name="sel_laser">
@@ -1276,7 +1276,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "laser_ord_chk" name = "chk_ord[]" value = "ord_laser" type = "checkbox"/> Orden Pend.			
+						<input id = "laser_ord_chk" name = "chk_ord[]" value = "ord_laser" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1285,7 +1285,7 @@
 						<input id = "coseguro_laser" name = "coseguro_laser" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
 						<input id = "yag_chk" name = "chk_turno[]" value = "YAG" type = "checkbox"/> YAG
 					</td>
@@ -1299,7 +1299,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "yag_ord_chk" name = "chk_ord[]" value = "ord_yag" type = "checkbox"/> Orden Pend.			
+						<input id = "yag_ord_chk" name = "chk_ord[]" value = "ord_yag" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1308,7 +1308,7 @@
 						<input id = "coseguro_yag" name = "coseguro_yag" style = "width:40px" autocomplete="off"/>
 					</td>
 				</tr>
-				<tr>	
+				<tr>
 					<td>
 						<input id = "topo_chk" name = "chk_turno[]" value = "TOPO" type = "checkbox"/> TOPO
 					</td>
@@ -1322,7 +1322,7 @@
 						</select>
 					</td>
 					<td style = "width: 110px;padding-left:10px">
-						<input id = "topo_ord_chk" name = "chk_ord[]" value = "ord_topo" type = "checkbox"/> Orden Pend.			
+						<input id = "topo_ord_chk" name = "chk_ord[]" value = "ord_topo" type = "checkbox"/> Orden Pend.
 					</td>
 					<td style = "text-align:right">
 						Coseguro:
@@ -1333,9 +1333,78 @@
 				</tr>
 				<tr>
 					<td>
+						<input id = "arm_chk" name = "chk_turno[]" value = "ARM" type = "checkbox"/> ARM
+					</td>
+					<td>
+						<select id = "sel_arm" name="sel_arm">
+							<option></option>
+						<?php
+							foreach ($obras as $obra)
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+						?>
+						</select>
+					</td>
+					<td style = "width: 110px;padding-left:10px">
+						<input id = "arm_ord_chk" name = "chk_ord[]" value = "ord_arm" type = "checkbox"/> Orden Pend.
+					</td>
+					<td style = "text-align:right">
+						Coseguro:
+					</td>
+					<td>
+						<input id = "coseguro_arm" name = "coseguro_arm" style = "width:40px" autocomplete="off"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input id = "tonom_chk" name = "chk_turno[]" value = "Tonom" type = "checkbox"/> Tonom
+					</td>
+					<td>
+						<select id = "sel_tonom" name="sel_tonom">
+							<option></option>
+						<?php
+							foreach ($obras as $obra)
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+						?>
+						</select>
+					</td>
+					<td style = "width: 110px;padding-left:10px">
+						<input id = "tonom_ord_chk" name = "chk_ord[]" value = "ord_tonom" type = "checkbox"/> Orden Pend.
+					</td>
+					<td style = "text-align:right">
+						Coseguro:
+					</td>
+					<td>
+						<input id = "coseguro_tonom" name = "coseguro_tonom" style = "width:40px" autocomplete="off"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input id = "exo_chk" name = "chk_turno[]" value = "EXO" type = "checkbox"/> EXO
+					</td>
+					<td>
+						<select id = "sel_exo" name="sel_exo">
+							<option></option>
+						<?php
+							foreach ($obras as $obra)
+								echo '<option value ="'.$obra->obra.'">'.$obra->obra.'</option>';
+						?>
+						</select>
+					</td>
+					<td style = "width: 110px;padding-left:10px">
+						<input id = "exo_ord_chk" name = "chk_ord[]" value = "ord_exo" type = "checkbox"/> Orden Pend.
+					</td>
+					<td style = "text-align:right">
+						Coseguro:
+					</td>
+					<td>
+						<input id = "coseguro_exo" name = "coseguro_exo" style = "width:40px" autocomplete="off"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<input id = "sincargo_chk" name = "chk_turno[]" value = "S/Cargo" type = "checkbox"/> Sin Cargo
-					</td>	
-				</tr>	
+					</td>
+				</tr>
 			</table>
 		</div>
 	</div>
@@ -1356,8 +1425,8 @@
 				<div style = "float:left">
 					Medico solicitante:
 					<select id = "sel_medico" name="sel_medico" style = "width:180px">
-					<?php 
-						foreach ($medicos as $med) {	
+					<?php
+						foreach ($medicos as $med) {
 							echo '<option value = "'.$med->id_medico.'">'.$med->nombre.'</option>';
 						}
 					?>
@@ -1366,12 +1435,12 @@
 				<!--<div id = "medico_fact" style = "font-weight:bold;float:left;margin-left:10px"></div>-->
 			</div>
 		</div>
-		<div style = "width:100%;float:left">	
+		<div style = "width:100%;float:left">
 			<div style = "float:left;margin-top:20px;width:40%">
 				Lugar de atención:
 				<select id = "sel_atendido" name="sel_atendido" style = "width:180px">
-					<?php 
-						foreach ($localidades as $loc) {	
+					<?php
+						foreach ($localidades as $loc) {
 							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
 						}
 					?>
@@ -1380,14 +1449,14 @@
 			<div style = "float:left;margin-top:20px;margin-left:20px">
 				Lugar de facturación:
 				<select id = "sel_facturacion" name="sel_facturacion" style = "width:180px">
-					<?php 
-						foreach ($localidades as $loc) {	
+					<?php
+						foreach ($localidades as $loc) {
 							echo '<option value = "'.$loc->id_localidad.'">'.$loc->nombre.'</option>';
 						}
 					?>
 				</select>
 			</div>
-		</div>	
+		</div>
 		<input id = "id_turno" name = "id_turno" type = "hidden"/>
 		<input id = "ficha_fact" name = "ficha_fact" type = "hidden"/>
 		<input id = "fecha_fact" name = "fecha_fact" type = "hidden"/>
@@ -1396,7 +1465,7 @@
 		<input id = "obra_turno" name = "obra_turno" type = "hidden"/>
 		<!--<input id = "sel_medico" name = "sel_medico" type = "hidden"/>-->
 		<!--<input id = "facturado" name = "facturado" value = 0 type = "hidden"/>-->
-	</div>	
+	</div>
 </form>
 </div>
 

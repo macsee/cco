@@ -2,7 +2,7 @@
 
 @font-face { font-family: 'Segoe'; src: url('webfonts/SEGOEUI.ttf'); }
 @font-face{font-family:'Oswald';src:url('webfonts/oswald-regular.woff') format('woff');font-weight:normal;font-style:normal}
-@font-face{font-family:'Oswald';src:url('webfonts/oswald-light.eot');src:url('webfonts/oswald-light.eot?#iefix') format('embedded-opentype'),url('webfonts/oswald-light.woff') format('woff'),url('webfonts/oswald-light.ttf') format('truetype')} 
+@font-face{font-family:'Oswald';src:url('webfonts/oswald-light.eot');src:url('webfonts/oswald-light.eot?#iefix') format('embedded-opentype'),url('webfonts/oswald-light.woff') format('woff'),url('webfonts/oswald-light.ttf') format('truetype')}
 @font-face{font-family:'Oswald Regular';src:url('webfonts/oswald-regular.woff') format('woff');font-weight:normal;font-style:normal}
 @font-face{font-family:'Oswald Regular';src:url('webfonts/oswald-regular.eot');src:url('webfonts/oswald-regular.eot?#iefix') format('embedded-opentype'),url('webfonts/oswald-regular.woff') format('woff'),url('webfonts/oswald-regular.ttf') format('truetype')}
 
@@ -57,7 +57,7 @@
 	background-color: #F7F7F7;
 	//background: url('images/background_stripes.gif');
 	float: left;
-	height: 177px;
+	height: 215px;
 }
 
 #ul4{
@@ -83,7 +83,7 @@
 #botones {
 	width: 40%;
 	float: left;
-	margin-top: 95px;
+	margin-top: 65px;
 }
 #tipo_turno {
 	width: 150px;
@@ -100,8 +100,8 @@
 	float: left;
 }
 
-.titulo 
-{ 	
+.titulo
+{
 	width: 100%;
 	height: 35px;
 	color: white;
@@ -112,7 +112,7 @@
 	//padding-left: 30px;
 	//margin-left: 35px;
 	margin-bottom: 5px;
-	
+
 }
 
 #nuevo_turno {float: left; font-size: 18px; margin-left: 10px; margin-top: 2px}
@@ -144,7 +144,7 @@
 	margin-left: 20px;
 	margin-right: 20px;
 	margin-top: 5px;
-	margin-bottom: 5px;	
+	margin-bottom: 5px;
 	width: 96%;
 }
 /*
@@ -186,14 +186,14 @@ body {
 	margin-top: 0px;
 }
 .contact_form li{
-	padding: 12px; 
+	padding: 12px;
 	margin-bottom: 10px;
 	border: 1px solid #EEE;
 	background-color: #F7F7F7;
 	position:relative;
 	//background: url('images/background_stripes.gif');
 
-} 
+}
 /*.contact_form li:first-child, .contact_form li:last-child {
 	border-bottom:1px solid #777;
 }
@@ -204,7 +204,7 @@ body {
 	display: inline;
 }
 .required_notification {
-	color:#d45252; 
+	color:#d45252;
 	margin-top: 10px;
 	//margin-right: 10px;
 	display:inline;
@@ -220,11 +220,11 @@ body {
 	float:left;
 	padding:3px;
 	font-family: Oswald;
-	font-size: 15px;	
+	font-size: 15px;
 }
 .contact_form input {
-	height: 15px; 
-	//width:220px; 
+	height: 15px;
+	//width:220px;
 	font-size: 15px;
 	padding:5px 8px;
 	font-family: 'Segoe';
@@ -232,7 +232,7 @@ body {
 
 .contact_form select {
 	height:28px;
-	width: 150px; 
+	width: 150px;
 	font-size: 14px;
 	font-family: Segoe;
 	padding:5px 8px;
@@ -242,24 +242,24 @@ body {
 .contact_form button {margin-left:120px;}
 
 	/* form element visual styles */
-	.contact_form input, .contact_form textarea { 
+	.contact_form input, .contact_form textarea {
 		border:1px solid #aaa;
 		//box-shadow: 0px 0px 3px #ccc, 0 10px 15px #eee inset;
 		border-radius:2px;
 		padding-right:30px;
-/*		-moz-transition: padding .25s; 
-		-webkit-transition: padding .25s; 
+/*		-moz-transition: padding .25s;
+		-webkit-transition: padding .25s;
 		-o-transition: padding .25s;
 		transition: padding .25s; */
 	}
 	.contact_form input:focus, .contact_form textarea:focus {
-		background: #fff; 
-		border:1px solid #555; 
-		box-shadow: 0 0 3px #aaa; 
+		background: #fff;
+		border:1px solid #555;
+		box-shadow: 0 0 3px #aaa;
 /*		padding-right:70px; */
 	}
 
-/* === HTML5 validation styles === */	
+/* === HTML5 validation styles === */
 .contact_form input:required, .contact_form textarea:required {
 	background: #fff //url(images/red_asterisk.png) no-repeat 98% center;
 }
@@ -295,7 +295,7 @@ body {
 .contact_form input:focus + .form_hint {display: inline;}
 .contact_form input:required:valid + .form_hint {background: #28921f;}
 .contact_form input:required:valid + .form_hint::before {color:#28921f;}
-	
+
 /* === Button Style === */
 button.submit {
 
@@ -328,16 +328,16 @@ button.submit {
 }
 button.submit:hover {
 	opacity:.85;
-	cursor: pointer; 
+	cursor: pointer;
 }
 button.submit:active {
 	border: 1px solid #20911e;
-	box-shadow: 0 0 10px 5px #356b0b inset; 
+	box-shadow: 0 0 10px 5px #356b0b inset;
 	-webkit-box-shadow:0 0 10px 5px #356b0b inset ;
 	-moz-box-shadow: 0 0 10px 5px #356b0b inset;
 	-ms-box-shadow: 0 0 10px 5px #356b0b inset;
 	-o-box-shadow: 0 0 10px 5px #356b0b inset;
-	
+
 }
 
 
@@ -347,7 +347,7 @@ border:1px solid #15aeec;
 border-radius: 3px;
 text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
 font-weight:bold; color: #FFFFFF;
-background-color: #108fc3; 
+background-color: #108fc3;
 background: -webkit-gradient(linear, left top, left bottom, from(#2CAFE3), to(#108fc3));
 background: -webkit-linear-gradient(top, #2CAFE3, #108fc3);
 background: -moz-linear-gradient(top, #2CAFE3, #108fc3);
@@ -398,16 +398,16 @@ text-shadow: 0 -1px 0 #396715;
 }
 button.submit_ingresar:hover {
 	opacity:.85;
-	cursor: pointer; 
+	cursor: pointer;
 }
 button.submit_ingresar:active {
 	border: 1px solid #108fc3;
-	box-shadow: 0 0 10px 5px #108fc3 inset; 
+	box-shadow: 0 0 10px 5px #108fc3 inset;
 	-webkit-box-shadow:0 0 10px 5px #108fc3 inset ;
 	-moz-box-shadow: 0 0 10px 5px #108fc3 inset;
 	-ms-box-shadow: 0 0 10px 5px #108fc3 inset;
 	-o-box-shadow: 0 0 10px 5px #108fc3 inset;
-	
+
 }
 
 button.cancel {
@@ -441,16 +441,16 @@ button.cancel {
 }
 button.cancel:hover {
 	opacity:.85;
-	cursor: pointer; 
+	cursor: pointer;
 }
 button.cancel:active {
 	border: 1px solid #911e1e;
-	box-shadow: 0 0 10px 5px #6b0b0b inset; 
+	box-shadow: 0 0 10px 5px #6b0b0b inset;
 	-webkit-box-shadow:0 0 10px 5px #6b0b0b inset ;
 	-moz-box-shadow: 0 0 10px 5px #6b0b0b inset;
 	-ms-box-shadow: 0 0 10px 5px #6b0b0b inset;
 	-o-box-shadow: 0 0 10px 5px #6b0b0b inset;
-	
+
 }
 
 button.delete {
@@ -484,16 +484,16 @@ button.delete {
 }
 button.delete:hover {
 	opacity:.85;
-	cursor: pointer; 
+	cursor: pointer;
 }
 button.delete:active {
 	border: 1px solid #1e5791;
-	box-shadow: 0 0 10px 5px #0b3b6b inset; 
+	box-shadow: 0 0 10px 5px #0b3b6b inset;
 	-webkit-box-shadow:0 0 10px 5px #0b3b6b inset ;
 	-moz-box-shadow: 0 0 10px 5px #0b3b6b inset;
 	-ms-box-shadow: 0 0 10px 5px #0b3b6b inset;
 	-o-box-shadow: 0 0 10px 5px #0b3b6b inset;
-	
+
 }
 
 #test {margin-left: 155px; margin-top: 20px; margin-bottom: 17px}
@@ -511,48 +511,48 @@ button.delete:active {
     border-radius: 10px;
     box-shadow: 0 1px 1px rgba(0,0,0,.4) inset, 0 1px 0 rgba(241,241,241,.4);
 }
- 
+
 /* Form text input */
- 
+
 .form_busqueda input {
     width: 340px;
     height: 10px;
     padding: 10px 5px;
-    float: left;    
+    float: left;
     font: 15px 'Segoe';
     border: 0;
     //background: rgba(0, 0, 0, 0.17);
-    border-radius: 3px 3px 3px 3px; 
-    margin-top: 7px;     
+    border-radius: 3px 3px 3px 3px;
+    margin-top: 7px;
     margin-right: 10px;
     margin-left: 10px;
     border: 1px solid #EEE;
 }
- 
+
 .form_busqueda input:focus {
     outline: 0;
     background: #fff;
     box-shadow: 0 0 2px rgba(0,0,0,.8) inset;
 }
- 
+
 .form_busqueda input::-webkit-input-placeholder {
    color: #999;
    font-weight: normal;
    font-style: italic;
 }
- 
+
 .form_busqueda input:-moz-placeholder {
     color: #999;
     font-weight: normal;
     font-style: italic;
 }
- 
+
 .form_busqueda input:-ms-input-placeholder {
     color: #999;
     font-weight: normal;
     font-style: italic;
-}    
- 
+}
+
 /* Form submit button */
 .form_busqueda button {
     overflow: visible;
@@ -568,34 +568,34 @@ button.delete:active {
     color: #fff;
     text-transform: uppercase;
     background: #D83C3C;
-    border-radius: 3px 3px 3px 3px;      
+    border-radius: 3px 3px 3px 3px;
     text-shadow: 0 -1px 0 rgba(0, 0 ,0, .3);
     margin-top: 7px;
-}   
-   
-.form_busqueda button:hover{     
-    background: #e54040;
-}   
-   
-.form_busqueda button:active, 
-.form_busqueda button:focus{   
-    background: #c42f2f;
-    outline: 0;   
 }
-  
+
+.form_busqueda button:hover{
+    background: #e54040;
+}
+
+.form_busqueda button:active,
+.form_busqueda button:focus{
+    background: #c42f2f;
+    outline: 0;
+}
+
 .form-wrapper button:hover:before{
     border-right-color: #e54040;
 }
- 
+
 .form-wrapper button:focus:before,
 .form-wrapper button:active:before{
         border-right-color: #c42f2f;
-}      
- 
+}
+
 .form-wrapper button::-moz-focus-inner { /* remove extra button spacing for Mozilla Firefox */
     border: 0;
     padding: 0;
-}   
+}
 
 
 #parte_izq { width: 54%; float: left;}

@@ -409,18 +409,18 @@ $obra = "";
 							<input type="checkbox" name="tipo[]" value = "HRT" id = "HRT"/> HRT
 						</div>
 						<div class = "celda_2">
-							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo"/> Sin Cargo
-						</div>
-						<div class = "celda">
 							<input type="checkbox" name="tipo[]" value = "ARM" id = "ARM"/> ARM
 						</div>
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "TONO" id = "TONO"/> Tonom.
+							<input type="checkbox" name="tipo[]" value = "Tonom" id = "Tonom"/> Tonom.
+						</div>
+						<div class = "celda">
+							<input type="checkbox" name="tipo[]" value = "EXO" id = "EXO"/> EXO
 						</div>
 					</div>
 					<div class = "fila">
 						<div class = "celda">
-							<input type="checkbox" name="tipo[]" value = "EXO" id = "EXO"/> EXO
+							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo"/> Sin Cargo
 						</div>
 					</div>
 				</div>

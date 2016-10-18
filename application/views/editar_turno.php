@@ -438,14 +438,6 @@
 						<?php }?>
 						</div>
 						<div class = "celda_2">
-						<?php if ( strstr($cadena, "S/Cargo") <> "") {?>
-							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo" checked/> Sin Cargo
-						<?php }
-							else { ?>
-							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo"/> Sin Cargo
-						<?php }?>
-						</div>
-						<div class = "celda">
 						<?php if ( strstr($cadena, "ARM") <> "") {?>
 							<input type="checkbox" name="tipo[]" value = "ARM" id = "ARM" checked/> ARM
 						<?php }
@@ -461,14 +453,22 @@
 							<input type="checkbox" name="tipo[]" value = "Tonom" id = "Tonom"/> Tonom.
 						<?php }?>
 						</div>
-					</div>
-					<div class = "fila">
 						<div class = "celda">
 						<?php if ( strstr($cadena, "EXO") <> "") {?>
 							<input type="checkbox" name="tipo[]" value = "EXO" id = "EXO" checked/> EXO
 						<?php }
 							else { ?>
 							<input type="checkbox" name="tipo[]" value = "EXO" id = "EXO"/> EXO
+						<?php }?>
+						</div>
+					</div>
+					<div class = "fila">
+						<div class = "celda">
+						<?php if ( strstr($cadena, "S/Cargo") <> "") {?>
+							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo" checked/> Sin Cargo
+						<?php }
+							else { ?>
+							<input type="checkbox" name="tipo[]" value = "S/Cargo" id = "S/Cargo"/> Sin Cargo
 						<?php }?>
 						</div>
 					</div>

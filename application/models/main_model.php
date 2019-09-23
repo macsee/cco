@@ -650,7 +650,10 @@ class Main_model extends CI_Model
 
 		$query = $this->db->query("SELECT nroficha FROM pacientes ORDER by nroficha DESC");
 		$resultado = $query->result();
-		return $resultado[0];
+		if ($resultado)
+			return $resultado[0];
+		else
+			return (object) array('nroficha' => 0);
 	}
 
 	function obtener_ultimo_idturno() {

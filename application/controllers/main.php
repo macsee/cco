@@ -1460,11 +1460,13 @@ function ver_agenda($dia, $mes, $anio, $tipo)
 
 					$mismo_turno = 0;
 					$span = 0;
-
+					
+					if ($json) {
 					foreach ($json as $practica=>$valor ) {
 
 						if (strpos($practica,"_coseguro") === false && $valor != "")
 							$span++;
+					}
 					}
 
 					if($span!=0) {

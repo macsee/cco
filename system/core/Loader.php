@@ -1,4 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
 /**
  * CodeIgniter
  *
@@ -343,6 +344,7 @@ class CI_Loader {
 		$CI->db = '';
 
 		// Load the DB class
+
 		$CI->db =& DB($params, $active_record);
 	}
 

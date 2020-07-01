@@ -48,10 +48,11 @@
 <body>	
 <?php
 	
+	include "database_config.php";
+
 	$apellido = $_POST['posteo'];
 
-	$link = mysqli_connect ("localhost", "root", "power", "cco") 
-	or die ("<center>No se puede conectar con la base de datos\n</center>\n");
+	$link = mysqli_connect ($host, $user, $password, $db) or die ("<center>No se puede conectar con la base de datos\n</center>\n");
 
 	//$conexion = mysql_connect("localhost","root","power")
 	//or die ("Fallo en el establecimiento de la conexión");
@@ -64,15 +65,12 @@
 	//$query = "SELECT * FROM pacientes WHERE apellido LIKE 'Bessone'";
 
 	$result = mysqli_query ($link, $query)
-	or die("Error en la consulta SQL");
 	// Perform Query
 	//$result = mysql_query($query)
 	//or die("Error en la consulta SQL");
 
 	#Mostramos los resultados obtenidos
 	?>
-
-	<?php $base_url = "http://".$_SERVER['HTTP_HOST']."/cco/"; ?>
 
 	<div id = "busqueda_pacientes">
 			<div style = "float:left; color:white; font-family:Oswald; margin-left: 10px; margin-top: 5px;">

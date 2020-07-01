@@ -39,23 +39,18 @@
 
 <body>	
 <?php
-	
+	include "database_config.php";
+
 	$apellido = $_POST['posteo'];
 	//echo $data;
 
 
-	$conexion = mysql_connect("localhost","root","power")
-	or die ("Fallo en el establecimiento de la conexión");
-
-	#Seleccionamos la base de datos a utilizar
-	mysql_select_db("cco")
-	or die("Error en la selección de la base de datos");
+	$link = mysqli_connect ($host, $user, $password, $db) or die ("<center>No se puede conectar con la base de datos\n</center>\n");
 
 	$query = sprintf("SELECT * FROM pacientes WHERE apellido LIKE '%s' ", "%".$apellido."%");
 
 	// Perform Query
-	$result = mysql_query($query)
-	or die("Error en la consulta SQL");
+	$result = mysqli_query($query_facturacion, $link);
 
 	#Mostramos los resultados obtenidos
 
@@ -63,9 +58,8 @@
 		<div id="result">
 			<div id="result_buscar">	
 	<?php
-	$base_url = "http://".$_SERVER['HTTP_HOST']."/cco/";
 			
-				while( $key = mysql_fetch_array ( $result )) {
+				while( $key = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
 						echo '<div class = "fila_mensaje">';
 							echo '<div class = "clickeable" id = "'.$key['id'].'" style="cursor: pointer;">';
 								echo '<div class = "fila_nombre">';	

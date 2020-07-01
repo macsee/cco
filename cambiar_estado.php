@@ -1,17 +1,13 @@
 <?php
 	
+	include "database_config.php";
 	
 	$id = $_POST['id'];
 	$estado = $_POST['estado'];
 	
 	//$datos = explode(",", $cadena);
 
-	$conexion = mysql_connect("localhost","root","power")
-	or die ("Fallo en el establecimiento de la conexión");
-
-	#Seleccionamos la base de datos a utilizar
-	mysql_select_db("cco")
-	or die("Error en la selección de la base de datos");
+	$link = mysqli_connect ($host, $user, $password, $db) or die ("<center>No se puede conectar con la base de datos\n</center>\n");
 
 	$query = sprintf("UPDATE turnos SET estado = '%s' WHERE id = '%d' ", $estado, $id);
 
@@ -22,13 +18,11 @@
 		$query = sprintf("UPDATE turnos SET estado = '' WHERE id = '%d' ", $id);
 	*/	
 	// Perform Query
-	$result = mysql_query($query)
-	or die("Error en la consulta SQL");
+	$result = mysqli_query($query, $link)
 
 	$query = sprintf("UPDATE facturacion SET estado = '%s' WHERE id_turno = '%d' ", $estado, $id);
 
-	$result = mysql_query($query)
-	or die("Error en la consulta SQL");
+	$result = mysqli_query($query, $link)
 
 	#Mostramos los resultados obtenidos
 

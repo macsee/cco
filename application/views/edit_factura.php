@@ -38,24 +38,24 @@
 	    	<ul>
 	        	<li>
 	        		<label for="medico">Paciente:</label>
-	            	<?php echo $filas->nombre.' '.$filas->apellido.' '.$filas->ficha?>
+	            	<?php echo $filas[0]->nombre.' '.$filas[0]->apellido.' '.$filas[0]->ficha?>
 	        	</li>
 	        	<li>
 					<label for="medico">Médico:</label>
 						
-							<?php echo $filas->medico?>
+							<?php echo $filas[0]->medico?>
 								
 				</li>
 				<li>
 					<label for="obra">Obra social:</label>
-							<?php echo $filas->obra_social?>
+							<?php echo $filas[0]->obra_social?>
 				</li>
 		 	</ul>
 		</div>
 	    <div id="tipo_turno"> Tipo de turno:</div>
 		<div id = "tabla">
 			<?php 
-				$cadena = $filas->tipo;
+				$cadena = $filas[0]->tipo;
 			?>
 			<div class = "fila">
 				<div class = "celda">
@@ -176,14 +176,14 @@
 				</li>						
 					        	
 	        	<li>
-	        		<input type="hidden" name="fecha" value="<?php echo $filas->fecha?>"/>
-	        		<input type="hidden" name="id" value="<?php echo $filas->id?>"/>
-	        		<input type="hidden" name="medico" value="<?php echo $filas->medico?>"/>
-	        		<input type="hidden" name="obra" value="<?php echo $filas->obra_social?>"/>
+	        		<input type="hidden" name="fecha" value="<?php echo $filas[0]->fecha?>"/>
+	        		<input type="hidden" name="id" value="<?php echo $filas[0]->id?>"/>
+	        		<input type="hidden" name="medico" value="<?php echo $filas[0]->medico?>"/>
+	        		<input type="hidden" name="obra" value="<?php echo $filas[0]->obra_social?>"/>
 	           	</li>	
 	        	<li>
 	        		<button class="submit" type="submit">Guardar</button>
-					<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/vista_turno/".$filas->id)?>';">Cancelar</button>
+					<button class="cancel" type = "button" onclick = "location.href= '<?php echo base_url("/index.php/main/vista_turno/".$filas[0]->id)?>';">Cancelar</button>
 	        	</li>
 			</ul>
 		</div>

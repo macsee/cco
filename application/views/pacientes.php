@@ -166,7 +166,7 @@
 
 						echo '<div style = "float: left; margin-left: 15px; cursor: pointer">';
 
-							echo '<a onclick = "parent.location.href=\''.base_url("/index.php/main/historia_clinica/").'/'.$key->id.'\';">';
+							echo '<a onclick = "parent.location.href=\''.base_url("/index.php/main/historia_clinica/").$key->id.'\';">';
 							//echo '<a onclick = "parent.location.href="'.base_url('index.php/main/nuevo_turno/').'">';
 								echo '<img src = "'.base_url('css/images/info_8x16.png').'" title = "Ver Historia Clínica"/>';  
 							echo '</a>';

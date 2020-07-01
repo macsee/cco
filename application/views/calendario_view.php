@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
 
 <html lang="en">
 <head>
@@ -8,19 +9,6 @@
 	<!-- Date: 2012-09-02 -->
     <style>
         body {margin: 0px}
-        .celda {
-            width: 29px;
-            height: 24px;
-        }
-        .cabecera {
-            font-size: 18px;
-        }
-        .dia_semana {
-            font-size: 18px;
-        }
-        td {
-            width: 0px;
-        }    
     </style>
 </head>
 <body>

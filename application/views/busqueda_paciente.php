@@ -18,8 +18,7 @@
 			
 		 $( "#busqueda_texto" ).autocomplete({
 			minLength: 1,
-			//source : base_url+"search.php",
-			source: base_url+"index.php/main/get_pacientes",
+			source : base_url+"search.php",
       		//source: "http://192.168.1.12/cco/search.php",
       //focus: function( event, ui ) {
        // $( "#project" ).val( ui.item.label );

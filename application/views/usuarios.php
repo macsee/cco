@@ -196,13 +196,23 @@
 					echo '<div class = "usuarios_th" style = "width:180px">Apellido</div>';
 					echo '<div class = "usuarios_th" style = "width:380px">Funciones</div>';
 					echo '<div class = "usuarios_th" style = "width:100px">ID User</div>';
+					echo '<div class = "usuarios_th" style = "width:180px">Ultimo Ingreso</div>';
 				foreach ($resultado as $res) {
+					
+					if ($res->last_login) {
+						$login = $res->last_login;
+					}
+					else {
+						$login = "Sin Datos";
+					}
+
 					echo '<div class = "usuarios_tr" id = "'.$res->id_user.'" >';
 						echo '<div id = "'.$res->id_user.'_usuario" class = "usuarios_td" style = "width:100px">'.$res->user.'</div>';
 						echo '<div id = "'.$res->id_user.'_nombre" class = "usuarios_td" style = "width:180px">'.$res->nombre.'</div>';
 						echo '<div id = "'.$res->id_user.'_apellido" class = "usuarios_td" style = "width:180px">'.$res->apellido.'</div>';
 						echo '<div id = "'.$res->id_user.'_funciones" class = "usuarios_td" style = "width:380px">'.$res->funciones.'</div>';
 						echo '<div id = "'.$res->id_user.'_id" class = "usuarios_td" style = "width:100px">'.$res->id_user.'</div>';
+						echo '<div id = "'.$res->id_user.'_id" class = "usuarios_td" style = "width:180px">'.$login.'</div>';
 					echo '</div>';
 				}
 				//echo '</table>';
